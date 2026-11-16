@@ -1,6 +1,7 @@
 const { db } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid, requireChairman } = require('../lib/member')
+const { notify } = require('../lib/notify')
 
 const PHONE_RE = /^1[3-9]\d{9}$/
 const DORM_RE = /^[东西][一二三四五六七八九十]+[0-9]{3,4}$/
@@ -123,6 +124,15 @@ async function review(payload = {}, openid) {
         updatedAt: db.serverDate()
       }
     })
+
+  await notify(request.openid, {
+    type: 'system',
+    title: action === 'approve' ? '资料修改已通过' : '资料修改被拒绝',
+    content:
+      action === 'approve'
+        ? '你提交的资料修改已通过，已更新到个人资料。'
+        : '你提交的资料修改未通过，如有疑问请联系主席。'
+  })
 
   return { status: action }
 }

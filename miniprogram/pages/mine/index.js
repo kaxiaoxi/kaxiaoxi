@@ -7,7 +7,8 @@ Page({
     deptLabel: '',
     roleLabel: '',
     statusLabel: '',
-    isChairman: false
+    isChairman: false,
+    isMinister: false
   },
 
   async onShow() {
@@ -27,8 +28,25 @@ Page({
       deptLabel: member ? DEPT_LABEL[member.dept] || '' : '',
       roleLabel: member ? ROLE_LABEL[member.role] || '' : '',
       statusLabel: member ? MEMBER_STATUS_LABEL[member.status] || '' : '',
-      isChairman: !!(member && member.role === 'chairman')
+      isChairman: !!(member && member.role === 'chairman'),
+      isMinister: !!(member && member.role !== 'member')
     })
+  },
+
+  onOpenErke() {
+    wx.navigateTo({ url: '/pages/mine/erke/index' })
+  },
+
+  onOpenSummary() {
+    wx.navigateTo({ url: '/pages/admin/erke/index' })
+  },
+
+  onOpenMessages() {
+    wx.navigateTo({ url: '/pages/message/list/index' })
+  },
+
+  onOpenSettings() {
+    wx.navigateTo({ url: '/pages/admin/settings/index' })
   },
 
   onOpenTodos() {

@@ -1,0 +1,30 @@
+<view class="page">
+  <view class="head">
+    <text class="head__arrow" data-delta="-1" bindtap="shiftYear">‹</text>
+    <text class="head__year">{{year}} 学年</text>
+    <text class="head__arrow" data-delta="1" bindtap="shiftYear">›</text>
+  </view>
+
+  <view class="tip">部长仅统计本部门发布任务的参与者</view>
+
+  <view class="table">
+    <view class="tr tr--head">
+      <text class="th name">姓名</text>
+      <text class="th no">学号</text>
+      <text class="th college">学院</text>
+      <text class="th hours">总时长</text>
+    </view>
+    <view class="tr" wx:for="{{list}}" wx:key="studentNo">
+      <text class="td name">{{item.name}}</text>
+      <text class="td no">{{item.studentNo}}</text>
+      <text class="td college">{{item.college}}</text>
+      <text class="td hours">{{item.hours}}</text>
+    </view>
+    <view class="empty" wx:if="{{!loading && !list.length}}">本学年暂无数据</view>
+  </view>
+
+  <view class="footer">
+    <view class="footer__total">共 {{list.length}} 人 · 合计 {{total}} 学时</view>
+    <button class="btn btn--primary" bindtap="onExport">导出 CSV</button>
+  </view>
+</view>

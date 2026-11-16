@@ -1,0 +1,79 @@
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 8rpx 12rpx;
+}
+
+.head__year {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.head__arrow {
+  font-size: 40rpx;
+  color: var(--s-3);
+  padding: 0 20rpx;
+}
+
+.tip {
+  font-size: 24rpx;
+  color: var(--s-2);
+  padding: 0 8rpx 20rpx;
+}
+
+.table {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.tr {
+  display: flex;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid var(--sep);
+  font-size: 26rpx;
+}
+
+.tr--head {
+  color: var(--s-2);
+  font-size: 22rpx;
+  background: rgba(118, 118, 128, 0.06);
+}
+
+.name {
+  flex: 0 0 110rpx;
+}
+
+.no {
+  flex: 0 0 190rpx;
+}
+
+.college {
+  flex: 1;
+}
+
+.hours {
+  flex: 0 0 100rpx;
+  text-align: right;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.empty {
+  padding: 80rpx 0;
+  text-align: center;
+  color: var(--s-2);
+  font-size: 26rpx;
+}
+
+.footer {
+  margin-top: 32rpx;
+}
+
+.footer__total {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--s-2);
+  margin-bottom: 20rpx;
+}

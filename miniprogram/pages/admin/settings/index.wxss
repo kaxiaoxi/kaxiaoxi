@@ -1,0 +1,42 @@
+.section {
+  margin: 24rpx 8rpx 16rpx;
+  font-size: 28rpx;
+  color: var(--s-2);
+  font-weight: 600;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 8rpx 28rpx 28rpx;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--sep);
+  font-size: 28rpx;
+}
+
+.value {
+  color: var(--s-2);
+}
+
+.input {
+  text-align: right;
+  font-size: 28rpx;
+  width: 280rpx;
+}
+
+.btn-top {
+  margin-top: 28rpx;
+}
+
+.tip {
+  margin: 24rpx 8rpx;
+  font-size: 22rpx;
+  color: var(--s-3);
+  line-height: 1.6;
+}

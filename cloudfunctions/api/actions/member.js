@@ -1,6 +1,7 @@
 const { db } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { toProfile, requireChairman } = require('../lib/member')
+const { notify } = require('../lib/notify')
 
 const REVIEW_STATUS = {
   approve: 'active',
@@ -34,6 +35,16 @@ async function review(payload = {}, openid) {
   if (status === 'active') data.joinedAt = now
 
   await db.collection('members').doc(memberId).update({ data })
+
+  await notify(res.data._openid, {
+    type: 'system',
+    title: status === 'active' ? '入会申请已通过' : '入会申请未通过',
+    content:
+      status === 'active'
+        ? '欢迎加入影协，现在可以报名任务了。'
+        : '你的入会申请未通过，如有疑问请联系主席。'
+  })
+
   return { status }
 }
 

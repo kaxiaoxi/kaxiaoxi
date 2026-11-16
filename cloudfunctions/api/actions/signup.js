@@ -2,6 +2,7 @@
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid } = require('../lib/member')
 const { promoteNext } = require('../lib/promote')
+const { notify } = require('../lib/notify')
 
 async function requirePublisher(taskId, openid) {
   const me = await getMemberByOpenid(openid)
@@ -126,6 +127,13 @@ async function review(payload = {}, openid) {
           updatedAt: db.serverDate()
         }
       })
+    await notify(res.data.openid, {
+      type: 'signup',
+      title: '报名未通过',
+      content: `「${task.title}」的报名未通过，如有疑问请联系发布人。`,
+      refType: 'task',
+      refId: taskId
+    })
     return { status: 'rejected' }
   }
 
@@ -154,6 +162,18 @@ async function review(payload = {}, openid) {
     await tx.collection('tasks').doc(taskId).update({ data: inc })
 
     await tx.commit()
+
+    await notify(res.data.openid, {
+      type: 'signup',
+      title: status === 'waitlisted' ? '进入候补' : '报名通过',
+      content:
+        status === 'waitlisted'
+          ? `「${task.title}」名额已满，你已进入候补队列。`
+          : `「${task.title}」报名已通过，请按时参加。`,
+      refType: 'task',
+      refId: taskId
+    })
+
     return { status }
   } catch (err) {
     await tx.rollback()
@@ -249,6 +269,13 @@ async function reviewLeave(payload = {}, openid) {
       .collection('task_signups')
       .doc(signup._id)
       .update({ data: { status: 'approved', updatedAt: db.serverDate() } })
+    await notify(request.openid, {
+      type: 'leave',
+      title: '请假未通过',
+      content: '你的请假申请未通过，仍需按时参加活动。',
+      refType: 'task',
+      refId: taskId
+    })
     return { status: 'rejected' }
   }
 

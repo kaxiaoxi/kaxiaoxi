@@ -6,6 +6,9 @@ const signup = require('./actions/signup')
 const profile = require('./actions/profile')
 const calendar = require('./actions/calendar')
 const todo = require('./actions/todo')
+const message = require('./actions/message')
+const erke = require('./actions/erke')
+const admin = require('./actions/admin')
 const home = require('./actions/home')
 
 const routes = {
@@ -33,6 +36,15 @@ const routes = {
   'todo.save': todo.save,
   'todo.complete': todo.complete,
   'todo.remove': todo.remove,
+  'message.list': message.list,
+  'message.read': message.read,
+  'message.unread': message.unread,
+  'erke.mine': erke.mine,
+  'erke.summary': erke.summary,
+  'erke.export': erke.exportCsv,
+  'admin.getSettings': admin.getSettings,
+  'admin.archiveYear': admin.archiveYear,
+  'admin.transferChairman': admin.transferChairman,
   'profile.submit': profile.submit,
   'profile.mine': profile.mine,
   'profile.listPending': profile.listPending,
