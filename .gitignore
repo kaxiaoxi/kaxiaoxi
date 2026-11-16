@@ -21,3 +21,6 @@ miniprogram/**/*.map
 # 设计稿导出图（可由脚本重新生成，仓库只保留总览图与源文件）
 design/ui/screens/
 design/wireframe/screens/
+
+# 开发者工具本地调试产物
+.cloudbase/
