@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "eslint miniprogram cloudfunctions",
     "lint:fix": "eslint miniprogram cloudfunctions --fix",
-    "format": "prettier --write \"miniprogram/**/*.{js,wxml,wxss,json}\"",
-    "format:check": "prettier --check \"miniprogram/**/*.{js,wxml,wxss,json}\"",
+    "format": "prettier --write \"miniprogram/**/*.{js,wxss,json}\"",
+    "format:check": "prettier --check \"miniprogram/**/*.{js,wxss,json}\"",
     "check": "npm run lint && npm run format:check"
   },
   "devDependencies": {

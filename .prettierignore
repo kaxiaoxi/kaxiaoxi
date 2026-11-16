@@ -1,0 +1,8 @@
+# Prettier 暂不处理 WXML（无官方解析器，避免破坏 mustache 语法）
+miniprogram/**/*.wxml
+
+node_modules/
+miniprogram_npm/
+design/
+docs/
+assets/
