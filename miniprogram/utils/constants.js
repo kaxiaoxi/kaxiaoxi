@@ -22,6 +22,20 @@ const DEPT_LABEL = {
   ops: '运营部'
 }
 
+const MEMBER_STATUS = {
+  PENDING: 'pending',
+  ACTIVE: 'active',
+  LEFT: 'left',
+  REJECTED: 'rejected'
+}
+
+const MEMBER_STATUS_LABEL = {
+  pending: '待审核',
+  active: '正常',
+  left: '已退会',
+  rejected: '未通过'
+}
+
 const SIGNUP_STATUS = {
   PENDING: 'pending',
   APPROVED: 'approved',
@@ -37,5 +51,7 @@ module.exports = {
   ROLE_LABEL,
   DEPT,
   DEPT_LABEL,
+  MEMBER_STATUS,
+  MEMBER_STATUS_LABEL,
   SIGNUP_STATUS
 }

@@ -1,10 +1,24 @@
 <view class="page">
-  <view class="page__title">首页</view>
-  <view class="card" wx:if="{{!tasks.length}}">
-    <text class="muted">暂无数据，等待接入 home.summary</text>
+  <view class="greet">
+    <view class="greet__title">你好，{{member.name || '同学'}}</view>
+    <view class="greet__sub">{{deptLabel}}<text wx:if="{{roleLabel}}"> · {{roleLabel}}</text></view>
   </view>
-  <view class="card" wx:for="{{tasks}}" wx:key="_id">
-    <view class="card__title">{{item.title}}</view>
+
+  <view class="section">近期任务</view>
+  <view class="card" wx:if="{{!tasks.length}}">
+    <view class="muted">还没有任务，等部长发布后这里会出现</view>
+  </view>
+  <view class="card task" wx:for="{{tasks}}" wx:key="_id">
+    <view class="task__title">{{item.title}}</view>
     <view class="muted">{{item.startAt}}</view>
+  </view>
+
+  <view class="section">我的待办</view>
+  <view class="card" wx:if="{{!todos.length}}">
+    <view class="muted">暂时没有待办</view>
+  </view>
+  <view class="card task" wx:for="{{todos}}" wx:key="_id">
+    <view class="task__title">{{item.title}}</view>
+    <view class="muted">{{item.dueAt}}</view>
   </view>
 </view>

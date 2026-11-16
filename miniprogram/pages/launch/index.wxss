@@ -18,3 +18,20 @@
   font-size: 26rpx;
   color: var(--s-2);
 }
+
+.launch__error {
+  margin-top: 64rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.launch__error-text {
+  font-size: 26rpx;
+  color: var(--s-2);
+  margin-bottom: 24rpx;
+}
+
+.launch__retry {
+  width: 240rpx;
+}

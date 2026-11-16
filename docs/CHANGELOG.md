@@ -2,6 +2,14 @@
 
 格式：`版本 · 日期 · 变更摘要`
 
+## v0.2.0 · 2026-11-17
+
+- 新增登录分流：`auth.login` 按 openid 返回 new/pending/active/rejected
+- 新增注册：`auth.register`，6 项校验、学号唯一、状态 pending
+- 新增主席审核：`member.review`（通过/拒绝）、`member.list`
+- 页面：注册表单、等待审核页、首页/我的接入真实成员数据
+- 云函数拆分为 `router + actions + lib`，统一错误码
+
 ## v0.1.0 · 2026-11-17
 
 - 初始化工程骨架：`miniprogram/`、`cloudfunctions/api|cron|init`

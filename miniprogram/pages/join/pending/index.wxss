@@ -1,0 +1,31 @@
+.page--center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120rpx;
+}
+
+.ip {
+  width: 300rpx;
+  height: 300rpx;
+}
+
+.title {
+  margin-top: 40rpx;
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.desc {
+  margin: 20rpx 0 60rpx;
+  font-size: 28rpx;
+  color: var(--s-2);
+  text-align: center;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.btn--wide {
+  width: 560rpx;
+  margin-bottom: 24rpx;
+}
