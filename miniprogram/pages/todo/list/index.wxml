@@ -1,0 +1,38 @@
+<view class="page">
+  <view class="head">
+    <view class="head__title">待办</view>
+    <view class="head__add" bindtap="onAdd">＋ 新建</view>
+  </view>
+
+  <view class="seg">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="seg__item {{tab === item.key ? 'seg__item--on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTab"
+    >{{item.label}}</view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && !list.length}}">暂无待办</view>
+
+  <view class="list">
+    <view class="row" wx:for="{{list}}" wx:key="_id">
+      <view
+        class="check {{item.status === 'done' ? 'check--on' : ''}}"
+        data-id="{{item._id}}"
+        data-done="{{item.status === 'done' ? '1' : '0'}}"
+        catchtap="onToggle"
+      >{{item.status === 'done' ? '✓' : ''}}</view>
+      <view class="row__main" data-id="{{item._id}}" bindtap="onOpen">
+        <view class="row__title {{item.status === 'done' ? 'row__title--done' : ''}}">{{item.title}}</view>
+        <view class="row__meta">
+          <text class="prio {{item.priorityClass}}">{{item.priorityLabel}}</text>
+          <text wx:if="{{item.dueLabel}}">{{item.dueLabel}}</text>
+          <text wx:if="{{item.scope === 'dept'}}">部门</text>
+          <text wx:if="{{item.source === 'task'}}">自动</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

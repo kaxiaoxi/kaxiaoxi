@@ -1,6 +1,139 @@
+const { call } = require('../../services/api')
+const { formatDay, formatTime } = require('../../utils/task')
+
+const WEEKDAYS = ['一', '二', '三', '四', '五', '六', '日']
+
+function pad(n) {
+  return n < 10 ? `0${n}` : `${n}`
+}
+
+function keyOf(date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
+function toDate(value) {
+  return value instanceof Date ? value : new Date(value)
+}
+
 Page({
   data: {
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1
+    year: 0,
+    month: 0,
+    weekdays: WEEKDAYS,
+    cells: [],
+    selected: '',
+    selectedLabel: '',
+    dayEvents: [],
+    loading: false
+  },
+
+  onLoad() {
+    const now = new Date()
+    this.setData({ year: now.getFullYear(), month: now.getMonth() + 1 })
+  },
+
+  onShow() {
+    this.load()
+  },
+
+  async load() {
+    if (this.data.loading) return
+    const { year, month } = this.data
+    const selected = this.data.selected || keyOf(new Date(year, month - 1, 1))
+    this.setData({ loading: true, selected })
+
+    try {
+      const res = await call('calendar.month', { year, month })
+      const events = (res.list || []).map((item) => ({
+        ...item,
+        startKey: keyOf(toDate(item.startAt)),
+        endKey: keyOf(toDate(item.endAt)),
+        timeText: item.allDay ? '全天' : `${formatTime(item.startAt)}–${formatTime(item.endAt)}`
+      }))
+      this.events = events
+      this.render(events, selected)
+    } catch (err) {
+      wx.showToast({ title: err.message || '加载失败', icon: 'none' })
+    } finally {
+      this.setData({ loading: false })
+    }
+  },
+
+  render(events, selected) {
+    const { year, month } = this.data
+    const first = new Date(year, month - 1, 1)
+    const startOffset = (first.getDay() + 6) % 7
+    const cells = []
+    const start = new Date(year, month - 1, 1 - startOffset)
+    const todayKey = keyOf(new Date())
+
+    for (let i = 0; i < 42; i += 1) {
+      const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i)
+      const key = keyOf(date)
+      const count = events.filter((e) => key >= e.startKey && key <= e.endKey).length
+      cells.push({
+        key,
+        day: date.getDate(),
+        inMonth: date.getMonth() === month - 1,
+        isToday: key === todayKey,
+        count
+      })
+    }
+
+    const dayEvents = events
+      .filter((e) => selected >= e.startKey && selected <= e.endKey)
+      .map((e) => ({
+        ...e,
+        dayText: e.startKey === e.endKey ? '' : `${formatDay(e.startAt)}–${formatDay(e.endAt)}`
+      }))
+
+    const [y, m, d] = selected.split('-')
+    this.setData({
+      cells,
+      selected,
+      selectedLabel: `${Number(m)} 月 ${Number(d)} 日`,
+      dayEvents
+    })
+  },
+
+  onSelect(e) {
+    const key = e.currentTarget.dataset.key
+    this.render(this.events || [], key)
+  },
+
+  onPrev() {
+    const { year, month } = this.data
+    const date = new Date(year, month - 2, 1)
+    this.setData({ year: date.getFullYear(), month: date.getMonth() + 1, selected: '' }, () =>
+      this.load()
+    )
+  },
+
+  onNext() {
+    const { year, month } = this.data
+    const date = new Date(year, month, 1)
+    this.setData({ year: date.getFullYear(), month: date.getMonth() + 1, selected: '' }, () =>
+      this.load()
+    )
+  },
+
+  onToday() {
+    const now = new Date()
+    this.setData(
+      {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        selected: keyOf(now)
+      },
+      () => this.load()
+    )
+  },
+
+  onOpen(e) {
+    wx.navigateTo({ url: `/pages/calendar/detail/index?id=${e.currentTarget.dataset.id}` })
+  },
+
+  onCreate() {
+    wx.navigateTo({ url: '/pages/calendar/edit/index' })
   }
 })

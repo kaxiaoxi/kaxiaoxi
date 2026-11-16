@@ -1,9 +1,63 @@
+const { call } = require('../../services/api')
+const { DEPT_LABEL, ROLE_LABEL, MEMBER_STATUS_LABEL } = require('../../utils/constants')
+
 Page({
   data: {
-    member: null
+    member: null,
+    deptLabel: '',
+    roleLabel: '',
+    statusLabel: '',
+    isChairman: false,
+    isMinister: false
   },
 
-  onShow() {
-    this.setData({ member: getApp().globalData.member })
+  async onShow() {
+    let member = getApp().globalData.member
+    try {
+      const res = await call('auth.login')
+      if (res.member) {
+        member = res.member
+        getApp().globalData.member = member
+      }
+    } catch (err) {
+      console.warn('[mine] 刷新资料失败', err)
+    }
+
+    this.setData({
+      member,
+      deptLabel: member ? DEPT_LABEL[member.dept] || '' : '',
+      roleLabel: member ? ROLE_LABEL[member.role] || '' : '',
+      statusLabel: member ? MEMBER_STATUS_LABEL[member.status] || '' : '',
+      isChairman: !!(member && member.role === 'chairman'),
+      isMinister: !!(member && member.role !== 'member')
+    })
+  },
+
+  onOpenErke() {
+    wx.navigateTo({ url: '/pages/mine/erke/index' })
+  },
+
+  onOpenSummary() {
+    wx.navigateTo({ url: '/pages/admin/erke/index' })
+  },
+
+  onOpenMessages() {
+    wx.navigateTo({ url: '/pages/message/list/index' })
+  },
+
+  onOpenSettings() {
+    wx.navigateTo({ url: '/pages/admin/settings/index' })
+  },
+
+  onOpenTodos() {
+    wx.navigateTo({ url: '/pages/todo/list/index' })
+  },
+
+  onEditProfile() {
+    wx.navigateTo({ url: '/pages/profile/edit/index' })
+  },
+
+  onOpenMembers() {
+    wx.navigateTo({ url: '/pages/admin/members/index' })
   }
 })

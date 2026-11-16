@@ -1,0 +1,116 @@
+<scroll-view class="page" scroll-y>
+  <view class="section">基本信息</view>
+  <view class="card">
+    <view class="field">
+      <view class="field__label">活动名称</view>
+      <input class="field__input" maxlength="30" placeholder="如 中心湖人像外拍" data-field="title" value="{{form.title}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">活动详情</view>
+      <textarea class="field__textarea" maxlength="2000" placeholder="集合方式、拍摄内容、注意事项" data-field="description" value="{{form.description}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">地点</view>
+      <input class="field__input" maxlength="40" placeholder="如 大学城中心湖" data-field="locationName" value="{{form.locationName}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">收图方式</view>
+      <input class="field__input" maxlength="200" placeholder="如 上传群相册，命名姓名-序号" data-field="collectMethod" value="{{form.collectMethod}}" bindinput="onInput" />
+    </view>
+  </view>
+
+  <view class="section">场次（可多天多时段）</view>
+  <view class="card" wx:for="{{sessions}}" wx:key="key">
+    <view class="session__head">
+      <text class="session__no">第 {{index + 1}} 场</text>
+      <text class="session__del" data-index="{{index}}" bindtap="onRemoveSession">删除</text>
+    </view>
+    <view class="row">
+      <picker mode="date" value="{{item.date}}" data-index="{{index}}" data-field="date" bindchange="onSessionChange">
+        <view class="picker">{{item.date}}</view>
+      </picker>
+      <picker mode="time" value="{{item.start}}" data-index="{{index}}" data-field="start" bindchange="onSessionChange">
+        <view class="picker">{{item.start}}</view>
+      </picker>
+      <text class="session__sep">至</text>
+      <picker mode="time" value="{{item.end}}" data-index="{{index}}" data-field="end" bindchange="onSessionChange">
+        <view class="picker">{{item.end}}</view>
+      </picker>
+    </view>
+  </view>
+  <view class="add" bindtap="onAddSession">＋ 添加场次</view>
+
+  <view class="section">人数与二课</view>
+  <view class="card">
+    <view class="field field--row">
+      <text class="field__label">需要人数</text>
+      <input class="field__input field__input--right" type="number" data-field="quota" value="{{form.quota}}" bindinput="onInput" />
+    </view>
+    <view class="hint">填 0 表示不限人数</view>
+    <view class="field field--row">
+      <text class="field__label">二课学时</text>
+      <input class="field__input field__input--right" type="number" data-field="erkeHours" value="{{form.erkeHours}}" bindinput="onInput" />
+    </view>
+    <view class="hint">整数，填 0 表示不计二课</view>
+  </view>
+
+  <view class="section">报名设置</view>
+  <view class="card">
+    <view class="field">
+      <view class="field__label">报名方式</view>
+      <view class="seg">
+        <view class="seg__item {{form.signupMode === 'review' ? 'seg__item--on' : ''}}" data-mode="review" bindtap="onSignupMode">报名审核</view>
+        <view class="seg__item {{form.signupMode === 'first_come' ? 'seg__item--on' : ''}}" data-mode="first_come" bindtap="onSignupMode">先到先得</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field__label">报名开放</view>
+      <view class="seg">
+        <view class="seg__item {{startMode === 'now' ? 'seg__item--on' : ''}}" data-mode="now" bindtap="onStartMode">立即</view>
+        <view class="seg__item {{startMode === 'scheduled' ? 'seg__item--on' : ''}}" data-mode="scheduled" bindtap="onStartMode">定时</view>
+      </view>
+    </view>
+
+    <view class="row" wx:if="{{startMode === 'scheduled'}}">
+      <picker mode="date" value="{{startDate}}" bindchange="onStartDate">
+        <view class="picker">{{startDate}}</view>
+      </picker>
+      <picker mode="time" value="{{startTime}}" bindchange="onStartTime">
+        <view class="picker">{{startTime}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <view class="field__label">报名截止</view>
+      <view class="row">
+        <picker mode="date" value="{{deadlineDate}}" bindchange="onDeadlineDate">
+          <view class="picker">{{deadlineDate}}</view>
+        </picker>
+        <picker mode="time" value="{{deadlineTime}}" bindchange="onDeadlineTime">
+          <view class="picker">{{deadlineTime}}</view>
+        </picker>
+      </view>
+      <view class="hint">需早于或等于首场开始</view>
+    </view>
+
+    <view class="field">
+      <view class="field__label">可见范围</view>
+      <view class="seg">
+        <view class="seg__item {{form.audience === 'all' ? 'seg__item--on' : ''}}" data-mode="all" bindtap="onAudience">全体</view>
+        <view class="seg__item {{form.audience === 'depts' ? 'seg__item--on' : ''}}" data-mode="depts" bindtap="onAudience">指定部门</view>
+      </view>
+    </view>
+
+    <checkbox-group wx:if="{{form.audience === 'depts'}}" bindchange="onDeptChange" class="depts">
+      <label class="dept" wx:for="{{deptOptions}}" wx:key="key">
+        <checkbox value="{{item.key}}" color="#2E5F7E" />
+        <text>{{item.label}}</text>
+      </label>
+    </checkbox-group>
+  </view>
+
+  <view class="footer">
+    <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">发布</button>
+  </view>
+</scroll-view>

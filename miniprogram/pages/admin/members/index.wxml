@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="section" wx:if="{{requests.length}}">资料修改 {{requests.length}}</view>
+  <view class="card member" wx:for="{{requests}}" wx:key="_id">
+    <view class="member__head">
+      <view class="member__name">{{item.name}}</view>
+      <text class="tag tag--blue">待审核</text>
+    </view>
+    <view class="req__diffs">
+      <view class="req__row" wx:for="{{item.diffs}}" wx:for-item="d" wx:key="label">
+        <text class="req__label">{{d.label}}</text>
+        <text class="req__from">{{d.from}}</text>
+        <text class="req__arrow">→</text>
+        <text class="req__to">{{d.to}}</text>
+      </view>
+    </view>
+    <view class="req__reason">理由：{{item.reason}}</view>
+    <view class="member__actions">
+      <button class="btn btn--ghost member__btn" data-id="{{item._id}}" data-action="reject" bindtap="onReviewRequest">拒绝</button>
+      <button class="btn btn--primary member__btn" data-id="{{item._id}}" data-action="approve" bindtap="onReviewRequest">通过</button>
+    </view>
+  </view>
+
+  <view class="section">待审核 {{pending.length}}</view>
+  <view class="card empty" wx:if="{{!pending.length}}">
+    <text class="muted">暂无待审核成员</text>
+  </view>
+  <view class="card member" wx:for="{{pending}}" wx:key="_id">
+    <view class="member__head">
+      <view class="member__avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+      <view class="member__info">
+        <view class="member__name">{{item.name}}</view>
+        <view class="muted">{{item.deptLabel}} · {{item.studentNo}}</view>
+      </view>
+    </view>
+    <view class="member__actions">
+      <button class="btn btn--ghost member__btn" data-id="{{item._id}}" data-action="reject" bindtap="onReview">拒绝</button>
+      <button class="btn btn--primary member__btn" data-id="{{item._id}}" data-action="approve" bindtap="onReview">通过</button>
+    </view>
+  </view>
+
+  <view class="section">在册 {{active.length}}</view>
+  <view class="card member" wx:for="{{active}}" wx:key="_id">
+    <view class="member__head">
+      <view class="member__avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+      <view class="member__info">
+        <view class="member__name">{{item.name}}</view>
+        <view class="muted">{{item.deptLabel}} · {{item.roleLabel}}</view>
+      </view>
+    </view>
+  </view>
+</view>

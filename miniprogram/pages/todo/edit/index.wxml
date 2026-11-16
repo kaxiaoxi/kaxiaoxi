@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="card">
+    <view class="field">
+      <view class="field__label">标题</view>
+      <input class="field__input" maxlength="50" data-field="title" value="{{form.title}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">描述</view>
+      <textarea class="textarea" maxlength="500" data-field="description" value="{{form.description}}" bindinput="onInput" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="field">
+      <view class="field__label">类型</view>
+      <view class="seg">
+        <view class="seg__item {{scope === 'personal' ? 'seg__item--on' : ''}}" data-scope="personal" bindtap="onScope">个人</view>
+        <view class="seg__item {{scope === 'dept' ? 'seg__item--on' : ''}}" data-scope="dept" bindtap="onScope">部门</view>
+      </view>
+    </view>
+    <view class="field">
+      <view class="field__label">重要性</view>
+      <view class="seg">
+        <view
+          wx:for="{{priorities}}"
+          wx:key="value"
+          class="seg__item {{priority === item.value ? 'seg__item--on' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onPriority"
+        >{{item.label}}</view>
+      </view>
+    </view>
+    <view class="field row">
+      <view class="field__label">截止日期</view>
+      <picker mode="date" value="{{dueDate}}" bindchange="onDue">
+        <view class="picker">{{dueDate || '不设置'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="footer">
+    <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">保存</button>
+    <button class="btn btn--danger" wx:if="{{id}}" bindtap="onDelete">删除</button>
+  </view>
+</view>

@@ -1,0 +1,15 @@
+<view class="page page--center">
+  <image class="ip" src="/images/kaxiaoxi.png" mode="aspectFit" />
+
+  <block wx:if="{{state === 'rejected'}}">
+    <view class="title">申请未通过</view>
+    <view class="desc">如需重新申请，请联系主席处理。</view>
+  </block>
+  <block wx:else>
+    <view class="title">申请已提交</view>
+    <view class="desc">主席审核通过后会通知你，一般 1～2 天。</view>
+  </block>
+
+  <button class="btn btn--primary btn--wide" loading="{{checking}}" bindtap="onRefresh">刷新状态</button>
+  <button class="btn btn--ghost btn--wide" bindtap="onContact">联系主席</button>
+</view>

@@ -2,28 +2,30 @@ const cloud = require('wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
-/**
- * 单入口路由。新增 action 必须在 router 中登记，并声明最小角色。
- */
-const router = {
-  'auth.login': async () => {
-    const { OPENID } = cloud.getWXContext()
-    return { state: 'active', member: { openid: OPENID } }
-  },
-  'home.summary': async () => ({ tasks: [], todos: [] })
-}
+const { route } = require('./router')
+const { BizError } = require('./lib/errors')
+const { ensureCollections } = require('./lib/ensure')
 
+/**
+ * 单入口：{ action, payload } -> { code, data, message }
+ */
 exports.main = async (event) => {
   const { action, payload = {} } = event || {}
-  const handler = router[action]
-  if (!handler) {
-    return { code: 40400, message: 'UNKNOWN_ACTION' }
+  const { OPENID } = cloud.getWXContext()
+
+  if (!action) {
+    return { code: 40000, message: '缺少 action' }
   }
+
   try {
-    const data = await handler(payload, cloud.getWXContext())
+    await ensureCollections()
+    const data = await route(action, payload, OPENID)
     return { code: 0, data }
   } catch (err) {
-    console.error('[api] error', action, err)
-    return { code: err.code || 50000, message: err.message || '服务异常' }
+    if (err instanceof BizError) {
+      return { code: err.code, message: err.message }
+    }
+    console.error('[api] unhandled', action, err)
+    return { code: 50000, message: '服务异常，请稍后重试' }
   }
 }

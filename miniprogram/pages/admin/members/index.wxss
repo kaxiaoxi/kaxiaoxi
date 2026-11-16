@@ -1,0 +1,105 @@
+.section {
+  margin: 24rpx 8rpx 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.empty {
+  text-align: center;
+}
+
+.member {
+  margin-bottom: 20rpx;
+}
+
+.member__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.member__avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  color: #fff;
+  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.member__info {
+  margin-left: 24rpx;
+}
+
+.member__name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.member__actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.member__btn {
+  flex: 1;
+  height: 76rpx;
+  font-size: 28rpx;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.tag--blue {
+  background: rgba(46, 95, 126, 0.12);
+  color: #2e5f7e;
+}
+
+.req__diffs {
+  margin-top: 20rpx;
+}
+
+.req__row {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  padding: 6rpx 0;
+}
+
+.req__label {
+  width: 120rpx;
+  color: var(--s-2);
+}
+
+.req__from {
+  color: var(--s-3);
+  text-decoration: line-through;
+}
+
+.req__arrow {
+  margin: 0 16rpx;
+  color: var(--s-3);
+}
+
+.req__to {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.req__reason {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: var(--s-2);
+  line-height: 1.6;
+}
