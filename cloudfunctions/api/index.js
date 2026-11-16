@@ -4,10 +4,10 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const { route } = require('./router')
 const { BizError } = require('./lib/errors')
+const { ensureCollections } = require('./lib/ensure')
 
 /**
  * 单入口：{ action, payload } -> { code, data, message }
- * 统一异常处理，业务错误通过 BizError 抛出。
  */
 exports.main = async (event) => {
   const { action, payload = {} } = event || {}
@@ -18,6 +18,7 @@ exports.main = async (event) => {
   }
 
   try {
+    await ensureCollections()
     const data = await route(action, payload, OPENID)
     return { code: 0, data }
   } catch (err) {
