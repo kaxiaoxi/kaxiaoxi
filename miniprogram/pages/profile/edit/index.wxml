@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="tip">修改需主席审核，通过后才会生效；姓名、学号如需修改请联系主席。</view>
+
+  <view class="card">
+    <view class="field">
+      <view class="field__label">手机号</view>
+      <input class="field__input" type="number" maxlength="11" data-field="phone" value="{{form.phone}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">宿舍号</view>
+      <input class="field__input" maxlength="15" placeholder="如 东一636" data-field="dorm" value="{{form.dorm}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">生日</view>
+      <picker mode="date" start="1995-01-01" end="2012-12-31" value="{{form.birthday}}" bindchange="onBirthday">
+        <view class="field__input {{form.birthday ? '' : 'field__input--placeholder'}}">
+          {{form.birthday || '请选择生日'}}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="card reason">
+    <view class="field__label">修改理由（必填）</view>
+    <textarea class="textarea" maxlength="200" placeholder="说明为什么修改，方便主席核对" value="{{reason}}" bindinput="onReason" />
+  </view>
+
+  <view class="footer">
+    <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">提交审核</button>
+  </view>
+</view>

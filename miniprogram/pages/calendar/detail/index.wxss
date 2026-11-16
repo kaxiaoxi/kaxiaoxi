@@ -1,0 +1,49 @@
+.hero {
+  padding: 16rpx 8rpx 28rpx;
+}
+
+.hero__title {
+  font-size: 44rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+}
+
+.row {
+  display: flex;
+  padding: 16rpx 0;
+  font-size: 28rpx;
+}
+
+.row__key {
+  width: 100rpx;
+  color: var(--s-2);
+  flex-shrink: 0;
+}
+
+.row__value {
+  flex: 1;
+  line-height: 1.6;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  background: rgba(46, 95, 126, 0.12);
+  color: #2e5f7e;
+  margin-right: 12rpx;
+}
+
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+
+.btn--danger {
+  background: rgba(180, 57, 44, 0.1);
+  color: #b4392c;
+}

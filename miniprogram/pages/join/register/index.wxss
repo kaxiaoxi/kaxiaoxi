@@ -1,0 +1,63 @@
+.hero {
+  padding: 16rpx 8rpx 32rpx;
+}
+
+.hero__title {
+  font-size: 56rpx;
+  font-weight: 700;
+  letter-spacing: -1rpx;
+}
+
+.hero__sub {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: var(--s-2);
+}
+
+.form {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 0 28rpx;
+}
+
+.field {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--sep);
+}
+
+.field:last-child {
+  border-bottom: none;
+}
+
+.field__label {
+  font-size: 26rpx;
+  color: var(--s-2);
+}
+
+.field__input {
+  margin-top: 10rpx;
+  font-size: 32rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+}
+
+.field__input--placeholder {
+  color: var(--s-3);
+}
+
+.field__tip {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--s-3);
+}
+
+.footer {
+  margin-top: 48rpx;
+}
+
+.footer__tip {
+  margin-top: 20rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--s-3);
+}

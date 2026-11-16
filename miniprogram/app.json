@@ -1,9 +1,24 @@
 {
   "pages": [
     "pages/launch/index",
+    "pages/join/register/index",
+    "pages/join/pending/index",
+    "pages/admin/members/index",
+    "pages/admin/erke/index",
+    "pages/admin/settings/index",
+    "pages/profile/edit/index",
     "pages/home/index",
     "pages/task/list",
+    "pages/task/detail/index",
+    "pages/task/manage/index",
+    "pages/task/create/index",
     "pages/calendar/month",
+    "pages/calendar/detail/index",
+    "pages/calendar/edit/index",
+    "pages/todo/list/index",
+    "pages/todo/edit/index",
+    "pages/message/list/index",
+    "pages/mine/erke/index",
     "pages/mine/index"
   ],
   "window": {
@@ -19,10 +34,22 @@
     "backgroundColor": "#F9F9F9",
     "borderStyle": "black",
     "list": [
-      { "pagePath": "pages/home/index", "text": "首页" },
-      { "pagePath": "pages/task/list", "text": "任务" },
-      { "pagePath": "pages/calendar/month", "text": "年历" },
-      { "pagePath": "pages/mine/index", "text": "我的" }
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/task/list",
+        "text": "任务"
+      },
+      {
+        "pagePath": "pages/calendar/month",
+        "text": "年历"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
     ]
   },
   "style": "v2",

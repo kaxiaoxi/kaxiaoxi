@@ -1,0 +1,22 @@
+<view class="page">
+  <view class="card total">
+    <view class="total__year">{{year}} 学年累计</view>
+    <view class="total__row">
+      <text class="total__num">{{total}}</text>
+      <text class="total__unit">学时</text>
+    </view>
+    <view class="total__tip">活动结束自动计入，名单被移除会扣回</view>
+  </view>
+
+  <view class="section">明细</view>
+  <view class="empty" wx:if="{{!loading && !list.length}}">本学年还没有二课记录</view>
+  <view class="list">
+    <view class="row" wx:for="{{list}}" wx:key="taskId">
+      <view class="row__main">
+        <view class="row__title">{{item.title}}</view>
+        <view class="row__meta">{{item.dateText}} · {{item.hours}} 学时</view>
+      </view>
+      <text class="row__hours">+{{item.hours}}</text>
+    </view>
+  </view>
+</view>

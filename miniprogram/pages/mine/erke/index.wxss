@@ -1,0 +1,87 @@
+.total {
+  background: linear-gradient(135deg, #3f6e8c, #2a4e66);
+  color: #fff;
+  padding: 36rpx 32rpx;
+}
+
+.total__year {
+  font-size: 24rpx;
+  opacity: 0.75;
+}
+
+.total__row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+
+.total__num {
+  font-size: 96rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.total__unit {
+  font-size: 28rpx;
+  opacity: 0.8;
+  margin-bottom: 12rpx;
+}
+
+.total__tip {
+  margin-top: 20rpx;
+  font-size: 22rpx;
+  opacity: 0.7;
+}
+
+.section {
+  margin: 32rpx 8rpx 16rpx;
+  font-size: 28rpx;
+  color: var(--s-2);
+  font-weight: 600;
+}
+
+.empty {
+  padding: 80rpx 0;
+  text-align: center;
+  color: var(--s-2);
+  font-size: 26rpx;
+}
+
+.list {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid var(--sep);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row__main {
+  flex: 1;
+}
+
+.row__title {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.row__meta {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--s-2);
+}
+
+.row__hours {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--blue);
+}

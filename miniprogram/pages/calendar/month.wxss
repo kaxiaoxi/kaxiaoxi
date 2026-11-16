@@ -1,14 +1,145 @@
-.page {
-  padding: 32rpx;
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 8rpx 20rpx;
 }
 
-.page__title {
+.head__title {
   font-size: 56rpx;
   font-weight: 700;
-  margin-bottom: 16rpx;
 }
 
-.muted {
+.head__actions {
+  display: flex;
+  gap: 28rpx;
+  font-size: 26rpx;
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.month {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8rpx;
+}
+
+.month__text {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.month__arrow {
+  font-size: 40rpx;
+  color: var(--s-3);
+  padding: 0 16rpx;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--s-3);
+  margin: 16rpx 0 6rpx;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 4rpx;
+}
+
+.cell {
+  height: 84rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  position: relative;
+}
+
+.cell--mute .cell__day {
+  color: var(--s-3);
+}
+
+.cell--on {
+  background: var(--blue);
+}
+
+.cell--on .cell__day {
+  color: #fff;
+  font-weight: 600;
+}
+
+.cell__day {
+  font-size: 28rpx;
+  color: var(--ink-2);
+}
+
+.cell__dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: #d9a441;
+  margin-top: 4rpx;
+}
+
+.cell--on .cell__dot {
+  background: #fff;
+}
+
+.section {
+  margin: 32rpx 8rpx 16rpx;
+  font-size: 28rpx;
+  color: var(--s-2);
+  font-weight: 600;
+}
+
+.empty {
+  padding: 60rpx 0;
+  text-align: center;
   color: var(--s-2);
   font-size: 26rpx;
+}
+
+.event {
+  margin-bottom: 20rpx;
+}
+
+.event__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  background: rgba(46, 95, 126, 0.12);
+  color: #2e5f7e;
+}
+
+.event__time {
+  font-size: 24rpx;
+  color: var(--s-2);
+}
+
+.event__title {
+  margin-top: 12rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.event__meta {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--s-2);
 }

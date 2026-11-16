@@ -1,4 +1,43 @@
 <view class="page">
-  <view class="page__title">年历</view>
-  <view class="muted">{{year}} 年 {{month}} 月</view>
+  <view class="head">
+    <view class="head__title">年历</view>
+    <view class="head__actions">
+      <text bindtap="onToday">今天</text>
+      <text bindtap="onCreate">＋ 新建</text>
+    </view>
+  </view>
+
+  <view class="month">
+    <text class="month__arrow" bindtap="onPrev">‹</text>
+    <text class="month__text">{{year}} 年 {{month}} 月</text>
+    <text class="month__arrow" bindtap="onNext">›</text>
+  </view>
+
+  <view class="week">
+    <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
+  </view>
+
+  <view class="grid">
+    <view
+      wx:for="{{cells}}"
+      wx:key="key"
+      class="cell {{item.inMonth ? '' : 'cell--mute'}} {{item.key === selected ? 'cell--on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onSelect"
+    >
+      <text class="cell__day">{{item.day}}</text>
+      <view class="cell__dot" wx:if="{{item.count}}"></view>
+    </view>
+  </view>
+
+  <view class="section">{{selectedLabel}}</view>
+  <view class="empty" wx:if="{{!dayEvents.length}}">当天没有安排</view>
+  <view class="card event" wx:for="{{dayEvents}}" wx:key="_id" data-id="{{item._id}}" bindtap="onOpen">
+    <view class="event__top">
+      <text class="tag">{{item.type}}</text>
+      <text class="event__time">{{item.timeText}}</text>
+    </view>
+    <view class="event__title">{{item.title}}</view>
+    <view class="event__meta" wx:if="{{item.locationName}}">{{item.locationName}}</view>
+  </view>
 </view>
