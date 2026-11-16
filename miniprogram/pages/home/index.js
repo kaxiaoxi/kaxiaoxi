@@ -1,5 +1,6 @@
 const { call } = require('../../services/api')
 const { DEPT_LABEL, ROLE_LABEL } = require('../../utils/constants')
+const { formatRange } = require('../../utils/task')
 
 Page({
   data: {
@@ -40,11 +41,12 @@ Page({
 
   async load() {
     try {
-      const res = await call('home.summary')
-      this.setData({
-        tasks: res.tasks || [],
-        todos: res.todos || []
-      })
+      const res = await call('task.list', { scope: 'all', status: 'recruiting' })
+      const tasks = (res.list || []).slice(0, 3).map((task) => ({
+        ...task,
+        dateText: formatRange(task)
+      }))
+      this.setData({ tasks })
     } catch (err) {
       console.warn('[home] 加载失败', err)
     }

@@ -6,6 +6,8 @@
     "pages/admin/members/index",
     "pages/home/index",
     "pages/task/list",
+    "pages/task/detail/index",
+    "pages/task/create/index",
     "pages/calendar/month",
     "pages/mine/index"
   ],

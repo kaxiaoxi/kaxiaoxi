@@ -10,7 +10,7 @@
   </view>
   <view class="card task" wx:for="{{tasks}}" wx:key="_id">
     <view class="task__title">{{item.title}}</view>
-    <view class="muted">{{item.startAt}}</view>
+    <view class="muted">{{item.dateText}}</view>
   </view>
 
   <view class="section">我的待办</view>

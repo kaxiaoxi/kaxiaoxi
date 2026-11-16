@@ -1,0 +1,66 @@
+<view class="page" wx:if="{{detail}}">
+  <view class="hero">
+    <view class="hero__title">{{detail.title}}</view>
+    <view class="hero__tags">
+      <text class="tag tag--gray">{{detail.phaseLabel}}</text>
+      <text class="tag tag--gold">二课 {{detail.erkeHours}} 学时</text>
+      <text class="tag tag--gray" wx:if="{{detail.myStatusLabel}}">{{detail.myStatusLabel}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <text class="row__key">场次</text>
+      <view class="row__value">
+        <view wx:for="{{detail.sessionsText}}" wx:key="*this">{{item}}</view>
+      </view>
+    </view>
+    <view class="row">
+      <text class="row__key">地点</text>
+      <text class="row__value">{{detail.locationName}}</text>
+    </view>
+    <view class="row">
+      <text class="row__key">人数</text>
+      <text class="row__value">{{detail.quotaText}}</text>
+    </view>
+    <view class="row">
+      <text class="row__key">报名截止</text>
+      <text class="row__value">{{detail.deadlineText}}</text>
+    </view>
+    <view class="row">
+      <text class="row__key">收图方式</text>
+      <text class="row__value">{{detail.collectMethod}}</text>
+    </view>
+  </view>
+
+  <view class="section">活动详情</view>
+  <view class="card">
+    <text class="desc">{{detail.description}}</text>
+  </view>
+
+  <view class="section">已报名 {{detail.approvedCount}} 人</view>
+  <view class="card empty" wx:if="{{!detail.participants.length}}">
+    <text class="muted">还没有人报名</text>
+  </view>
+  <view class="card participants" wx:else>
+    <view class="avatar-wrap" wx:for="{{detail.participants}}" wx:key="name">
+      <view class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+      <text class="avatar__name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="placeholder"></view>
+
+  <view class="bottom">
+    <button class="btn btn--primary bottom__btn" bindtap="onAction" wx:if="{{action === 'apply'}}">
+      报名{{detail.quota ? '（剩 ' + (detail.quota - detail.approvedCount) + ' 个名额）' : ''}}
+    </button>
+    <button class="btn btn--ghost bottom__btn" bindtap="onAction" wx:elif="{{action === 'cancel'}}">取消报名</button>
+    <button class="btn btn--disabled bottom__btn" disabled wx:elif="{{action === 'not_open'}}">报名未开放</button>
+    <button class="btn btn--disabled bottom__btn" disabled wx:else>报名已截止</button>
+  </view>
+</view>
+
+<view class="page loading" wx:else>
+  <text class="muted">加载中…</text>
+</view>
