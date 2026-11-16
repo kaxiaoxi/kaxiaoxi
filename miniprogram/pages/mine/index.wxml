@@ -23,6 +23,10 @@
       <text class="row__value">{{member.phone || '-'}}</text>
     </view>
     <view class="row">
+      <text class="row__key">生日</text>
+      <text class="row__value">{{member.birthday || '-'}}</text>
+    </view>
+    <view class="row">
       <text class="row__key">宿舍</text>
       <text class="row__value">{{member.dorm || '-'}}</text>
     </view>

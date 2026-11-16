@@ -32,6 +32,15 @@
     </view>
 
     <view class="field">
+      <view class="field__label">生日（选填）</view>
+      <picker mode="date" start="1995-01-01" end="2012-12-31" value="{{form.birthday}}" bindchange="onBirthdayChange">
+        <view class="field__input {{form.birthday ? '' : 'field__input--placeholder'}}">
+          {{form.birthday || '请选择生日'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="field">
       <view class="field__label">部门</view>
       <picker mode="selector" range="{{deptLabels}}" value="{{deptIndex}}" bindchange="onDeptChange">
         <view class="field__input {{form.dept ? '' : 'field__input--placeholder'}}">

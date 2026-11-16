@@ -29,6 +29,12 @@ async function login(payload, openid) {
   return { state: member.status, member: toProfile(member) }
 }
 
+/**
+ * 注册 / 认领：
+ * 1. openid 已有记录 -> 报错；
+ * 2. 学号已存在且没有 openid（预导入的部长/主席）-> 绑定 openid 并激活；
+ * 3. 否则新建 pending 记录。
+ */
 async function register(payload, openid) {
   const exists = await getMemberByOpenid(openid)
   if (exists) throw new BizError(40901, '你已提交过资料，请等待审核')
@@ -36,9 +42,35 @@ async function register(payload, openid) {
   const check = validateRegister(payload)
   if (!check.ok) throw new BizError(40001, check.message)
 
-  const { name, studentNo, college, phone, dorm, dept } = check.data
+  const { name, studentNo, college, phone, dorm, dept, birthday } = check.data
   const dup = await db.collection('members').where({ studentNo }).limit(1).get()
-  if (dup.data.length) throw new BizError(40902, '该学号已被注册')
+
+  if (dup.data.length) {
+    const target = dup.data[0]
+    if (target._openid) throw new BizError(40902, '该学号已被注册')
+    if (target.name !== name) throw new BizError(40905, '姓名与学号不匹配，请联系主席')
+
+    const now = db.serverDate()
+    await db
+      .collection('members')
+      .doc(target._id)
+      .update({
+        data: {
+          _openid: openid,
+          college: target.college || college,
+          dept: dept || target.dept || '',
+          phone,
+          dorm,
+          birthday: birthday || target.birthday || '',
+          status: target.status === 'active' ? 'active' : 'pending',
+          joinedAt: target.joinedAt || now,
+          lastActiveAt: now,
+          updatedAt: now
+        }
+      })
+
+    return { state: target.status === 'active' ? 'active' : 'pending' }
+  }
 
   const year = await currentAcademicYear()
   const now = db.serverDate()
@@ -52,6 +84,7 @@ async function register(payload, openid) {
       phone,
       dorm,
       dept,
+      birthday: birthday || '',
       role: 'member',
       status: 'pending',
       academicYear: year,

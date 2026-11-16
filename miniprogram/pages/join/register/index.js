@@ -13,7 +13,8 @@ Page({
       college: '',
       phone: '',
       dorm: '',
-      dept: ''
+      dept: '',
+      birthday: ''
     },
     deptLabels: DEPT_LABELS,
     deptIndex: -1,
@@ -23,6 +24,10 @@ Page({
   onInput(e) {
     const field = e.currentTarget.dataset.field
     this.setData({ [`form.${field}`]: e.detail.value })
+  },
+
+  onBirthdayChange(e) {
+    this.setData({ 'form.birthday': e.detail.value })
   },
 
   onDeptChange(e) {
@@ -44,7 +49,11 @@ Page({
 
     this.setData({ submitting: true })
     try {
-      await call('auth.register', check.data)
+      const result = await call('auth.register', check.data)
+      if (result.state === 'active') {
+        wx.reLaunch({ url: '/pages/home/index' })
+        return
+      }
       wx.redirectTo({ url: '/pages/join/pending/index' })
     } catch (err) {
       wx.showToast({ title: err.message || '提交失败', icon: 'none' })
