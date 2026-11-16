@@ -1,3 +1,4 @@
+const { call } = require('../../services/api')
 const { DEPT_LABEL, ROLE_LABEL, MEMBER_STATUS_LABEL } = require('../../utils/constants')
 
 Page({
@@ -9,8 +10,18 @@ Page({
     isChairman: false
   },
 
-  onShow() {
-    const member = getApp().globalData.member
+  async onShow() {
+    let member = getApp().globalData.member
+    try {
+      const res = await call('auth.login')
+      if (res.member) {
+        member = res.member
+        getApp().globalData.member = member
+      }
+    } catch (err) {
+      console.warn('[mine] 刷新资料失败', err)
+    }
+
     this.setData({
       member,
       deptLabel: member ? DEPT_LABEL[member.dept] || '' : '',
