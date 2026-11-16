@@ -1,19 +1,135 @@
-.page {
-  padding: 32rpx;
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 8rpx 24rpx;
 }
 
-.page__title {
+.head__title {
   font-size: 56rpx;
   font-weight: 700;
-  margin-bottom: 24rpx;
+}
+
+.head__create {
+  color: var(--blue);
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.seg {
+  display: flex;
+  background: rgba(118, 118, 128, 0.12);
+  border-radius: 18rpx;
+  padding: 4rpx;
+}
+
+.seg__item {
+  flex: 1;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: var(--ink-2);
+  border-radius: 14rpx;
+}
+
+.seg__item--on {
+  background: #fff;
+  font-weight: 600;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.08);
+}
+
+.chips {
+  white-space: nowrap;
+  margin: 24rpx 0 8rpx;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 56rpx;
+  padding: 0 24rpx;
+  margin-right: 16rpx;
+  border-radius: 28rpx;
+  background: rgba(118, 118, 128, 0.1);
+  font-size: 24rpx;
+  color: var(--ink-2);
+}
+
+.chip--on {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
 }
 
 .empty {
-  padding: 120rpx 0;
+  padding: 160rpx 0;
   text-align: center;
-}
-
-.muted {
   color: var(--s-2);
   font-size: 26rpx;
+}
+
+.task {
+  margin-top: 20rpx;
+}
+
+.task__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task__quota {
+  font-size: 24rpx;
+  color: var(--s-2);
+}
+
+.task__title {
+  margin-top: 16rpx;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.task__meta {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: var(--s-2);
+}
+
+.task__bottom {
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task__deadline {
+  font-size: 24rpx;
+  color: var(--s-3);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.tag--gray {
+  background: rgba(118, 118, 128, 0.12);
+  color: var(--s-2);
+}
+
+.tag--green {
+  background: rgba(44, 122, 75, 0.12);
+  color: #2c7a4b;
+}
+
+.tag--gold {
+  background: rgba(217, 164, 65, 0.18);
+  color: #9a6b12;
 }

@@ -1,6 +1,42 @@
 <view class="page">
-  <view class="page__title">任务</view>
-  <view class="empty">
-    <text class="muted">任务列表待接入</text>
+  <view class="head">
+    <view class="head__title">任务</view>
+    <view class="head__create" bindtap="onCreate">＋ 发布</view>
+  </view>
+
+  <view class="seg">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="seg__item {{tab === item.key ? 'seg__item--on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTab"
+    >{{item.label}}</view>
+  </view>
+
+  <scroll-view class="chips" scroll-x enable-flex>
+    <view
+      wx:for="{{statusList}}"
+      wx:key="key"
+      class="chip {{status === item.key ? 'chip--on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onStatus"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <view class="empty" wx:if="{{!loading && !list.length}}">还没有任务，点右上角发布一个</view>
+
+  <view class="card task" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}" bindtap="onOpen">
+    <view class="task__top">
+      <text class="tag {{item.phaseClass}}">{{item.phaseLabel}}</text>
+      <text class="task__quota">{{item.quotaText}}</text>
+    </view>
+    <view class="task__title">{{item.title}}</view>
+    <view class="task__meta">{{item.rangeText}} · {{item.locationName}}</view>
+    <view class="task__bottom">
+      <text class="tag tag--gold">二课 {{item.erkeHours}} 学时</text>
+      <text class="task__deadline" wx:if="{{item.signupPhase === 'open'}}">报名中</text>
+      <text class="task__deadline" wx:else>报名已截止</text>
+    </view>
   </view>
 </view>
