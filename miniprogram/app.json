@@ -8,6 +8,7 @@
     "pages/home/index",
     "pages/task/list",
     "pages/task/detail/index",
+    "pages/task/manage/index",
     "pages/task/create/index",
     "pages/calendar/month",
     "pages/mine/index"

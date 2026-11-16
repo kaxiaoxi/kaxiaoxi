@@ -1,6 +1,6 @@
-const { db, _ } = require('../lib/db')
+﻿const { db, _ } = require('../lib/db')
 const { BizError } = require('../lib/errors')
-const { getMemberByOpenid, toProfile } = require('../lib/member')
+const { getMemberByOpenid } = require('../lib/member')
 const { validateTask } = require('../lib/validate')
 const { phaseOf, signupPhaseOf, visibleTo } = require('../lib/phase')
 const { promoteNext } = require('../lib/promote')

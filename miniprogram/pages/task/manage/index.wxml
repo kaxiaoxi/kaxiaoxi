@@ -1,0 +1,80 @@
+<view class="page">
+  <view class="summary" wx:if="{{task}}">
+    <view class="summary__title">{{task.title}}</view>
+    <view class="summary__meta">
+      已通过 {{task.approvedCount}}{{task.quota ? ' / ' + task.quota : ''}} · 候补 {{task.waitlistCount}}
+    </view>
+  </view>
+
+  <view class="seg">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="seg__item {{tab === item.key ? 'seg__item--on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTab"
+    >{{item.label}} {{item.count}}</view>
+  </view>
+
+  <view class="empty" wx:if="{{!current.length}}">暂无记录</view>
+
+  <block wx:if="{{tab === 'pending'}}">
+    <view class="card person" wx:for="{{current}}" wx:key="signupId">
+      <view class="person__head">
+        <view class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+        <view class="person__info">
+          <view class="person__name">{{item.name}}</view>
+          <view class="muted">{{item.dept}} · {{item.phone}}</view>
+        </view>
+      </view>
+      <view class="note" wx:if="{{item.note}}">备注：{{item.note}}</view>
+      <view class="actions">
+        <button class="btn btn--ghost act" data-id="{{item.signupId}}" data-action="reject" bindtap="onReview">拒绝</button>
+        <button class="btn btn--primary act" data-id="{{item.signupId}}" data-action="approve" bindtap="onReview">通过</button>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'approved'}}">
+    <view class="card person" wx:for="{{current}}" wx:key="signupId">
+      <view class="person__head">
+        <view class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+        <view class="person__info">
+          <view class="person__name">{{item.name}}</view>
+          <view class="muted">{{item.dept}} · {{item.phone}}</view>
+        </view>
+        <text class="remove" data-id="{{item.signupId}}" bindtap="onRemove">移出</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'waitlisted'}}">
+    <view class="card person" wx:for="{{current}}" wx:key="signupId">
+      <view class="person__head">
+        <view class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+        <view class="person__info">
+          <view class="person__name">{{item.name}}</view>
+          <view class="muted">{{item.dept}} · 候补第 {{index + 1}} 位</view>
+        </view>
+        <text class="remove" data-id="{{item.signupId}}" bindtap="onRemove">移出</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'leave'}}">
+    <view class="card person" wx:for="{{current}}" wx:key="signupId">
+      <view class="person__head">
+        <view class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+        <view class="person__info">
+          <view class="person__name">{{item.name}}</view>
+          <view class="muted">{{item.dept}} · {{item.phone}}</view>
+        </view>
+      </view>
+      <view class="note">请假原因：{{item.leaveReason}}</view>
+      <view class="actions">
+        <button class="btn btn--ghost act" data-id="{{item.leaveRequestId}}" data-action="reject" bindtap="onReviewLeave">拒绝</button>
+        <button class="btn btn--primary act" data-id="{{item.leaveRequestId}}" data-action="approve" bindtap="onReviewLeave">准假</button>
+      </view>
+    </view>
+  </block>
+</view>

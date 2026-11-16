@@ -12,7 +12,8 @@ Page({
   data: {
     detail: null,
     loading: true,
-    action: 'none'
+    action: 'none',
+    isOwner: false
   },
 
   onLoad(options) {
@@ -38,9 +39,11 @@ Page({
           sessionsText: (task.sessions || []).map((s) => formatSession(s)),
           quotaText: quotaText(task),
           deadlineText: `${formatDay(task.signupDeadline)} ${formatTime(task.signupDeadline)}`,
+          myStatus,
           myStatusLabel: MY_SIGNUP_LABEL[myStatus] || ''
         },
         action,
+        isOwner: !!res.isOwner,
         loading: false
       })
       wx.setNavigationBarTitle({ title: task.title })
@@ -63,6 +66,10 @@ Page({
     const { action } = this.data
     if (action === 'apply') return this.apply()
     if (action === 'cancel') return this.cancel()
+  },
+
+  onManage() {
+    wx.navigateTo({ url: `/pages/task/manage/index?id=${this.taskId}` })
   },
 
   apply() {
@@ -97,6 +104,29 @@ Page({
           this.load()
         } catch (err) {
           wx.showToast({ title: err.message || '取消失败', icon: 'none' })
+        }
+      }
+    })
+  },
+
+  onLeave() {
+    wx.showModal({
+      title: '请假',
+      editable: true,
+      placeholderText: '请填写请假原因',
+      success: async (res) => {
+        if (!res.confirm) return
+        const reason = (res.content || '').trim()
+        if (!reason) {
+          wx.showToast({ title: '请填写请假原因', icon: 'none' })
+          return
+        }
+        try {
+          await call('signup.requestLeave', { taskId: this.taskId, reason })
+          wx.showToast({ title: '已提交，等待审批', icon: 'success' })
+          this.load()
+        } catch (err) {
+          wx.showToast({ title: err.message || '提交失败', icon: 'none' })
         }
       }
     })
