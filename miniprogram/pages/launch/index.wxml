@@ -1,0 +1,4 @@
+<view class="launch">
+  <view class="launch__logo">卡小西</view>
+  <view class="launch__tip">广工影协指南 · 内部版</view>
+</view>

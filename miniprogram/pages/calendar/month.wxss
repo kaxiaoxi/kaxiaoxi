@@ -1,0 +1,14 @@
+.page {
+  padding: 32rpx;
+}
+
+.page__title {
+  font-size: 56rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+}
+
+.muted {
+  color: var(--s-2);
+  font-size: 26rpx;
+}

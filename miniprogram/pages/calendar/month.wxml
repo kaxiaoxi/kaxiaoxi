@@ -1,0 +1,4 @@
+<view class="page">
+  <view class="page__title">年历</view>
+  <view class="muted">{{year}} 年 {{month}} 月</view>
+</view>

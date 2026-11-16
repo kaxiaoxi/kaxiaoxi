@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0;background:#E9EDF2;}
+  #grid{display:grid;grid-template-columns:repeat(4,390px);gap:24px;padding:24px;width:1728px;}
+  .cell{display:flex;flex-direction:column;gap:8px;}
+  iframe{width:390px;height:844px;border:0;border-radius:22px;background:#fff;box-shadow:0 10px 30px rgba(16,24,40,.10);}
+  .cap{font:600 13px/18px -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:#5B6470;padding-left:2px;}
+</style>
+</head>
+<body>
+<div id="grid"></div>
+<script>
+const caps = {
+ '01':'01 启动 / 登录','02':'02 注册（6 项）','03':'03 等待审核','04':'04 首页',
+ '05':'05 任务列表','06':'06 任务详情','07':'07 发布入口','08':'08 发布搬砖',
+ '09':'09 报名管理','10':'10 我的报名','11':'11 年历月视图','12':'12 事件详情',
+ '13':'13 新建日程','14':'14 待办列表','15':'15 待办编辑','16':'16 消息中心',
+ '17':'17 我的','18':'18 我的二课','19':'19 成员管理','20':'20 二课汇总',
+ '21':'21 设置','22':'22 报名成功'
+};
+const g = document.getElementById('grid');
+let html = '';
+for (let i = 1; i <= 22; i++) {
+  const k = String(i).padStart(2, '0');
+  html += `<div class="cell"><iframe src="index.html?s=${k}" scrolling="no"></iframe><div class="cap">${caps[k]}</div></div>`;
+}
+g.innerHTML = html;
+</script>
+</body>
+</html>

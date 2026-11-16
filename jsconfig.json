@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["miniprogram/*"]
+    },
+    "typeRoots": ["./node_modules/miniprogram-api-typings"],
+    "lib": ["ES2020"]
+  },
+  "include": ["miniprogram/**/*.js"],
+  "exclude": ["node_modules", "miniprogram_npm"]
+}

@@ -1,0 +1,15 @@
+@import './styles/variables.wxss';
+
+page {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 32rpx;
+  line-height: 1.45;
+}
+
+view,
+text,
+scroll-view {
+  box-sizing: border-box;
+}

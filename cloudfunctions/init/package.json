@@ -1,0 +1,9 @@
+{
+  "name": "init",
+  "version": "1.0.0",
+  "description": "一次性初始化：集合、配置、管理员",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

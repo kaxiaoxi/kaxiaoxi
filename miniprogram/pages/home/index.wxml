@@ -1,0 +1,10 @@
+<view class="page">
+  <view class="page__title">首页</view>
+  <view class="card" wx:if="{{!tasks.length}}">
+    <text class="muted">暂无数据，等待接入 home.summary</text>
+  </view>
+  <view class="card" wx:for="{{tasks}}" wx:key="_id">
+    <view class="card__title">{{item.title}}</view>
+    <view class="muted">{{item.startAt}}</view>
+  </view>
+</view>
