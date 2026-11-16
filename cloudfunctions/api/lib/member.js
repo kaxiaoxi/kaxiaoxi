@@ -1,4 +1,4 @@
-const { db } = require('./db')
+﻿const { db } = require('./db')
 const { BizError } = require('./errors')
 
 async function getMemberByOpenid(openid) {
@@ -16,6 +16,7 @@ function toProfile(member) {
     college: member.college,
     phone: member.phone,
     dorm: member.dorm,
+    birthday: member.birthday || '',
     dept: member.dept,
     role: member.role,
     status: member.status,
