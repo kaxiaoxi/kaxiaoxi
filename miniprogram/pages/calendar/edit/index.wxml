@@ -1,0 +1,47 @@
+<view class="page">
+  <view class="card">
+    <view class="field">
+      <view class="field__label">事件名称</view>
+      <input class="field__input" maxlength="30" data-field="title" value="{{form.title}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">类型</view>
+      <picker mode="selector" range="{{types}}" value="{{typeIndex}}" bindchange="onType">
+        <view class="field__input">{{types[typeIndex]}}</view>
+      </picker>
+    </view>
+    <view class="field">
+      <view class="field__label">日期</view>
+      <picker mode="date" value="{{date}}" bindchange="onDate">
+        <view class="field__input">{{date}}</view>
+      </picker>
+    </view>
+    <view class="field row" wx:if="{{!allDay}}">
+      <view class="field__label">时间</view>
+      <view class="times">
+        <picker mode="time" value="{{startTime}}" bindchange="onStartTime"><view class="picker">{{startTime}}</view></picker>
+        <text class="sep">–</text>
+        <picker mode="time" value="{{endTime}}" bindchange="onEndTime"><view class="picker">{{endTime}}</view></picker>
+      </view>
+    </view>
+    <view class="field row">
+      <view class="field__label">全天</view>
+      <switch checked="{{allDay}}" color="#2E5F7E" bindchange="onAllDay" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="field">
+      <view class="field__label">地点</view>
+      <input class="field__input" maxlength="40" data-field="locationName" value="{{form.locationName}}" bindinput="onInput" />
+    </view>
+    <view class="field">
+      <view class="field__label">说明</view>
+      <textarea class="textarea" maxlength="500" data-field="description" value="{{form.description}}" bindinput="onInput" />
+    </view>
+  </view>
+
+  <view class="footer">
+    <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">保存</button>
+  </view>
+</view>

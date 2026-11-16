@@ -1,6 +1,7 @@
 const { call } = require('../../services/api')
 const { DEPT_LABEL, ROLE_LABEL } = require('../../utils/constants')
 const { formatRange } = require('../../utils/task')
+const { dueText } = require('../../utils/todo')
 
 Page({
   data: {
@@ -41,12 +42,19 @@ Page({
 
   async load() {
     try {
-      const res = await call('task.list', { scope: 'all', status: 'recruiting' })
-      const tasks = (res.list || []).slice(0, 3).map((task) => ({
+      const [taskRes, todoRes] = await Promise.all([
+        call('task.list', { scope: 'all', status: 'recruiting' }),
+        call('todo.list', { scope: 'mine' })
+      ])
+      const tasks = (taskRes.list || []).slice(0, 3).map((task) => ({
         ...task,
         dateText: formatRange(task)
       }))
-      this.setData({ tasks })
+      const todos = (todoRes.list || []).slice(0, 3).map((item) => ({
+        ...item,
+        dueText: dueText(item.dueAt)
+      }))
+      this.setData({ tasks, todos })
     } catch (err) {
       console.warn('[home] 加载失败', err)
     }

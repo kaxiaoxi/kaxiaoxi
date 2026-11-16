@@ -36,6 +36,11 @@
     </view>
   </view>
 
+  <view class="entry" bindtap="onOpenTodos">
+    <text>我的待办</text>
+    <text class="entry__arrow">›</text>
+  </view>
+
   <view class="entry" bindtap="onEditProfile">
     <text>编辑资料</text>
     <text class="entry__arrow">›</text>

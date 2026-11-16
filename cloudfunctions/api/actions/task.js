@@ -71,7 +71,51 @@ async function create(payload = {}, openid) {
     }
   })
 
+  await createAutoTodos(res._id, data, openid)
   return { id: res._id }
+}
+
+async function createAutoTodos(taskId, data, openid) {
+  try {
+    const now = db.serverDate()
+    const confirmDue = new Date(data.signupDeadline.getTime() - 24 * 3600 * 1000)
+    const collectDue = new Date(data.endAt.getTime() + 2 * 24 * 3600 * 1000)
+    const base = {
+      scope: 'personal',
+      dept: '',
+      ownerOpenid: openid,
+      creatorOpenid: openid,
+      priority: 2,
+      status: 'todo',
+      source: 'task',
+      sourceTaskId: taskId,
+      completedAt: null,
+      createdAt: now,
+      updatedAt: now
+    }
+
+    await db.collection('todos').add({
+      data: {
+        ...base,
+        title: `确认名单：${data.title}`,
+        description: '报名截止前确认最终名单，必要时移除或递补',
+        dueAt: confirmDue,
+        autoRule: 'confirm_list'
+      }
+    })
+
+    await db.collection('todos').add({
+      data: {
+        ...base,
+        title: `核对名单 + 收图：${data.title}`,
+        description: '活动结束后核对到场名单，并按收图方式收齐作品',
+        dueAt: collectDue,
+        autoRule: 'collect'
+      }
+    })
+  } catch (err) {
+    console.warn('[task] 自动待办创建失败', taskId, err)
+  }
 }
 
 async function list(payload = {}, openid) {

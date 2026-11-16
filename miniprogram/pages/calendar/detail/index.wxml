@@ -1,0 +1,29 @@
+<view class="page" wx:if="{{event}}">
+  <view class="hero">
+    <view class="hero__title">{{event.title}}</view>
+    <view class="row">
+      <text class="tag">{{event.type}}</text>
+      <text class="tag" wx:if="{{event.allDay}}">全天</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <text class="row__key">时间</text>
+      <text class="row__value">{{event.dateText}}</text>
+    </view>
+    <view class="row" wx:if="{{event.locationName}}">
+      <text class="row__key">地点</text>
+      <text class="row__value">{{event.locationName}}</text>
+    </view>
+    <view class="row" wx:if="{{event.description}}">
+      <text class="row__key">说明</text>
+      <text class="row__value">{{event.description}}</text>
+    </view>
+  </view>
+
+  <view class="actions" wx:if="{{canEdit}}">
+    <button class="btn btn--ghost" bindtap="onEdit">编辑</button>
+    <button class="btn btn--danger" bindtap="onDelete">删除</button>
+  </view>
+</view>

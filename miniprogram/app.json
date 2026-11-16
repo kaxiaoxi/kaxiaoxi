@@ -11,6 +11,10 @@
     "pages/task/manage/index",
     "pages/task/create/index",
     "pages/calendar/month",
+    "pages/calendar/detail/index",
+    "pages/calendar/edit/index",
+    "pages/todo/list/index",
+    "pages/todo/edit/index",
     "pages/mine/index"
   ],
   "window": {

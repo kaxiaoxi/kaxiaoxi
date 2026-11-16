@@ -4,6 +4,8 @@ const member = require('./actions/member')
 const task = require('./actions/task')
 const signup = require('./actions/signup')
 const profile = require('./actions/profile')
+const calendar = require('./actions/calendar')
+const todo = require('./actions/todo')
 const home = require('./actions/home')
 
 const routes = {
@@ -22,6 +24,15 @@ const routes = {
   'signup.requestLeave': signup.requestLeave,
   'signup.reviewLeave': signup.reviewLeave,
   'signup.remove': signup.remove,
+  'calendar.month': calendar.month,
+  'calendar.detail': calendar.detail,
+  'calendar.save': calendar.save,
+  'calendar.remove': calendar.remove,
+  'todo.list': todo.list,
+  'todo.detail': todo.detail,
+  'todo.save': todo.save,
+  'todo.complete': todo.complete,
+  'todo.remove': todo.remove,
   'profile.submit': profile.submit,
   'profile.mine': profile.mine,
   'profile.listPending': profile.listPending,

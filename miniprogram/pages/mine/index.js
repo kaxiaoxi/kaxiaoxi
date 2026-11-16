@@ -31,6 +31,10 @@ Page({
     })
   },
 
+  onOpenTodos() {
+    wx.navigateTo({ url: '/pages/todo/list/index' })
+  },
+
   onEditProfile() {
     wx.navigateTo({ url: '/pages/profile/edit/index' })
   },

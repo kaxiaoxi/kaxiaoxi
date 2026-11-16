@@ -19,6 +19,6 @@
   </view>
   <view class="card task" wx:for="{{todos}}" wx:key="_id">
     <view class="task__title">{{item.title}}</view>
-    <view class="muted">{{item.dueAt}}</view>
+    <view class="muted">{{item.dueText}}</view>
   </view>
 </view>
