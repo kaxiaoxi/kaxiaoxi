@@ -12,12 +12,12 @@
 
     <view class="field">
       <view class="field__label">学号</view>
-      <input class="field__input" placeholder="6-20 位数字" type="number" maxlength="20" data-field="studentNo" value="{{form.studentNo}}" bindinput="onInput" />
+      <input class="field__input" placeholder="请填写完整学号" type="number" maxlength="20" data-field="studentNo" value="{{form.studentNo}}" bindinput="onInput" />
     </view>
 
     <view class="field">
       <view class="field__label">学院</view>
-      <input class="field__input" placeholder="如 计算机学院" maxlength="30" data-field="college" value="{{form.college}}" bindinput="onInput" />
+      <input class="field__input" placeholder="请填写学院全称" maxlength="30" data-field="college" value="{{form.college}}" bindinput="onInput" />
     </view>
 
     <view class="field">

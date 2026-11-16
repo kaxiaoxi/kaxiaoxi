@@ -15,7 +15,7 @@ function validateRegister(form = {}) {
   const dept = form.dept || ''
 
   if (!name) return { ok: false, message: '请填写姓名' }
-  if (!STUDENT_NO_RE.test(studentNo)) return { ok: false, message: '学号需为 6-20 位数字' }
+  if (!STUDENT_NO_RE.test(studentNo)) return { ok: false, message: '请填写完整学号' }
   if (!college) return { ok: false, message: '请填写学院' }
   if (!PHONE_RE.test(phone)) return { ok: false, message: '手机号格式不正确' }
   if (!DORM_RE.test(dorm)) return { ok: false, message: '宿舍号格式如 东一636' }
