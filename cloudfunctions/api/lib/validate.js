@@ -1,6 +1,6 @@
 const DEPTS = ['photo', 'pr', 'ops']
 const PHONE_RE = /^1[3-9]\d{9}$/
-const STUDENT_NO_RE = /^\d{6,20}$/
+const STUDENT_NO_RE = /^\d{10}$/
 const DORM_RE = /^[东西][一二三四五六七八九十]+[0-9]{3,4}$/
 
 function text(value, max) {
