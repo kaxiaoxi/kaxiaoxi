@@ -4,6 +4,7 @@
     "pages/join/register/index",
     "pages/join/pending/index",
     "pages/admin/members/index",
+    "pages/profile/edit/index",
     "pages/home/index",
     "pages/task/list",
     "pages/task/detail/index",

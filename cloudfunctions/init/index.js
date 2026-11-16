@@ -17,7 +17,8 @@ exports.main = async () => {
     'calendar_events',
     'todos',
     'messages',
-    'configs'
+    'configs',
+    'profile_requests'
   ]
   const created = []
   for (const name of collections) {

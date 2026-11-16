@@ -20,6 +20,10 @@ Page({
     })
   },
 
+  onEditProfile() {
+    wx.navigateTo({ url: '/pages/profile/edit/index' })
+  },
+
   onOpenMembers() {
     wx.navigateTo({ url: '/pages/admin/members/index' })
   }

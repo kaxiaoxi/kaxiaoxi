@@ -9,15 +9,12 @@ const COLLECTIONS = [
   'calendar_events',
   'todos',
   'messages',
-  'configs'
+  'configs',
+  'profile_requests'
 ]
 
 let ready = null
 
-/**
- * 首次调用时确保集合存在，避免忘记跑 init 导致查询报错。
- * 已存在时忽略错误；失败只告警，不阻断主流程。
- */
 function ensureCollections() {
   if (!ready) {
     ready = Promise.all(
@@ -36,4 +33,4 @@ function ensureCollections() {
   return ready
 }
 
-module.exports = { ensureCollections }
+module.exports = { ensureCollections, COLLECTIONS }

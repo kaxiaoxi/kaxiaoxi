@@ -2,6 +2,7 @@ const { BizError } = require('./lib/errors')
 const auth = require('./actions/auth')
 const member = require('./actions/member')
 const task = require('./actions/task')
+const profile = require('./actions/profile')
 const home = require('./actions/home')
 
 const routes = {
@@ -15,6 +16,10 @@ const routes = {
   'task.apply': task.apply,
   'task.cancelApply': task.cancelApply,
   'task.mine': task.mine,
+  'profile.submit': profile.submit,
+  'profile.mine': profile.mine,
+  'profile.listPending': profile.listPending,
+  'profile.review': profile.review,
   'home.summary': home.summary
 }
 
