@@ -1,0 +1,30 @@
+<view class="page">
+  <view class="section">待审核 {{pending.length}}</view>
+  <view class="card empty" wx:if="{{!pending.length}}">
+    <text class="muted">暂无待审核成员</text>
+  </view>
+  <view class="card member" wx:for="{{pending}}" wx:key="_id">
+    <view class="member__head">
+      <view class="member__avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+      <view class="member__info">
+        <view class="member__name">{{item.name}}</view>
+        <view class="muted">{{item.deptLabel}} · {{item.studentNo}}</view>
+      </view>
+    </view>
+    <view class="member__actions">
+      <button class="btn btn--ghost member__btn" data-id="{{item._id}}" data-action="reject" bindtap="onReview">拒绝</button>
+      <button class="btn btn--primary member__btn" data-id="{{item._id}}" data-action="approve" bindtap="onReview">通过</button>
+    </view>
+  </view>
+
+  <view class="section">在册 {{active.length}}</view>
+  <view class="card member" wx:for="{{active}}" wx:key="_id">
+    <view class="member__head">
+      <view class="member__avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+      <view class="member__info">
+        <view class="member__name">{{item.name}}</view>
+        <view class="muted">{{item.deptLabel}} · {{item.roleLabel}}</view>
+      </view>
+    </view>
+  </view>
+</view>

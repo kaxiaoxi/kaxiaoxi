@@ -31,4 +31,9 @@
       <text class="row__value">{{statusLabel || '-'}}</text>
     </view>
   </view>
+
+  <view class="entry" wx:if="{{isChairman}}" bindtap="onOpenMembers">
+    <text>成员管理</text>
+    <text class="entry__arrow">›</text>
+  </view>
 </view>

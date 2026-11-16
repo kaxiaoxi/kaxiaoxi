@@ -5,7 +5,8 @@ Page({
     member: null,
     deptLabel: '',
     roleLabel: '',
-    statusLabel: ''
+    statusLabel: '',
+    isChairman: false
   },
 
   onShow() {
@@ -14,7 +15,12 @@ Page({
       member,
       deptLabel: member ? DEPT_LABEL[member.dept] || '' : '',
       roleLabel: member ? ROLE_LABEL[member.role] || '' : '',
-      statusLabel: member ? MEMBER_STATUS_LABEL[member.status] || '' : ''
+      statusLabel: member ? MEMBER_STATUS_LABEL[member.status] || '' : '',
+      isChairman: !!(member && member.role === 'chairman')
     })
+  },
+
+  onOpenMembers() {
+    wx.navigateTo({ url: '/pages/admin/members/index' })
   }
 })

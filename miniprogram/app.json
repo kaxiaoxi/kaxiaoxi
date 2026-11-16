@@ -3,6 +3,7 @@
     "pages/launch/index",
     "pages/join/register/index",
     "pages/join/pending/index",
+    "pages/admin/members/index",
     "pages/home/index",
     "pages/task/list",
     "pages/calendar/month",

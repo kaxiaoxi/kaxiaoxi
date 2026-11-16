@@ -56,3 +56,17 @@
 .row__value {
   color: var(--ink);
 }
+
+.entry {
+  margin-top: 32rpx;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 30rpx 28rpx;
+  display: flex;
+  justify-content: space-between;
+  font-size: 30rpx;
+}
+
+.entry__arrow {
+  color: var(--s-3);
+}
