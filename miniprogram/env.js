@@ -1,5 +1,5 @@
 // 云开发环境 ID。仅包含环境标识，不属于密钥，随仓库提交以便多人协作。
-// 如未来需要区分开发/生产环境，改为 env.example.js + 本地 env.js 的方式。
+// 注意：环境 ID 在云开发控制台「环境」页查看，格式为 <标识>-<随机串>。
 module.exports = {
-  envId: 'prod-d2gk7wpxf004722e8'
+  envId: 'gdutpa-d4g3obr8ff2930036'
 }
