@@ -237,8 +237,7 @@ git push origin main --tags
 
 | 问题 | 处理 |
 |---|---|
-| 误提交 `env.js` | `git rm --cached miniprogram/env.js` 后提交 |
-| 提交了 `project.private.config.json` | 同上，并确认 `.gitignore` 生效 |
+| 提交了 `project.private.config.json` | `git rm --cached project.private.config.json`，确认 `.gitignore` 生效 |
 | 分支落后太多 | `git pull --rebase origin develop` |
 | 想撤销最近一次提交（未推送） | `git reset --soft HEAD~1` |
 | 已推送要撤销 | `git revert <commit>`，禁止 `reset --hard` 后强推共享分支 |
@@ -260,3 +259,96 @@ git push origin main --tags
 > git config user.name "你的名字"
 > git config user.email "你的邮箱"
 > ```
+
+---
+
+## 11. Gitee 仓库配置（本项目采用）
+
+### 11.1 创建仓库
+
+1. 登录 [gitee.com](https://gitee.com) → 右上角「＋」→「新建仓库」；
+2. 仓库名称：`kaxiaoxi`；
+3. 路径：与名称一致，最终地址形如 `https://gitee.com/<你的用户名>/kaxiaoxi.git`；
+4. **开源/私有**：选「私有」（内部工具，代码不公开）；
+5. **不要**勾选「使用 Readme 初始化」「.gitignore 模板」「开源许可证」——本地已有完整仓库，勾了会产生冲突提交；
+6. 点「创建」。
+
+### 11.2 关联远程并首次推送
+
+在仓库根目录执行：
+
+```bash
+# 1. 关联远程
+git remote add origin https://gitee.com/<你的用户名>/kaxiaoxi.git
+
+# 2. 推送两个分支
+git push -u origin main
+git push -u origin develop
+
+# 3. 推送标签
+git push origin --tags
+
+# 4. 确认
+git remote -v
+git branch -vv
+```
+
+首次推送会要求输入 Gitee 账号密码。推荐用**私人令牌**代替密码：
+
+> Gitee → 设置 → 安全设置 → 私人令牌 → 生成新令牌（勾选 `projects`）→ 复制，推送时密码位置粘贴令牌。
+
+### 11.3 推荐用 SSH（免重复输密码）
+
+```bash
+ssh-keygen -t ed25519 -C "kaxiaoxi@example.com"
+# 一路回车，生成 ~/.ssh/id_ed25519 与 .pub
+
+# 查看公钥并复制
+cat ~/.ssh/id_ed25519.pub
+```
+
+Gitee → 设置 → SSH 公钥 → 粘贴 → 确定。然后改远程地址：
+
+```bash
+git remote set-url origin git@gitee.com:<你的用户名>/kaxiaoxi.git
+ssh -T git@gitee.com          # 出现 Hi 你的名字 即成功
+```
+
+### 11.4 仓库设置（建议全做）
+
+| 设置 | 路径 | 建议值 |
+|---|---|---|
+| 默认分支 | 仓库 → 管理 → 仓库设置 → 默认分支 | `develop` |
+| 保护分支 | 管理 → 分支管理 → 保护分支 | 保护 `main`：禁止直接 push，需 PR |
+| 成员 | 管理 → 仓库成员管理 | 邀请开发者，权限「开发者」；不要给「管理员」 |
+| Issue | 管理 → 仓库设置 | 开启，用于任务拆分 |
+| 合并请求 | 管理 → 仓库设置 | 开启「合并前需通过 CI / 需审查」 |
+
+> 保护分支配置后，`main` 只能通过 PR 合并，避免误推。
+
+### 11.5 开发者工具连接 Gitee
+
+1. 开发者工具 → 「版本管理」→ 右上角「设置」→「远程仓库」→「添加」；
+2. 名称：`origin`；URL：`https://gitee.com/<用户名>/kaxiaoxi.git`；
+3. 账号：Gitee 用户名；密码：**私人令牌**；
+4. 保存后即可在工具内「拉取 / 推送 / 切换分支 / 提交」。
+
+> 若工具提示认证失败，先用命令行 `git push` 验证一次，确认是令牌而不是密码问题。
+
+### 11.6 新人加入流程
+
+```bash
+git clone https://gitee.com/<用户名>/kaxiaoxi.git
+cd kaxiaoxi
+git checkout develop
+npm install
+```
+
+然后用开发者工具导入，AppID 与云环境已在仓库中配置好，直接编译即可。
+
+### 11.7 注意事项
+
+- Gitee 单文件上限 100MB，仓库总容量有限，**不要提交原始 PSD/AI 或视频**；
+- 设计稿只提交 `sheet.png` 与 `contact-sheet.png`，单页导出图已被 `.gitignore` 排除；
+- 私有仓库免费，成员数量按 Gitee 当前套餐限制；
+- 推送前先 `git pull --rebase`，避免产生无意义合并提交。

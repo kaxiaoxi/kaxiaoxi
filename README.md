@@ -54,18 +54,18 @@ kaxiaoxi/
 ## 快速开始
 
 ```bash
-cp miniprogram/env.example.js miniprogram/env.js   # 填入云环境 ID
 npm install                                        # 安装 lint 工具
 npm run check                                      # 代码检查
 ```
 
-用微信开发者工具导入仓库根目录，AppID 换成影协小程序，右键云函数「上传并部署」，再执行一次 `init` 云函数。
+用微信开发者工具导入仓库根目录（AppID 与云环境已配置好），右键三个云函数「上传并部署」，再执行一次 `init` 云函数。
 
 ## Git
 
+- 远程：Gitee 私有仓库（配置步骤见 [06 第 11 节](./docs/06-Git协作规范.md)）
 - 默认分支 `main`（可发布），集成分支 `develop`
 - 功能分支 `feature/<模块>-<简述>`，修复 `fix/<问题>`
-- 提交格式 `type(scope): subject`，详见 [06](./docs/06-Git协作规范.md)
+- 提交格式 `type(scope): subject`
 
 ## 下一步
 
