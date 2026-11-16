@@ -1,0 +1,17 @@
+{
+  "name": "kaxiaoxi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "卡小西 · 广工影协指南（微信小程序）",
+  "scripts": {
+    "lint": "eslint miniprogram cloudfunctions",
+    "lint:fix": "eslint miniprogram cloudfunctions --fix",
+    "format": "prettier --write \"miniprogram/**/*.{js,wxml,wxss,json}\"",
+    "format:check": "prettier --check \"miniprogram/**/*.{js,wxml,wxss,json}\"",
+    "check": "npm run lint && npm run format:check"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3"
+  }
+}
