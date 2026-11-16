@@ -266,6 +266,8 @@ git push origin main --tags
 
 ### 11.1 创建仓库
 
+本项目仓库已建好：**https://gitee.com/yjy666ryan/kaxiaoxi.git**（私有）。以下为建仓库步骤，供以后新建仓库参考。
+
 1. 登录 [gitee.com](https://gitee.com) → 右上角「＋」→「新建仓库」；
 2. 仓库名称：`kaxiaoxi`；
 3. 路径：与名称一致，最终地址形如 `https://gitee.com/<你的用户名>/kaxiaoxi.git`；
@@ -338,7 +340,7 @@ ssh -T git@gitee.com          # 出现 Hi 你的名字 即成功
 ### 11.6 新人加入流程
 
 ```bash
-git clone https://gitee.com/<用户名>/kaxiaoxi.git
+git clone https://gitee.com/yjy666ryan/kaxiaoxi.git
 cd kaxiaoxi
 git checkout develop
 npm install
@@ -352,3 +354,16 @@ npm install
 - 设计稿只提交 `sheet.png` 与 `contact-sheet.png`，单页导出图已被 `.gitignore` 排除；
 - 私有仓库免费，成员数量按 Gitee 当前套餐限制；
 - 推送前先 `git pull --rebase`，避免产生无意义合并提交。
+
+### 11.8 本仓库当前状态（2026-11-17）
+
+| 项 | 状态 |
+|---|---|
+| 远程 `origin` | `https://gitee.com/yjy666ryan/kaxiaoxi.git` |
+| `main` | 已推送，跟踪 `origin/main` |
+| `develop` | 已推送，跟踪 `origin/develop`，日常开发在此 |
+| 标签 | `v0.1.0`、`v0.1.1` 已推送 |
+| Gitee 默认分支 | 当前为 `main`，**建议改为 `develop`**（管理 → 仓库设置 → 默认分支） |
+| 保护分支 | 尚未设置，建议保护 `main` |
+
+> 修改默认分支后，新成员 `git clone` 会直接落在 `develop`，少一步切换。
