@@ -1,4 +1,4 @@
-﻿const { db, _ } = require('../lib/db')
+const { db, _ } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid } = require('../lib/member')
 const { validateTask } = require('../lib/validate')
@@ -176,19 +176,22 @@ async function detail(payload = {}, openid) {
   ])
 
   const openids = approvedRes.data.map((item) => item.openid)
-  let participants = []
-  if (openids.length) {
-    const members = await db
-      .collection('members')
-      .where({ _openid: _.in(openids) })
-      .limit(30)
-      .get()
-    participants = members.data.map((m) => ({
-      name: m.name,
-      avatarText: m.avatarText,
-      avatarColor: m.avatarColor
-    }))
-  }
+  const memberResults = await Promise.all(
+    openids.map((id) => db.collection('members').where({ _openid: id }).limit(1).get())
+  )
+  const memberMap = {}
+  memberResults.forEach((item) => {
+    const member = item.data[0]
+    if (member) memberMap[member._openid] = member
+  })
+  const participants = openids.map((id) => {
+    const member = memberMap[id]
+    return {
+      name: member ? member.name : '成员',
+      avatarText: member ? member.avatarText : '?',
+      avatarColor: member ? member.avatarColor : '#8A8A8E'
+    }
+  })
 
   const pendingRes = await db
     .collection('task_signups')
