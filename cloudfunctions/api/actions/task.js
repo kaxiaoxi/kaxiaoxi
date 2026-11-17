@@ -208,6 +208,7 @@ async function detail(payload = {}, openid) {
 async function apply(payload = {}, openid) {
   const me = await requireActive(openid)
   const taskId = typeof payload.taskId === 'string' ? payload.taskId : ''
+  const note = typeof payload.note === 'string' ? payload.note.trim().slice(0, 200) : ''
   if (!taskId) throw new BizError(40001, '缺少任务 ID')
 
   const res = await db
@@ -222,8 +223,12 @@ async function apply(payload = {}, openid) {
   const now = new Date()
   if (signupPhaseOf(task, now) !== 'open') throw new BizError(40010, '报名未开放或已截止')
 
+  const BLOCKED = ['pending', 'approved', 'waitlisted', 'leave_pending']
   const exist = await db.collection('task_signups').where({ taskId, openid }).limit(1).get()
-  if (exist.data.length) throw new BizError(40904, '你已报名该任务')
+  const previous = exist.data[0]
+  if (previous && BLOCKED.includes(previous.status)) {
+    throw new BizError(40904, '你已报名该任务')
+  }
 
   const tx = await db.startTransaction()
   try {
@@ -232,19 +237,35 @@ async function apply(payload = {}, openid) {
     const full = current.quota > 0 && current.approvedCount >= current.quota
     const status = current.signupMode === 'review' ? 'pending' : full ? 'waitlisted' : 'approved'
 
-    await tx.collection('task_signups').add({
-      data: {
-        taskId,
-        openid,
-        status,
-        queueNo: Date.now(),
-        note: '',
-        reviewedBy: '',
-        reviewedAt: null,
-        createdAt: db.serverDate(),
-        updatedAt: db.serverDate()
-      }
-    })
+    if (previous) {
+      await tx
+        .collection('task_signups')
+        .doc(previous._id)
+        .update({
+          data: {
+            status,
+            note,
+            queueNo: Date.now(),
+            reviewedBy: '',
+            reviewedAt: null,
+            updatedAt: db.serverDate()
+          }
+        })
+    } else {
+      await tx.collection('task_signups').add({
+        data: {
+          taskId,
+          openid,
+          status,
+          queueNo: Date.now(),
+          note,
+          reviewedBy: '',
+          reviewedAt: null,
+          createdAt: db.serverDate(),
+          updatedAt: db.serverDate()
+        }
+      })
+    }
 
     const inc = {}
     if (status === 'approved') inc.approvedCount = _.inc(1)
