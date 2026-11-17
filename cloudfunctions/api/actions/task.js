@@ -175,7 +175,7 @@ async function detail(payload = {}, openid) {
       .get()
   ])
 
-  const openids = approvedRes.data.map((item) => item._openid)
+  const openids = approvedRes.data.map((item) => item.openid)
   let participants = []
   if (openids.length) {
     const members = await db
@@ -190,7 +190,13 @@ async function detail(payload = {}, openid) {
     }))
   }
 
+  const pendingRes = await db
+    .collection('task_signups')
+    .where({ taskId, status: 'pending' })
+    .count()
+
   return {
+    pendingCount: pendingRes.total || 0,
     task: {
       ...toCard(task, now),
       description: task.description,

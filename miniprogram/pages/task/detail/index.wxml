@@ -43,9 +43,14 @@
     <text class="desc">{{detail.description}}</text>
   </view>
 
-  <view class="section">已报名 {{detail.approvedCount}} 人</view>
+  <view class="section">
+    已报名 {{detail.approvedCount}} 人
+    <text class="section__extra" wx:if="{{detail.pendingCount}}"> · 审核中 {{detail.pendingCount}}</text>
+    <text class="section__extra" wx:if="{{detail.waitlistCount}}"> · 候补 {{detail.waitlistCount}}</text>
+  </view>
   <view class="card empty" wx:if="{{!detail.participants.length}}">
-    <text class="muted">还没有人报名</text>
+    <text class="muted" wx:if="{{detail.pendingCount}}">暂无已通过成员，{{detail.pendingCount}} 人待审核</text>
+    <text class="muted" wx:else>还没有人报名</text>
   </view>
   <view class="card participants" wx:else>
     <view class="avatar-wrap" wx:for="{{detail.participants}}" wx:key="name">
