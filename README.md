@@ -64,7 +64,7 @@ npm run check                                      # 代码检查
 - 远程：GitHub 组织仓库 `kaxiaoxi/kaxiaoxi`（公开，成员不限；`main` 已开启 PR 保护）
 - 默认分支 `main`（可发布），集成分支 `develop`
 - 功能分支 `feature/<模块>-<简述>`，修复 `fix/<问题>`
-- 提交格式 `type(scope): subject`
+- 提交信息一句话说明改动即可
 
 ## 下一步
 

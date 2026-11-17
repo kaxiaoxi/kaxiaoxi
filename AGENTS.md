@@ -56,8 +56,7 @@ cloudfunctions/init/index.js       # 一次性初始化
 ## 常用命令
 
 ```bash
-npx eslint miniprogram cloudfunctions
-npx prettier --check "miniprogram/**/*.{js,wxml,wxss,json}"
+npm run check
 cd cloudfunctions/api && npm install
 ```
 
@@ -69,17 +68,12 @@ cd cloudfunctions/api && npm install
 - [ ] 新 action 已注册并鉴权
 - [ ] 空态 / 加载态 / 错误态齐全
 - [ ] ESLint 无 error
-- [ ] 未提交 `env.js`、`project.private.config.json`
+- [ ] 未提交 `project.private.config.json`
 - [ ] 涉及数据库变更时，已更新 `docs/03`
 
 ## 提交信息
 
-```
-<type>(<scope>): <subject>
-```
-
-`type`: feat | fix | docs | style | refactor | perf | test | chore  
-`scope`: task | signup | calendar | todo | erke | auth | cloud | docs
+一句话说明改了什么，中文即可，例如「首页增加活动横幅」。
 
 ## 不确定时
 
