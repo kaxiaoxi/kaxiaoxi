@@ -62,6 +62,15 @@ cd cloudfunctions/api && npm install
 
 云函数改动后需在微信开发者工具「上传并部署」，AI 无法代替此步骤，需在输出中提醒。
 
+## 云开发环境
+
+- 环境 ID：`gdutpa-d4g3obr8ff2930036`（国内站；另有一个 `prod-...` 环境不是本项目）
+- 云函数：`api` / `cron` / `init`
+- CLI 已登录，可 `tcb fn list -e gdutpa-d4g3obr8ff2930036`
+- 只读查库：`node scripts/tcb-db.js count members`、`node scripts/tcb-db.js find tasks published=true 5`
+- **禁止**未经人类确认做写操作、删数据、`dump` 整张表
+- 部署前先 `npm run check`；部署后提醒真人回归测试
+
 ## 完成定义（DoD）
 
 - [ ] 页面已在 `app.json` 注册
