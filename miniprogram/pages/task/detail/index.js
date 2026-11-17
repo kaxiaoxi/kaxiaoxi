@@ -1,4 +1,4 @@
-const { call } = require('../../../services/api')
+﻿const { call } = require('../../../services/api')
 const {
   PHASE_LABEL,
   MY_SIGNUP_LABEL,
@@ -35,6 +35,8 @@ Page({
       this.setData({
         detail: {
           ...task,
+          participants: res.participants || [],
+          pendingCount: res.pendingCount || 0,
           phaseLabel: PHASE_LABEL[task.phase] || '',
           sessionsText: (task.sessions || []).map((s) => formatSession(s)),
           quotaText: quotaText(task),
@@ -44,7 +46,6 @@ Page({
         },
         action,
         isOwner: !!res.isOwner,
-        pendingCount: res.pendingCount || 0,
         loading: false
       })
       wx.setNavigationBarTitle({ title: task.title })
