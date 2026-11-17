@@ -44,6 +44,7 @@ Page({
         },
         action,
         isOwner: !!res.isOwner,
+        pendingCount: res.pendingCount || 0,
         loading: false
       })
       wx.setNavigationBarTitle({ title: task.title })
