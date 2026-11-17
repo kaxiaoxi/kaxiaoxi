@@ -61,7 +61,7 @@ npm run check                                      # 代码检查
 
 ## Git
 
-- 远程：Gitee 私有仓库
+- 远程：GitHub 组织仓库 `kaxiaoxi/kaxiaoxi`（私有，成员不限）
 - 默认分支 `main`（可发布），集成分支 `develop`
 - 功能分支 `feature/<模块>-<简述>`，修复 `fix/<问题>`
 - 提交格式 `type(scope): subject`
