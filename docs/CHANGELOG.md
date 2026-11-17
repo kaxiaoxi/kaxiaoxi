@@ -2,6 +2,11 @@
 
 格式：`版本 · 日期 · 变更摘要`
 
+## v1.0.4 · 2026-11-17（公开仓库）
+
+- 仓库改为公开，默认分支 `develop`
+- `main` 开启分支保护：必须走 PR、禁止强推与删除（管理员可绕过）
+
 ## v1.0.3 · 2026-11-17（迁移 GitHub）
 
 - 仓库迁移到 GitHub 组织 `kaxiaoxi`：`https://github.com/kaxiaoxi/kaxiaoxi`（私有）
