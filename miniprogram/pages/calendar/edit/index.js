@@ -1,5 +1,6 @@
 const { call } = require('../../../services/api')
 const { TYPES, STATUS } = require('../../../utils/calendar')
+const { ensureMember } = require('../../../utils/session')
 
 function pad(n) {
   return n < 10 ? `0${n}` : `${n}`
@@ -35,9 +36,10 @@ Page({
     submitting: false
   },
 
-  onLoad(options) {
+  async onLoad(options) {
     this.setData({ startDate: todayKey() })
-    this.selfOpenid = (getApp().globalData.member || {})._openid || ''
+    const member = await ensureMember()
+    this.selfOpenid = (member || {})._openid || ''
     this.loadMembers().then(() => {
       const id = options.id || ''
       if (id) {

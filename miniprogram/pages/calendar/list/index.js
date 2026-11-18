@@ -1,5 +1,6 @@
 const { call } = require('../../../services/api')
 const { TYPE_KEY, STATUS_CLASS, dateRangeText } = require('../../../utils/calendar')
+const { ensureMember } = require('../../../utils/session')
 
 const RANGES = [
   { key: 'thisMonth', label: '本月' },
@@ -23,7 +24,8 @@ Page({
     loading: true
   },
 
-  onLoad() {
+  async onLoad() {
+    await ensureMember()
     this.load()
   },
 

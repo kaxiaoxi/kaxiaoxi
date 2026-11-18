@@ -7,6 +7,7 @@ const {
   joinText
 } = require('../../../utils/todo')
 const { DEPT_LABEL, ROLE } = require('../../../utils/constants')
+const { ensureMember } = require('../../../utils/session')
 
 const EMPTY_TEXT = {
   mine: '暂无待办',
@@ -33,7 +34,9 @@ Page({
     this.buildTabs()
   },
 
-  onShow() {
+  async onShow() {
+    // 冷启动直接进待办页时先补齐成员信息，否则内部 tab 会漏
+    await ensureMember()
     this.buildTabs()
     this.load()
   },

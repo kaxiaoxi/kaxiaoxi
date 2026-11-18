@@ -1,6 +1,7 @@
 const { call } = require('../../../services/api')
 const { AUDIENCE_LABEL, AUDIENCE_DESC } = require('../../../utils/todo')
 const { ROLE } = require('../../../utils/constants')
+const { ensureMember } = require('../../../utils/session')
 
 const PRIORITIES = [
   { value: 3, label: '高' },
@@ -41,8 +42,8 @@ Page({
     submitting: false
   },
 
-  onLoad(options) {
-    const member = getApp().globalData.member || {}
+  async onLoad(options) {
+    const member = (await ensureMember()) || {}
     const isStaff = member.role !== ROLE.MEMBER
     const isChairman = member.role === ROLE.CHAIRMAN
     const keys = isStaff ? STAFF_AUDIENCES : MEMBER_AUDIENCES
