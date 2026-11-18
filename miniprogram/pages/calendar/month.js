@@ -1,7 +1,31 @@
 const { call } = require('../../services/api')
 const { formatDay, formatTime } = require('../../utils/task')
 
-const WEEKDAYS = ['一', '二', '三', '四', '五', '六', '日']
+const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六']
+const MONTH_NAMES = [
+  '一月',
+  '二月',
+  '三月',
+  '四月',
+  '五月',
+  '六月',
+  '七月',
+  '八月',
+  '九月',
+  '十月',
+  '十一月',
+  '十二月'
+]
+
+const TYPE_KEY = {
+  招新: 'recruit',
+  例会: 'meeting',
+  外拍: 'shoot',
+  比赛: 'contest',
+  展览: 'exhibit',
+  截止: 'deadline',
+  其他: 'other'
+}
 
 function pad(n) {
   return n < 10 ? `0${n}` : `${n}`
@@ -19,6 +43,7 @@ Page({
   data: {
     year: 0,
     month: 0,
+    monthName: '',
     weekdays: WEEKDAYS,
     cells: [],
     selected: '',
@@ -29,7 +54,11 @@ Page({
 
   onLoad() {
     const now = new Date()
-    this.setData({ year: now.getFullYear(), month: now.getMonth() + 1 })
+    this.setData({
+      year: now.getFullYear(),
+      month: now.getMonth() + 1,
+      monthName: MONTH_NAMES[now.getMonth()]
+    })
   },
 
   onShow() {
@@ -39,8 +68,13 @@ Page({
   async load() {
     if (this.data.loading) return
     const { year, month } = this.data
-    const selected = this.data.selected || keyOf(new Date(year, month - 1, 1))
-    this.setData({ loading: true, selected })
+    const today = new Date()
+    const fallback =
+      today.getFullYear() === year && today.getMonth() === month - 1
+        ? keyOf(today)
+        : keyOf(new Date(year, month - 1, 1))
+    const selected = this.data.selected || fallback
+    this.setData({ loading: true, selected, monthName: MONTH_NAMES[month - 1] })
 
     try {
       const res = await call('calendar.month', { year, month })
@@ -62,59 +96,85 @@ Page({
   render(events, selected) {
     const { year, month } = this.data
     const first = new Date(year, month - 1, 1)
-    const startOffset = (first.getDay() + 6) % 7
-    const cells = []
+    const startOffset = first.getDay()
     const start = new Date(year, month - 1, 1 - startOffset)
     const todayKey = keyOf(new Date())
+    const cells = []
 
     for (let i = 0; i < 42; i += 1) {
       const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i)
       const key = keyOf(date)
-      const count = events.filter((e) => key >= e.startKey && key <= e.endKey).length
+      const dayEvents = events.filter((e) => key >= e.startKey && key <= e.endKey)
       cells.push({
         key,
         day: date.getDate(),
         inMonth: date.getMonth() === month - 1,
         isToday: key === todayKey,
-        count
+        items: dayEvents.slice(0, 3).map((e) => ({
+          id: e._id,
+          title: e.title,
+          colorKey: TYPE_KEY[e.type] || 'other'
+        })),
+        more: Math.max(dayEvents.length - 3, 0)
       })
     }
 
-    const dayEvents = events
+    const dayList = events
       .filter((e) => selected >= e.startKey && selected <= e.endKey)
       .map((e) => ({
         ...e,
+        colorKey: TYPE_KEY[e.type] || 'other',
         dayText: e.startKey === e.endKey ? '' : `${formatDay(e.startAt)}–${formatDay(e.endAt)}`
       }))
 
-    const [y, m, d] = selected.split('-')
+    const [, m, d] = selected.split('-')
     this.setData({
       cells,
       selected,
       selectedLabel: `${Number(m)} 月 ${Number(d)} 日`,
-      dayEvents
+      dayEvents: dayList
     })
   },
 
   onSelect(e) {
-    const key = e.currentTarget.dataset.key
-    this.render(this.events || [], key)
+    this.render(this.events || [], e.currentTarget.dataset.key)
+  },
+
+  onTouchStart(e) {
+    this.touchX = e.touches[0].clientX
+    this.touchY = e.touches[0].clientY
+  },
+
+  onTouchEnd(e) {
+    if (this.touchX === undefined) return
+    const dx = e.changedTouches[0].clientX - this.touchX
+    const dy = e.changedTouches[0].clientY - this.touchY
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx > 0) this.onPrev()
+      else this.onNext()
+    }
+  },
+
+  shiftMonth(delta) {
+    const { year, month } = this.data
+    const date = new Date(year, month - 1 + delta, 1)
+    this.setData(
+      {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        monthName: MONTH_NAMES[date.getMonth()],
+        selected: ''
+      },
+      () => this.load()
+    )
   },
 
   onPrev() {
-    const { year, month } = this.data
-    const date = new Date(year, month - 2, 1)
-    this.setData({ year: date.getFullYear(), month: date.getMonth() + 1, selected: '' }, () =>
-      this.load()
-    )
+    this.shiftMonth(-1)
   },
 
   onNext() {
-    const { year, month } = this.data
-    const date = new Date(year, month, 1)
-    this.setData({ year: date.getFullYear(), month: date.getMonth() + 1, selected: '' }, () =>
-      this.load()
-    )
+    this.shiftMonth(1)
   },
 
   onToday() {
@@ -123,6 +183,7 @@ Page({
       {
         year: now.getFullYear(),
         month: now.getMonth() + 1,
+        monthName: MONTH_NAMES[now.getMonth()],
         selected: keyOf(now)
       },
       () => this.load()
