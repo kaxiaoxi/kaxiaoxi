@@ -9,7 +9,20 @@
     </view>
   </view>
 
-  <view class="month-title">{{monthName}}</view>
+  <view class="month-row">
+    <text class="month-arrow" bindtap="onPrev">‹</text>
+    <picker
+      mode="date"
+      fields="month"
+      value="{{pickerValue}}"
+      start="2020-01"
+      end="2035-12"
+      bindchange="onPickMonth"
+    >
+      <view class="month-title">{{monthName}}</view>
+    </picker>
+    <text class="month-arrow" bindtap="onNext">›</text>
+  </view>
 
   <view class="week">
     <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>

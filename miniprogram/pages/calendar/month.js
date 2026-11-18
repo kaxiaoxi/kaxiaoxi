@@ -44,6 +44,7 @@ Page({
     year: 0,
     month: 0,
     monthName: '',
+    pickerValue: '',
     weekdays: WEEKDAYS,
     cells: [],
     selected: '',
@@ -57,7 +58,8 @@ Page({
     this.setData({
       year: now.getFullYear(),
       month: now.getMonth() + 1,
-      monthName: MONTH_NAMES[now.getMonth()]
+      monthName: MONTH_NAMES[now.getMonth()],
+      pickerValue: `${now.getFullYear()}-${pad(now.getMonth() + 1)}`
     })
   },
 
@@ -74,7 +76,12 @@ Page({
         ? keyOf(today)
         : keyOf(new Date(year, month - 1, 1))
     const selected = this.data.selected || fallback
-    this.setData({ loading: true, selected, monthName: MONTH_NAMES[month - 1] })
+    this.setData({
+      loading: true,
+      selected,
+      monthName: MONTH_NAMES[month - 1],
+      pickerValue: `${year}-${pad(month)}`
+    })
 
     try {
       const res = await call('calendar.month', { year, month })
@@ -163,6 +170,7 @@ Page({
         year: date.getFullYear(),
         month: date.getMonth() + 1,
         monthName: MONTH_NAMES[date.getMonth()],
+        pickerValue: `${date.getFullYear()}-${pad(date.getMonth() + 1)}`,
         selected: ''
       },
       () => this.load()
@@ -177,6 +185,20 @@ Page({
     this.shiftMonth(1)
   },
 
+  onPickMonth(e) {
+    const [y, m] = e.detail.value.split('-').map(Number)
+    this.setData(
+      {
+        year: y,
+        month: m,
+        monthName: MONTH_NAMES[m - 1],
+        pickerValue: e.detail.value,
+        selected: ''
+      },
+      () => this.load()
+    )
+  },
+
   onToday() {
     const now = new Date()
     this.setData(
@@ -184,6 +206,7 @@ Page({
         year: now.getFullYear(),
         month: now.getMonth() + 1,
         monthName: MONTH_NAMES[now.getMonth()],
+        pickerValue: `${now.getFullYear()}-${pad(now.getMonth() + 1)}`,
         selected: keyOf(now)
       },
       () => this.load()
