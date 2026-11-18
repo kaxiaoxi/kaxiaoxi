@@ -1,7 +1,22 @@
-<view class="page">
+﻿<view class="page">
   <view class="profile">
-    <view class="profile__avatar" style="background: {{member.avatarColor || '#2E5F7E'}}">
-      {{member.avatarText || '?'}}
+    <view class="profile__avatar-wrap">
+      <image
+        wx:if="{{member.avatarFileID}}"
+        class="profile__avatar-img"
+        src="{{member.avatarFileID}}"
+        mode="aspectFill"
+      />
+      <view wx:else class="profile__avatar" style="background: {{member.avatarColor || '#2E5F7E'}}">
+        {{member.avatarText || '?'}}
+      </view>
+      <button
+        class="profile__avatar-btn"
+        open-type="chooseAvatar"
+        bindchooseavatar="onChooseAvatar"
+        hover-class="none"
+      ></button>
+      <view class="profile__avatar-tip">换头像</view>
     </view>
     <view class="profile__meta">
       <view class="profile__name">{{member.name || '未登录'}}</view>
@@ -71,3 +86,4 @@
     <text class="entry__arrow">›</text>
   </view>
 </view>
+

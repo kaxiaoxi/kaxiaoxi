@@ -1,4 +1,4 @@
-const { BizError } = require('./lib/errors')
+﻿const { BizError } = require('./lib/errors')
 const auth = require('./actions/auth')
 const member = require('./actions/member')
 const task = require('./actions/task')
@@ -49,6 +49,7 @@ const routes = {
   'profile.mine': profile.mine,
   'profile.listPending': profile.listPending,
   'profile.review': profile.review,
+  'profile.updateAvatar': profile.updateAvatar,
   'home.summary': home.summary
 }
 
@@ -59,3 +60,4 @@ async function route(action, payload, openid) {
 }
 
 module.exports = { route, routes }
+
