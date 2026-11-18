@@ -1,6 +1,6 @@
 <view class="page">
   <view class="hero">
-    <view class="hero__logo">卡小西</view>
+    <image class="hero__logo-img" src="/images/kaxiaoxi-mascot.png" mode="widthFix" />
     <view class="hero__name">影协工坊</view>
     <view class="hero__version">v{{version}} · 广工影协内部版</view>
     <view class="hero__desc">任务派发 · 报名候补 · 年历待办 · 二课统计</view>
@@ -61,3 +61,4 @@
 
   <view class="footer">© 2026 广东工业大学摄影协会</view>
 </view>
+
