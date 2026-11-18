@@ -163,15 +163,19 @@ Page({
   },
 
   shiftMonth(delta) {
-    const { year, month } = this.data
+    const { year, month, selected } = this.data
+    const baseDay = selected ? Number(selected.split('-')[2]) : new Date().getDate()
     const date = new Date(year, month - 1 + delta, 1)
+    const y = date.getFullYear()
+    const m = date.getMonth() + 1
+    const day = Math.min(baseDay, new Date(y, m, 0).getDate())
     this.setData(
       {
-        year: date.getFullYear(),
-        month: date.getMonth() + 1,
-        monthName: MONTH_NAMES[date.getMonth()],
-        pickerValue: `${date.getFullYear()}-${pad(date.getMonth() + 1)}`,
-        selected: ''
+        year: y,
+        month: m,
+        monthName: MONTH_NAMES[m - 1],
+        pickerValue: `${y}-${pad(m)}`,
+        selected: `${y}-${pad(m)}-${pad(day)}`
       },
       () => this.load()
     )
@@ -187,13 +191,16 @@ Page({
 
   onPickMonth(e) {
     const [y, m] = e.detail.value.split('-').map(Number)
+    const { selected } = this.data
+    const baseDay = selected ? Number(selected.split('-')[2]) : new Date().getDate()
+    const day = Math.min(baseDay, new Date(y, m, 0).getDate())
     this.setData(
       {
         year: y,
         month: m,
         monthName: MONTH_NAMES[m - 1],
         pickerValue: e.detail.value,
-        selected: ''
+        selected: `${y}-${pad(m)}-${pad(day)}`
       },
       () => this.load()
     )
