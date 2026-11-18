@@ -77,6 +77,27 @@
   margin: 16rpx 0 24rpx;
 }
 
+.owner {
+  margin-top: 24rpx;
+  padding: 28rpx;
+}
+
+.owner__title {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.owner__desc {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--s-2);
+}
+
+.owner__btn {
+  margin-top: 24rpx;
+}
+
 .thanks {
   padding-top: 24rpx;
   padding-bottom: 24rpx;

@@ -36,6 +36,14 @@
     </button>
   </view>
 
+  <view class="card owner" wx:if="{{isOwner}}">
+    <view class="owner__title">接收反馈通知</view>
+    <view class="owner__desc">
+      反馈会以微信服务通知发送给你；每次授权可接收 1 条，额度用完后需再次授权。
+    </view>
+    <button class="btn btn--ghost owner__btn" bindtap="onSubscribeOwner">授权接收一条</button>
+  </view>
+
   <view class="section">开发鸣谢</view>
   <view class="card thanks">
     <view class="thanks__item">
