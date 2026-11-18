@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="seg">
+    <view
+      class="seg__item {{index === roleIndex ? 'seg__item--on' : ''}}"
+      wx:for="{{roles}}"
+      wx:key="key"
+      data-index="{{index}}"
+      bindtap="onRole"
+    >{{item.label}}</view>
+  </view>
+
+  <view class="dept-tabs">
+    <view
+      class="dept-tab {{index === deptIndex ? 'dept-tab--on' : ''}}"
+      wx:for="{{deptLabels}}"
+      wx:key="*this"
+      data-index="{{index}}"
+      bindtap="onDept"
+    >{{item}}</view>
+  </view>
+
+  <view class="card">
+    <view class="line">
+      <text>选择成员</text>
+      <text class="value">已选 {{count}} 人</text>
+    </view>
+    <view class="chips" wx:if="{{candidates.length}}">
+      <view
+        class="chip {{item.checked ? 'chip--on' : ''}}"
+        wx:for="{{candidates}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggle"
+      >{{item.name}}</view>
+    </view>
+    <text class="muted" wx:else>该分类暂无可任命成员</text>
+  </view>
+
+  <button class="btn btn--primary btn-top" bindtap="onAppoint">
+    {{roleIndex === 0 ? '任命为主席' : '任命为部长'}}
+  </button>
+
+  <view class="tip">主席从部长中任命，部长从小干中任命，均支持多选；任命不会降级现任成员。</view>
+</view>

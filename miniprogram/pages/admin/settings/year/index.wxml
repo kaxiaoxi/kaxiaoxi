@@ -1,0 +1,16 @@
+<view class="page">
+  <view class="card">
+    <view class="line">
+      <text>当前学年</text>
+      <text class="value">{{year}}</text>
+    </view>
+    <view class="line">
+      <text>下一学年</text>
+      <input class="input" value="{{nextYear}}" bindinput="onNextYear" />
+    </view>
+  </view>
+
+  <button class="btn btn--primary btn-top" bindtap="onArchive">切换学年</button>
+
+  <view class="tip">学年切换只改二课统计口径，不会删除历史数据；毕业成员请先在成员管理中归档。</view>
+</view>

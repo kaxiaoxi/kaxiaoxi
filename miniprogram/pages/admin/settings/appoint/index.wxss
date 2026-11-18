@@ -1,0 +1,106 @@
+.seg {
+  display: flex;
+  background: rgba(118, 118, 128, 0.12);
+  border-radius: 16rpx;
+  padding: 4rpx;
+  margin-top: 16rpx;
+}
+
+.seg__item {
+  flex: 1;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: var(--ink-2);
+  border-radius: 12rpx;
+}
+
+.seg__item--on {
+  background: #fff;
+  font-weight: 600;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.08);
+}
+
+.dept-tabs {
+  display: flex;
+  gap: 12rpx;
+  padding: 20rpx 0 8rpx;
+}
+
+.dept-tab {
+  flex: 1;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 28rpx;
+  background: #f2f2f7;
+  font-size: 22rpx;
+  color: var(--s-2);
+}
+
+.dept-tab--on {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 0 28rpx 24rpx;
+  margin-top: 16rpx;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+}
+
+.value {
+  color: var(--s-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  padding: 8rpx 0;
+}
+
+.chip {
+  padding: 12rpx 28rpx;
+  border-radius: 28rpx;
+  background: #f2f2f7;
+  font-size: 26rpx;
+  color: var(--ink);
+}
+
+.chip--on {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+}
+
+.muted {
+  display: block;
+  padding: 24rpx 0;
+  font-size: 24rpx;
+  color: var(--s-2);
+}
+
+.btn-top {
+  margin-top: 32rpx;
+}
+
+.tip {
+  margin: 24rpx 8rpx;
+  font-size: 22rpx;
+  color: var(--s-3);
+  line-height: 1.6;
+}
