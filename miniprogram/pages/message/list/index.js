@@ -4,7 +4,9 @@ const { formatDay, formatTime } = require('../../../utils/task')
 Page({
   data: {
     list: [],
-    loading: true
+    loading: true,
+    showMessage: false,
+    activeMessage: null
   },
 
   onShow() {
@@ -13,7 +15,7 @@ Page({
 
   async load() {
     try {
-      const res = await call('message.list', {})
+      const res = await call('message.list', { read: true })
       const list = (res.list || []).map((item) => ({
         ...item,
         timeText: `${formatDay(item.createdAt)} ${formatTime(item.createdAt)}`
@@ -25,23 +27,14 @@ Page({
     }
   },
 
-  async onRead(e) {
-    const { id, read } = e.currentTarget.dataset
-    if (read) return
-    try {
-      await call('message.read', { id })
-      this.load()
-    } catch (err) {
-      wx.showToast({ title: err.message || '操作失败', icon: 'none' })
-    }
+  onOpenMessage(e) {
+    const id = e.currentTarget.dataset.id
+    const message = this.data.list.find((item) => item._id === id)
+    if (!message) return
+    this.setData({ activeMessage: message, showMessage: true })
   },
 
-  async onReadAll() {
-    try {
-      await call('message.read', {})
-      this.load()
-    } catch (err) {
-      wx.showToast({ title: err.message || '操作失败', icon: 'none' })
-    }
+  onCloseMessage() {
+    this.setData({ showMessage: false, activeMessage: null })
   }
 })

@@ -10,9 +10,13 @@ async function requireActive(openid) {
 
 async function list(payload = {}, openid) {
   await requireActive(openid)
+  const where = { openid }
+  if (payload.read === true) where.read = true
+  if (payload.read === false) where.read = false
+
   const res = await db
     .collection('messages')
-    .where({ openid })
+    .where(where)
     .orderBy('createdAt', 'desc')
     .limit(50)
     .get()
