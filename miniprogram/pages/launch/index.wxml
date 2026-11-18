@@ -7,3 +7,20 @@
     <button class="btn btn--primary launch__retry" bindtap="onRetry">重试</button>
   </view>
 </view>
+
+<view class="consent" wx:if="{{showConsent}}">
+  <view class="consent__mask"></view>
+  <view class="consent__card">
+    <view class="consent__title">微信登录与隐私授权</view>
+    <view class="consent__text">
+      为了把你的微信身份绑定到协会成员账号，我们需要使用你的微信账号标识（OpenID）。
+      注册时还会收集姓名、学号、学院、手机号、宿舍和生日，仅用于协会内部任务与二课统计，不会提供给第三方。
+    </view>
+    <view class="consent__link" bindtap="onOpenContract">查看《{{contractName}}》</view>
+    <view class="consent__refused" wx:if="{{refused}}">需要同意后才能使用本小程序</view>
+    <view class="consent__actions">
+      <button class="btn btn--ghost consent__btn" bindtap="onDisagree">拒绝</button>
+      <button class="btn btn--primary consent__btn" bindtap="onAgree">同意并登录</button>
+    </view>
+  </view>
+</view>
