@@ -101,5 +101,3 @@
 .profile__avatar-btn::after {
   border: none;
 }
-
-
