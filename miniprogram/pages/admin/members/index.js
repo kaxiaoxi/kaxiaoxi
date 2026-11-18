@@ -1,5 +1,11 @@
-const { call } = require('../../../services/api')
+﻿const { call } = require('../../../services/api')
 const { DEPT_LABEL, ROLE_LABEL } = require('../../../utils/constants')
+
+const MEMBER_DEPTS = [
+  { key: 'photo', label: '摄影师队' },
+  { key: 'pr', label: '宣传部' },
+  { key: 'ops', label: '运营部' }
+]
 
 const FIELD_LABEL = {
   phone: '手机号',
@@ -11,7 +17,9 @@ Page({
   data: {
     pending: [],
     active: [],
-    activeGroups: [],
+    activeList: [],
+    deptTabs: MEMBER_DEPTS,
+    deptIndex: 0,
     requests: [],
     loading: false
   },
@@ -33,7 +41,7 @@ Page({
       this.setData({
         pending: this.decorate(pendingRes.list),
         active,
-        activeGroups: this.groupByDept(active),
+        activeList: this.filterDept(active, this.data.deptIndex),
         requests: (requestRes.list || []).map((item) => this.decorateRequest(item))
       })
     } catch (err) {
@@ -51,15 +59,17 @@ Page({
     }))
   },
 
-  groupByDept(list = []) {
-    const order = ['photo', 'pr', 'ops', 'none']
-    return order
-      .map((key) => ({
-        key,
-        label: DEPT_LABEL[key] || '未分配',
-        members: list.filter((item) => (item.dept || 'none') === key)
-      }))
-      .filter((group) => group.members.length)
+  filterDept(list = [], index = 0) {
+    const key = MEMBER_DEPTS[index].key
+    return list.filter((item) => item.dept === key)
+  },
+
+  onDept(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    this.setData({
+      deptIndex: index,
+      activeList: this.filterDept(this.data.active, index)
+    })
   },
 
   decorateRequest(request) {

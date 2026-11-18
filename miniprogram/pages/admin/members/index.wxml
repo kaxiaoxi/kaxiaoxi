@@ -39,27 +39,33 @@
   </view>
 
   <view class="section">在册 {{active.length}}</view>
-  <block wx:for="{{activeGroups}}" wx:key="key" wx:for-item="group">
-    <view class="group-head">
-      <text>{{group.label}}</text>
-      <text class="group-count">{{group.members.length}} 人</text>
-    </view>
-    <view class="card member" wx:for="{{group.members}}" wx:for-item="member" wx:key="_id">
-      <view class="member__head">
-        <image
-          wx:if="{{member.avatarFileID}}"
-          class="member__avatar"
-          src="{{member.avatarFileID}}"
-          mode="aspectFill"
-        />
-        <view wx:else class="member__avatar" style="background: {{member.avatarColor}}">
-          {{member.avatarText}}
-        </view>
-        <view class="member__info">
-          <view class="member__name">{{member.name}}</view>
-          <view class="muted">{{member.roleLabel}} · {{member.studentNo}}</view>
-        </view>
+  <view class="dept-tabs">
+    <view
+      class="dept-tab {{index === deptIndex ? 'dept-tab--on' : ''}}"
+      wx:for="{{deptTabs}}"
+      wx:key="key"
+      data-index="{{index}}"
+      bindtap="onDept"
+    >{{item.label}}</view>
+  </view>
+  <view class="card empty" wx:if="{{!activeList.length}}">
+    <text class="muted">该部门暂无在册成员</text>
+  </view>
+  <view class="card member" wx:for="{{activeList}}" wx:key="_id">
+    <view class="member__head">
+      <image
+        wx:if="{{item.avatarFileID}}"
+        class="member__avatar"
+        src="{{item.avatarFileID}}"
+        mode="aspectFill"
+      />
+      <view wx:else class="member__avatar" style="background: {{item.avatarColor}}">
+        {{item.avatarText}}
+      </view>
+      <view class="member__info">
+        <view class="member__name">{{item.name}}</view>
+        <view class="muted">{{item.roleLabel}} · {{item.studentNo}}</view>
       </view>
     </view>
-  </block>
+  </view>
 </view>
