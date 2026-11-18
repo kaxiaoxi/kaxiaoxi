@@ -1,5 +1,4 @@
-﻿const { call } = require('../../../services/api')
-const { DEPT_LABEL } = require('../../../utils/constants')
+const { call } = require('../../../services/api')
 
 const DEPTS = [
   { value: 'photo', label: '摄影师队' },
@@ -10,13 +9,12 @@ const DEPTS = [
 Page({
   data: {
     year: '',
+    chairmanName: '',
     nextYear: '',
+    chairmanNo: '',
+    ministerNo: '',
     depts: DEPTS,
     deptIndex: 0,
-    ministers: [],
-    youngMembers: [],
-    chairmanCount: 0,
-    ministerCount: 0,
     loading: true
   },
 
@@ -26,27 +24,12 @@ Page({
 
   async load() {
     try {
-      const [settings, memberRes] = await Promise.all([
-        call('admin.getSettings', {}),
-        call('member.list', { status: 'active' })
-      ])
-      const [start] = settings.academicYear.split('-')
-      const list = (memberRes.list || []).map((item) => ({
-        ...item,
-        deptLabel: DEPT_LABEL[item.dept] || '未分配'
-      }))
-
+      const res = await call('admin.getSettings', {})
+      const [start] = res.academicYear.split('-')
       this.setData({
-        year: settings.academicYear,
+        year: res.academicYear,
+        chairmanName: res.chairmanName,
         nextYear: `${Number(start) + 1}-${Number(start) + 2}`,
-        ministers: list
-          .filter((item) => item.role === 'minister')
-          .map((item) => ({ ...item, checked: false })),
-        youngMembers: list
-          .filter((item) => item.role === 'member')
-          .map((item) => ({ ...item, checked: false })),
-        chairmanCount: 0,
-        ministerCount: 0,
         loading: false
       })
     } catch (err) {
@@ -59,27 +42,16 @@ Page({
     this.setData({ nextYear: e.detail.value })
   },
 
+  onChairmanNo(e) {
+    this.setData({ chairmanNo: e.detail.value })
+  },
+
+  onMinisterNo(e) {
+    this.setData({ ministerNo: e.detail.value })
+  },
+
   onDept(e) {
     this.setData({ deptIndex: Number(e.detail.value) })
-  },
-
-  onToggleChairman(e) {
-    const id = e.currentTarget.dataset.id
-    const ministers = this.data.ministers.map((item) =>
-      item._id === id ? { ...item, checked: !item.checked } : item
-    )
-    this.setData({ ministers, chairmanCount: ministers.filter((item) => item.checked).length })
-  },
-
-  onToggleMinister(e) {
-    const id = e.currentTarget.dataset.id
-    const youngMembers = this.data.youngMembers.map((item) =>
-      item._id === id ? { ...item, checked: !item.checked } : item
-    )
-    this.setData({
-      youngMembers,
-      ministerCount: youngMembers.filter((item) => item.checked).length
-    })
   },
 
   onArchive() {
@@ -99,58 +71,50 @@ Page({
     })
   },
 
-  onAppointChairmen() {
-    const targets = this.data.ministers.filter((item) => item.checked)
-    if (!targets.length) {
-      wx.showToast({ title: '请先选择部长', icon: 'none' })
+  onAppointChairman() {
+    const { chairmanNo } = this.data
+    if (!/^\d{10}$/.test(chairmanNo)) {
+      wx.showToast({ title: '请填写 10 位学号', icon: 'none' })
       return
     }
-    const names = targets.map((item) => item.name).join('、')
     wx.showModal({
       title: '任命新主席',
-      content: `确认任命 ${names} 为影协主席？`,
+      content: `确认任命学号 ${chairmanNo} 为影协主席？对方将获得全部管理权限。`,
       success: async (res) => {
         if (!res.confirm) return
-        let success = 0
-        for (const item of targets) {
-          try {
-            await call('admin.appointChairman', { studentNo: item.studentNo })
-            success += 1
-          } catch (err) {
-            // 单个失败不影响其他
-          }
+        try {
+          const result = await call('admin.appointChairman', { studentNo: chairmanNo })
+          wx.showToast({ title: `已任命 ${result.name}`, icon: 'success' })
+          this.setData({ chairmanNo: '' })
+        } catch (err) {
+          wx.showToast({ title: err.message || '任命失败', icon: 'none' })
         }
-        wx.showToast({ title: `已任命 ${success} 人`, icon: 'none' })
-        this.load()
       }
     })
   },
 
-  onAppointMinisters() {
-    const { youngMembers, depts, deptIndex } = this.data
-    const targets = youngMembers.filter((item) => item.checked)
-    if (!targets.length) {
-      wx.showToast({ title: '请先选择小干', icon: 'none' })
+  onAppointMinister() {
+    const { ministerNo, depts, deptIndex } = this.data
+    if (!/^\d{10}$/.test(ministerNo)) {
+      wx.showToast({ title: '请填写 10 位学号', icon: 'none' })
       return
     }
     const dept = depts[deptIndex]
-    const names = targets.map((item) => item.name).join('、')
     wx.showModal({
       title: '任命新部长',
-      content: `确认任命 ${names} 为${dept.label}部长？`,
+      content: `确认任命学号 ${ministerNo} 为${dept.label}部长？`,
       success: async (res) => {
         if (!res.confirm) return
-        let success = 0
-        for (const item of targets) {
-          try {
-            await call('admin.appointMinister', { studentNo: item.studentNo, dept: dept.value })
-            success += 1
-          } catch (err) {
-            // 单个失败不影响其他
-          }
+        try {
+          const result = await call('admin.appointMinister', {
+            studentNo: ministerNo,
+            dept: dept.value
+          })
+          wx.showToast({ title: `已任命 ${result.name}`, icon: 'success' })
+          this.setData({ ministerNo: '' })
+        } catch (err) {
+          wx.showToast({ title: err.message || '任命失败', icon: 'none' })
         }
-        wx.showToast({ title: `已任命 ${success} 人`, icon: 'none' })
-        this.load()
       }
     })
   }
