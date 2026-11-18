@@ -1,4 +1,4 @@
-const { db } = require('../lib/db')
+﻿const { db } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { requireChairman } = require('../lib/member')
 const { notify } = require('../lib/notify')
@@ -63,7 +63,7 @@ async function appointChairman(payload = {}, openid) {
   await requireChairman(openid)
   const studentNo = typeof payload.studentNo === 'string' ? payload.studentNo.trim() : ''
   const target = await findMember(studentNo)
-  if (target.role === 'chairman') throw new BizError(40008, '该成员已经是主席')
+  if (target.role !== 'minister') throw new BizError(40008, '只能从部长中任命主席')
 
   await db
     .collection('members')
@@ -89,9 +89,7 @@ async function appointMinister(payload = {}, openid) {
   if (!DEPTS.includes(dept)) throw new BizError(40001, '请选择部门')
 
   const target = await findMember(studentNo)
-  if (target.role === 'minister' && target.dept === dept) {
-    throw new BizError(40008, '该成员已经是该部门部长')
-  }
+  if (target.role !== 'member') throw new BizError(40008, '只能从小干中任命部长')
 
   await db
     .collection('members')
@@ -110,3 +108,4 @@ async function appointMinister(payload = {}, openid) {
 }
 
 module.exports = { getSettings, archiveYear, appointChairman, appointMinister }
+

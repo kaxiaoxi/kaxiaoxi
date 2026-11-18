@@ -1,4 +1,4 @@
-<view class="page">
+﻿<view class="page">
   <view class="section">学年</view>
   <view class="card">
     <view class="line">
@@ -15,59 +15,55 @@
   <view class="section">任命新主席</view>
   <view class="card">
     <view class="line">
-      <text>选择成员</text>
-      <text class="value">{{selectedName ? '已选：' + selectedName : '点击头像选择'}}</text>
+      <text>从部长中选择</text>
+      <text class="value">已选 {{chairmanCount}} 人</text>
     </view>
-    <view class="avatar-grid">
+    <view class="chips" wx:if="{{ministers.length}}">
       <view
-        class="avatar-item {{item._id === selectedId ? 'avatar-item--on' : ''}}"
-        wx:for="{{chairmanList}}"
+        class="chip {{item.checked ? 'chip--on' : ''}}"
+        wx:for="{{ministers}}"
         wx:key="_id"
         data-id="{{item._id}}"
-        bindtap="onSelectChairman"
+        bindtap="onToggleChairman"
       >
-        <view class="avatar-box">
-          <image
-            wx:if="{{item.avatarFileID}}"
-            class="avatar-img"
-            src="{{item.avatarFileID}}"
-            mode="aspectFill"
-          />
-          <view wx:else class="avatar-text" style="background: {{item.avatarColor}}">
-            {{item.avatarText}}
-          </view>
-          <view class="avatar-check" wx:if="{{item._id === selectedId}}">✓</view>
-        </view>
-        <text class="avatar-name">{{item.name}}</text>
-        <text class="avatar-dept">{{item.deptLabel}}</text>
+        <text class="chip__name">{{item.name}}</text>
+        <text class="chip__sub">{{item.deptLabel}}</text>
       </view>
     </view>
-    <button class="btn btn--ghost btn-top" bindtap="onAppointChairman">任命为主席</button>
+    <text class="muted" wx:else>暂无可任命的部长</text>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointChairmen">任命为主席</button>
   </view>
 
   <view class="section">任命新部长</view>
   <view class="card">
     <view class="line">
-      <text>学号</text>
-      <input
-        class="input"
-        type="number"
-        maxlength="10"
-        placeholder="10 位学号"
-        value="{{ministerNo}}"
-        bindinput="onMinisterNo"
-      />
-    </view>
-    <view class="line">
-      <text>所属部门</text>
+      <text>部门</text>
       <picker range="{{depts}}" range-key="label" value="{{deptIndex}}" bindchange="onDept">
         <view class="value">{{depts[deptIndex].label}}</view>
       </picker>
     </view>
-    <button class="btn btn--ghost btn-top" bindtap="onAppointMinister">任命为部长</button>
+    <view class="line">
+      <text>从小干中选择</text>
+      <text class="value">已选 {{ministerCount}} 人</text>
+    </view>
+    <view class="chips" wx:if="{{youngMembers.length}}">
+      <view
+        class="chip {{item.checked ? 'chip--on' : ''}}"
+        wx:for="{{youngMembers}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggleMinister"
+      >
+        <text class="chip__name">{{item.name}}</text>
+        <text class="chip__sub">{{item.deptLabel}}</text>
+      </view>
+    </view>
+    <text class="muted" wx:else>暂无可任命的小干</text>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointMinisters">任命为部长</button>
   </view>
 
   <view class="tip">
-    协会可有多位主席与多位部长，任命不会降级现任成员；任命后会向对方发送站内消息。学年切换只改统计口径，不会删除历史数据。
+    主席从部长中任命，部长从小干中任命，均支持多选；任命不会降级其他人，任命后会向对方发送站内消息。
   </view>
 </view>
+
