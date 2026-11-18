@@ -2,7 +2,7 @@ const { call } = require('../../services/api')
 
 Page({
   data: {
-    version: '1.0.0',
+    version: '1.1.0',
     content: '',
     contact: '',
     submitting: false
@@ -44,3 +44,4 @@ Page({
     }
   }
 })
+
