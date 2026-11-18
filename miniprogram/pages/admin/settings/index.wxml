@@ -15,27 +15,17 @@
   <view class="section">任命新主席</view>
   <view class="card">
     <view class="line">
-      <text>勾选成员</text>
-      <text class="value">已选 {{selectedCount}} 人</text>
-    </view>
-    <scroll-view class="member-list" scroll-y>
-      <view
-        class="member {{item.role === 'chairman' ? 'member--disabled' : ''}}"
-        wx:for="{{members}}"
-        wx:key="_id"
-        data-id="{{item._id}}"
-        bindtap="onToggle"
+      <text>选择成员</text>
+      <picker
+        wx:if="{{chairmanLabels.length}}"
+        range="{{chairmanLabels}}"
+        value="{{chairmanIndex}}"
+        bindchange="onChairmanChange"
       >
-        <view class="checkbox {{item.checked ? 'checkbox--on' : ''}}">{{item.checked ? '✓' : ''}}</view>
-        <view class="member__main">
-          <view class="member__name">
-            {{item.name}}
-            <text class="member__tag" wx:if="{{item.role === 'chairman'}}">现任主席</text>
-          </view>
-          <view class="member__sub">{{item.studentNo}} · {{item.deptLabel}}</view>
-        </view>
-      </view>
-    </scroll-view>
+        <view class="picker-value">{{chairmanLabels[chairmanIndex]}} ›</view>
+      </picker>
+      <text class="value" wx:else>暂无可任命成员</text>
+    </view>
     <button class="btn btn--ghost btn-top" bindtap="onAppointChairman">任命为主席</button>
   </view>
 
