@@ -102,9 +102,9 @@
 }
 
 .cell--selected .daynum {
-  background: var(--blue);
-  color: #fff;
-  font-weight: 600;
+  background: rgba(46, 95, 126, 0.14);
+  color: var(--blue);
+  font-weight: 700;
 }
 
 .pills {
@@ -173,7 +173,9 @@
 }
 
 .day-head {
-  padding: 28rpx 28rpx 8rpx;
+  margin-top: 16rpx;
+  padding: 40rpx 28rpx 8rpx;
+  border-top: 16rpx solid #f7f7f8;
   font-size: 24rpx;
   font-weight: 600;
   color: #8e8e93;

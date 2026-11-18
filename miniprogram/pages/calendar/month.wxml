@@ -54,7 +54,7 @@
   <view class="loading" wx:if="{{loading}}">加载中…</view>
 
   <view class="day-head">{{selectedLabel}}</view>
-  <view class="empty" wx:if="{{!dayEvents.length}}">当天没有安排</view>
+  <view class="empty" wx:if="{{selected && !dayEvents.length}}">当天没有安排</view>
   <view class="event" wx:for="{{dayEvents}}" wx:key="_id" data-id="{{item._id}}" bindtap="onOpen">
     <view class="event__bar bar--{{item.colorKey}}"></view>
     <view class="event__main">
