@@ -36,19 +36,27 @@
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "images/tab/home.png",
+        "selectedIconPath": "images/tab/home-active.png"
       },
       {
         "pagePath": "pages/task/list",
-        "text": "任务"
+        "text": "任务",
+        "iconPath": "images/tab/task.png",
+        "selectedIconPath": "images/tab/task-active.png"
       },
       {
         "pagePath": "pages/calendar/month",
-        "text": "年历"
+        "text": "年历",
+        "iconPath": "images/tab/calendar.png",
+        "selectedIconPath": "images/tab/calendar-active.png"
       },
       {
         "pagePath": "pages/mine/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "images/tab/mine.png",
+        "selectedIconPath": "images/tab/mine-active.png"
       }
     ]
   },
