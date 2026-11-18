@@ -71,24 +71,29 @@ async function create(payload = {}, openid) {
     }
   })
 
-  await createAutoTodos(res._id, data, openid)
+  await createAutoTodos(res._id, data, openid, me.dept)
+  await createCalendarEvent(res._id, data, openid)
   return { id: res._id }
 }
 
-async function createAutoTodos(taskId, data, openid) {
+async function createAutoTodos(taskId, data, openid, publisherDept) {
   try {
     const now = db.serverDate()
     const confirmDue = new Date(data.signupDeadline.getTime() - 24 * 3600 * 1000)
     const collectDue = new Date(data.endAt.getTime() + 2 * 24 * 3600 * 1000)
     const base = {
-      scope: 'personal',
-      dept: '',
+      // 自动待办对本部门可见，队里其他人也能看到并加入协作
+      audience: 'dept',
+      dept: publisherDept,
+      participants: [],
       ownerOpenid: openid,
       creatorOpenid: openid,
       priority: 2,
-      status: 'todo',
+      done: false,
+      deleted: false,
       source: 'task',
       sourceTaskId: taskId,
+      sourceEventId: '',
       completedAt: null,
       createdAt: now,
       updatedAt: now
@@ -115,6 +120,61 @@ async function createAutoTodos(taskId, data, openid) {
     })
   } catch (err) {
     console.warn('[task] 自动待办创建失败', taskId, err)
+  }
+}
+
+function dateKeyOf(value) {
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (n) => (n < 10 ? `0${n}` : `${n}`)
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
+function timeTextOf(startAt, endAt) {
+  const start = startAt instanceof Date ? startAt : new Date(startAt)
+  const end = endAt instanceof Date ? endAt : new Date(endAt)
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return '待定'
+  const pad = (n) => (n < 10 ? `0${n}` : `${n}`)
+  const sameDay = dateKeyOf(start) === dateKeyOf(end)
+  const head = `${pad(start.getHours())}:${pad(start.getMinutes())}`
+  if (!sameDay) return `${head} 开始`
+  return `${head}-${pad(end.getHours())}:${pad(end.getMinutes())}`
+}
+
+/**
+ * 任务发布后自动落一条年历事件，让「任务」和「年历」两处对得上。
+ * 任务取消 / 删除时本应把事件置为「已取消」，但仓库里还没有 task.cancel 接口，
+ * 等取消功能上线后在这里补：把 sourceTaskId 对应事件 status 改成 已取消。
+ */
+async function createCalendarEvent(taskId, data, openid) {
+  try {
+    const startDate = dateKeyOf(data.startAt)
+    if (!startDate) return
+    const endDate = dateKeyOf(data.endAt)
+    await db.collection('calendar_events').add({
+      data: {
+        title: data.title.slice(0, 30),
+        type: '其他',
+        startDate,
+        endDate: endDate && endDate !== startDate ? endDate : null,
+        timeText: timeTextOf(data.startAt, data.endAt),
+        location: (data.locationName || '').slice(0, 40),
+        ownerOpenid: openid,
+        deputyOpenid: null,
+        status: '已确定',
+        visibility: 'public',
+        note: (data.description || '').slice(0, 200),
+        remindDate: null,
+        sourceTaskId: taskId,
+        deleted: false,
+        createdBy: openid,
+        createdAt: db.serverDate(),
+        updatedAt: db.serverDate()
+      }
+    })
+  } catch (err) {
+    // 年历写入失败不影响发布主流程
+    console.warn('[task] 自动落年历失败', taskId, err)
   }
 }
 

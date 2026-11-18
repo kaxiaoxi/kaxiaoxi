@@ -425,3 +425,32 @@
 .modal__btn {
   margin-top: 8rpx;
 }
+
+/* ---- 部门待办入口（仅部长 / 主席） ---- */
+.dept-entry {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.dept-entry__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.dept-entry__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.dept-entry__text {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--s-2);
+}
+
+.dept-entry__arrow {
+  font-size: 36rpx;
+  color: var(--s-3);
+}

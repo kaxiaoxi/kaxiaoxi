@@ -5,8 +5,9 @@
       <text>{{year}}年</text>
     </view>
     <view class="calendar-top__actions">
+      <view class="calendar-top__btn glass" wx:if="{{isStaff}}" bindtap="onList">列表</view>
       <view class="calendar-top__btn glass" bindtap="onToday">今天</view>
-      <view class="calendar-top__add glass" bindtap="onCreate">＋</view>
+      <view class="calendar-top__add glass" wx:if="{{isStaff}}" bindtap="onCreate">＋</view>
     </view>
   </view>
 
@@ -46,7 +47,7 @@
             wx:for="{{item.items}}"
             wx:for-item="ev"
             wx:key="id"
-            class="pill pill--{{ev.colorKey}}"
+            class="pill pill--{{ev.colorKey}} {{ev.isStaff ? 'pill--staff' : ''}}"
           >{{ev.title}}</view>
           <view class="pill-more" wx:if="{{item.more}}">+{{item.more}}</view>
         </view>
@@ -78,7 +79,14 @@
         <view class="event__title">{{item.title}}</view>
         <view class="event__meta">
           <text>{{item.timeText}}</text>
-          <text wx:if="{{item.locationName}}"> · {{item.locationName}}</text>
+          <text wx:if="{{item.dayText}}"> · {{item.dayText}}</text>
+          <text wx:if="{{item.location}}"> · {{item.location}}</text>
+        </view>
+        <view class="event__tags">
+          <text class="chip chip--type">{{item.type}}</text>
+          <text class="chip {{item.statusClass}}">{{item.status}}</text>
+          <text class="event__owner" wx:if="{{item.ownerName}}">{{item.ownerName}}</text>
+          <text class="chip chip--staff" wx:if="{{item.isStaffTag}}">内部</text>
         </view>
       </view>
       <view class="event__arrow">›</view>

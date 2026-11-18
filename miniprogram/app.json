@@ -21,7 +21,9 @@
     "pages/mine/erke/index",
     "pages/mine/index",
     "pages/about/index",
-    "pages/about/doc/index"
+    "pages/about/doc/index",
+    "pages/calendar/list/index",
+    "pages/todo/detail/index"
   ],
   "window": {
     "navigationBarTitleText": "卡小西",

@@ -1,56 +1,101 @@
 const { call } = require('../../../services/api')
-
-const TYPES = ['招新', '例会', '外拍', '比赛', '展览', '截止', '其他']
+const { TYPES, STATUS } = require('../../../utils/calendar')
 
 function pad(n) {
   return n < 10 ? `0${n}` : `${n}`
 }
 
-function today() {
-  const d = new Date()
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+function todayKey() {
+  const now = new Date()
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
 }
 
 Page({
   data: {
     id: '',
     types: TYPES,
-    typeIndex: 1,
+    typeIndex: 0,
+    statuses: STATUS,
+    statusIndex: 1,
+    members: [],
+    memberNames: [],
+    deputyNames: [],
+    ownerIndex: -1,
+    deputyIndex: 0,
     form: {
       title: '',
-      locationName: '',
-      description: ''
+      location: '',
+      timeText: '全天',
+      note: ''
     },
-    date: '',
-    startTime: '19:00',
-    endTime: '21:00',
-    allDay: false,
+    startDate: '',
+    endDate: '',
+    remindDate: '',
+    visibility: 'public',
     submitting: false
   },
 
   onLoad(options) {
-    const id = options.id || ''
-    this.setData({ id, date: today() })
-    if (id) this.load(id)
+    this.setData({ startDate: todayKey() })
+    this.selfOpenid = (getApp().globalData.member || {})._openid || ''
+    this.loadMembers().then(() => {
+      const id = options.id || ''
+      if (id) {
+        this.setData({ id })
+        this.loadEvent(id)
+      } else {
+        this.setDefaultOwner()
+      }
+    })
   },
 
-  async load(id) {
+  /** 选人数据只有部长与主席能取，用于主 / 副负责人。 */
+  async loadMembers() {
+    try {
+      const res = await call('member.options')
+      const members = res.list || []
+      this.setData({
+        members,
+        memberNames: members.map((item) => item.name),
+        deputyNames: ['不设置'].concat(members.map((item) => item.name))
+      })
+    } catch (err) {
+      wx.showToast({ title: err.message || '成员加载失败', icon: 'none' })
+    }
+  },
+
+  setDefaultOwner() {
+    const { members } = this.data
+    let index = members.findIndex((item) => item.openid === this.selfOpenid)
+    if (index < 0) index = 0
+    this.setData({ ownerIndex: members.length ? index : -1 })
+  },
+
+  async loadEvent(id) {
     try {
       const res = await call('calendar.detail', { id })
       const event = res.event
-      const start = new Date(event.startAt)
-      const end = new Date(event.endAt)
+      const { members } = this.data
+      const ownerIndex = members.findIndex((item) => item.openid === event.ownerOpenid)
+      const deputyIndex = event.deputyOpenid
+        ? members.findIndex((item) => item.openid === event.deputyOpenid) + 1
+        : 0
+
       this.setData({
         form: {
           title: event.title,
-          locationName: event.locationName || '',
-          description: event.description || ''
+          location: event.location || '',
+          timeText: event.timeText || '全天',
+          note: event.note || ''
         },
         typeIndex: Math.max(TYPES.indexOf(event.type), 0),
-        date: `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`,
-        startTime: `${pad(start.getHours())}:${pad(start.getMinutes())}`,
-        endTime: `${pad(end.getHours())}:${pad(end.getMinutes())}`,
-        allDay: !!event.allDay
+        statusIndex: Math.max(STATUS.indexOf(event.status), 1),
+        ownerIndex,
+        deputyIndex,
+        startDate: event.startDate,
+        endDate: event.endDate || '',
+        remindDate: event.remindDate || '',
+        visibility: event.visibility || 'public'
       })
     } catch (err) {
       wx.showToast({ title: err.message || '加载失败', icon: 'none' })
@@ -66,34 +111,76 @@ Page({
     this.setData({ typeIndex: Number(e.detail.value) })
   },
 
-  onDate(e) {
-    this.setData({ date: e.detail.value })
+  onStatus(e) {
+    this.setData({ statusIndex: Number(e.detail.value) })
   },
 
-  onStartTime(e) {
-    this.setData({ startTime: e.detail.value })
+  onOwner(e) {
+    this.setData({ ownerIndex: Number(e.detail.value) })
   },
 
-  onEndTime(e) {
-    this.setData({ endTime: e.detail.value })
+  onDeputy(e) {
+    this.setData({ deputyIndex: Number(e.detail.value) })
   },
 
-  onAllDay(e) {
-    this.setData({ allDay: e.detail.value })
+  onStartDate(e) {
+    this.setData({ startDate: e.detail.value })
+  },
+
+  onEndDate(e) {
+    this.setData({ endDate: e.detail.value })
+  },
+
+  onClearEndDate() {
+    this.setData({ endDate: '' })
+  },
+
+  onRemindDate(e) {
+    this.setData({ remindDate: e.detail.value })
+  },
+
+  onClearRemindDate() {
+    this.setData({ remindDate: '' })
+  },
+
+  onQuickTime(e) {
+    this.setData({ 'form.timeText': e.currentTarget.dataset.text })
+  },
+
+  onVisibility(e) {
+    this.setData({ visibility: e.currentTarget.dataset.value })
   },
 
   async onSubmit() {
     if (this.data.submitting) return
-    const { form, date, startTime, endTime, allDay, typeIndex, id } = this.data
+    const {
+      id,
+      form,
+      typeIndex,
+      statusIndex,
+      members,
+      ownerIndex,
+      deputyIndex,
+      startDate,
+      endDate,
+      remindDate,
+      visibility
+    } = this.data
+
     if (!form.title.trim()) {
-      wx.showToast({ title: '请填写事件名称', icon: 'none' })
+      wx.showToast({ title: '请填写日程名称', icon: 'none' })
       return
     }
-
-    const startAt = allDay ? `${date}T00:00:00+08:00` : `${date}T${startTime}:00+08:00`
-    const endAt = allDay ? `${date}T23:59:00+08:00` : `${date}T${endTime}:00+08:00`
-    if (!allDay && new Date(endAt) <= new Date(startAt)) {
-      wx.showToast({ title: '结束时间需晚于开始时间', icon: 'none' })
+    if (!startDate) {
+      wx.showToast({ title: '请选择开始日期', icon: 'none' })
+      return
+    }
+    if (endDate && endDate < startDate) {
+      wx.showToast({ title: '结束日期不能早于开始日期', icon: 'none' })
+      return
+    }
+    if (ownerIndex < 0 || !members[ownerIndex]) {
+      wx.showToast({ title: '请选择主负责人', icon: 'none' })
       return
     }
 
@@ -103,11 +190,17 @@ Page({
         id,
         title: form.title,
         type: TYPES[typeIndex],
-        startAt,
-        endAt,
-        allDay,
-        locationName: form.locationName,
-        description: form.description
+        startDate,
+        endDate: endDate || '',
+        timeText: form.timeText || '全天',
+        location: form.location,
+        ownerOpenid: members[ownerIndex].openid,
+        deputyOpenid:
+          deputyIndex > 0 && members[deputyIndex - 1] ? members[deputyIndex - 1].openid : '',
+        status: STATUS[statusIndex],
+        visibility,
+        note: form.note,
+        remindDate: remindDate || ''
       })
       wx.showToast({ title: '已保存', icon: 'success' })
       setTimeout(() => wx.navigateBack(), 500)
