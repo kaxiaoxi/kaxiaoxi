@@ -1,6 +1,11 @@
 <view class="page">
   <view class="profile">
-    <view class="profile__avatar-wrap">
+    <button
+      class="profile__avatar-btn"
+      open-type="chooseAvatar"
+      bindchooseavatar="onChooseAvatar"
+      hover-class="none"
+    >
       <image
         wx:if="{{member.avatarFileID}}"
         class="profile__avatar-img"
@@ -10,13 +15,7 @@
       <view wx:else class="profile__avatar" style="background: {{member.avatarColor || '#2E5F7E'}}">
         {{member.avatarText || '?'}}
       </view>
-      <button
-        class="profile__avatar-btn"
-        open-type="chooseAvatar"
-        bindchooseavatar="onChooseAvatar"
-        hover-class="none"
-      ></button>
-    </view>
+    </button>
     <view class="profile__meta">
       <view class="profile__name">{{member.name || '未登录'}}</view>
       <view class="profile__sub">{{deptLabel}} · {{roleLabel}} · {{member.academicYear || ''}}</view>
