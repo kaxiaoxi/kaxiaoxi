@@ -1,6 +1,6 @@
 const { call } = require('../../services/api')
 const { DEPT_LABEL, ROLE_LABEL } = require('../../utils/constants')
-const { formatRange } = require('../../utils/task')
+const { formatRange, formatDay, formatTime } = require('../../utils/task')
 const { dueText } = require('../../utils/todo')
 
 Page({
@@ -9,7 +9,10 @@ Page({
     deptLabel: '',
     roleLabel: '',
     tasks: [],
-    todos: []
+    todos: [],
+    unreadMessages: [],
+    activeMessage: null,
+    showMessage: false
   },
 
   onShow() {
@@ -42,9 +45,10 @@ Page({
 
   async load() {
     try {
-      const [taskRes, todoRes] = await Promise.all([
+      const [taskRes, todoRes, msgRes] = await Promise.all([
         call('task.list', { scope: 'all', status: 'recruiting' }),
-        call('todo.list', { scope: 'mine' })
+        call('todo.list', { scope: 'mine' }),
+        call('message.list', { read: false })
       ])
       const tasks = (taskRes.list || []).slice(0, 3).map((task) => ({
         ...task,
@@ -54,9 +58,31 @@ Page({
         ...item,
         dueText: dueText(item.dueAt)
       }))
-      this.setData({ tasks, todos })
+      const unreadMessages = (msgRes.list || []).map((item) => ({
+        ...item,
+        timeText: `${formatDay(item.createdAt)} ${formatTime(item.createdAt)}`
+      }))
+      this.setData({ tasks, todos, unreadMessages })
     } catch (err) {
       console.warn('[home] 加载失败', err)
     }
+  },
+
+  async onOpenMessage(e) {
+    const id = e.currentTarget.dataset.id
+    const message = this.data.unreadMessages.find((item) => item._id === id)
+    if (!message) return
+
+    this.setData({ activeMessage: message, showMessage: true })
+    try {
+      await call('message.read', { id })
+      this.load()
+    } catch (err) {
+      console.warn('[home] 标记已读失败', err)
+    }
+  },
+
+  onCloseMessage() {
+    this.setData({ showMessage: false, activeMessage: null })
   }
 })

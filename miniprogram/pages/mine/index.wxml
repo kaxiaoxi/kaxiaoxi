@@ -61,7 +61,7 @@
   </view>
 
   <view class="entry" bindtap="onOpenMessages">
-    <text>消息</text>
+    <text>已读消息</text>
     <text class="entry__arrow">›</text>
   </view>
 
