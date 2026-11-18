@@ -1,4 +1,4 @@
-const { call } = require('../../../services/api')
+﻿const { call } = require('../../../services/api')
 const { DEPT_LABEL } = require('../../../utils/constants')
 
 const DEPTS = [
@@ -15,8 +15,8 @@ Page({
     depts: DEPTS,
     deptIndex: 0,
     chairmanList: [],
-    chairmanLabels: [],
-    chairmanIndex: 0,
+    selectedId: '',
+    selectedName: '',
     loading: true
   },
 
@@ -31,18 +31,19 @@ Page({
         call('member.list', { status: 'active' })
       ])
       const [start] = settings.academicYear.split('-')
-      const chairmanList = (memberRes.list || []).filter((item) => item.role !== 'chairman')
-      const chairmanLabels = chairmanList.map((item) => {
-        const dept = DEPT_LABEL[item.dept] || '未分配'
-        return `${item.name}（${item.studentNo} · ${dept}）`
-      })
+      const chairmanList = (memberRes.list || [])
+        .filter((item) => item.role !== 'chairman')
+        .map((item) => ({
+          ...item,
+          deptLabel: DEPT_LABEL[item.dept] || '未分配'
+        }))
 
       this.setData({
         year: settings.academicYear,
         nextYear: `${Number(start) + 1}-${Number(start) + 2}`,
         chairmanList,
-        chairmanLabels,
-        chairmanIndex: 0,
+        selectedId: '',
+        selectedName: '',
         loading: false
       })
     } catch (err) {
@@ -63,8 +64,15 @@ Page({
     this.setData({ deptIndex: Number(e.detail.value) })
   },
 
-  onChairmanChange(e) {
-    this.setData({ chairmanIndex: Number(e.detail.value) })
+  onSelectChairman(e) {
+    const id = e.currentTarget.dataset.id
+    const target = this.data.chairmanList.find((item) => item._id === id)
+    if (!target) return
+    const same = this.data.selectedId === id
+    this.setData({
+      selectedId: same ? '' : id,
+      selectedName: same ? '' : target.name
+    })
   },
 
   onArchive() {
@@ -85,10 +93,10 @@ Page({
   },
 
   onAppointChairman() {
-    const { chairmanList, chairmanIndex } = this.data
-    const target = chairmanList[chairmanIndex]
+    const { chairmanList, selectedId } = this.data
+    const target = chairmanList.find((item) => item._id === selectedId)
     if (!target) {
-      wx.showToast({ title: '暂无可任命成员', icon: 'none' })
+      wx.showToast({ title: '请先选择成员', icon: 'none' })
       return
     }
     wx.showModal({
