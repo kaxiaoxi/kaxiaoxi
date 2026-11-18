@@ -70,6 +70,11 @@
     <text class="entry__arrow">›</text>
   </view>
 
+  <view class="entry" bindtap="onOpenAbout">
+    <text>关于</text>
+    <text class="entry__arrow">›</text>
+  </view>
+
   <view class="entry" wx:if="{{isMinister}}" bindtap="onOpenSummary">
     <text>二课汇总</text>
     <text class="entry__arrow">›</text>
