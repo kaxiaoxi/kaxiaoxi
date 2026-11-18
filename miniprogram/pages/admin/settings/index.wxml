@@ -16,15 +16,31 @@
   <view class="card">
     <view class="line">
       <text>选择成员</text>
-      <picker
-        wx:if="{{chairmanLabels.length}}"
-        range="{{chairmanLabels}}"
-        value="{{chairmanIndex}}"
-        bindchange="onChairmanChange"
+      <text class="value">{{selectedName ? '已选：' + selectedName : '点击头像选择'}}</text>
+    </view>
+    <view class="avatar-grid">
+      <view
+        class="avatar-item {{item._id === selectedId ? 'avatar-item--on' : ''}}"
+        wx:for="{{chairmanList}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onSelectChairman"
       >
-        <view class="picker-value">{{chairmanLabels[chairmanIndex]}} ›</view>
-      </picker>
-      <text class="value" wx:else>暂无可任命成员</text>
+        <view class="avatar-box">
+          <image
+            wx:if="{{item.avatarFileID}}"
+            class="avatar-img"
+            src="{{item.avatarFileID}}"
+            mode="aspectFill"
+          />
+          <view wx:else class="avatar-text" style="background: {{item.avatarColor}}">
+            {{item.avatarText}}
+          </view>
+          <view class="avatar-check" wx:if="{{item._id === selectedId}}">✓</view>
+        </view>
+        <text class="avatar-name">{{item.name}}</text>
+        <text class="avatar-dept">{{item.deptLabel}}</text>
+      </view>
     </view>
     <button class="btn btn--ghost btn-top" bindtap="onAppointChairman">任命为主席</button>
   </view>
