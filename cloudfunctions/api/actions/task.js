@@ -1,4 +1,4 @@
-﻿const { db, _ } = require('../lib/db')
+const { db, _ } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid } = require('../lib/member')
 const { validateTask } = require('../lib/validate')

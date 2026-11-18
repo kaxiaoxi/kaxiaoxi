@@ -1,4 +1,4 @@
-﻿const { BizError } = require('./lib/errors')
+const { BizError } = require('./lib/errors')
 const auth = require('./actions/auth')
 const member = require('./actions/member')
 const task = require('./actions/task')
