@@ -57,6 +57,30 @@ Page({
     wx.navigateTo({ url: '/pages/profile/edit/index' })
   },
 
+  async onChooseAvatar(e) {
+    const tempUrl = e.detail && e.detail.avatarUrl
+    const member = this.data.member
+    if (!tempUrl || !member || !member._id) return
+
+    wx.showLoading({ title: '上传中', mask: true })
+    try {
+      const ext = (tempUrl.match(/\.(\w+)$/) || [])[1] || 'png'
+      const upload = await wx.cloud.uploadFile({
+        cloudPath: `avatars/${member._id}-${Date.now()}.${ext}`,
+        filePath: tempUrl
+      })
+      const res = await call('profile.updateAvatar', { fileID: upload.fileID })
+      const updated = { ...member, avatarFileID: res.avatarFileID }
+      this.setData({ member: updated })
+      getApp().globalData.member = updated
+      wx.hideLoading()
+      wx.showToast({ title: '头像已更新', icon: 'success' })
+    } catch (err) {
+      wx.hideLoading()
+      wx.showToast({ title: err.message || '上传失败', icon: 'none' })
+    }
+  },
+
   onOpenMembers() {
     wx.navigateTo({ url: '/pages/admin/members/index' })
   }
