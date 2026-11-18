@@ -1,4 +1,4 @@
-.profile {
+﻿.profile {
   display: flex;
   align-items: center;
   padding: 24rpx 8rpx 40rpx;
@@ -102,16 +102,4 @@
   border: none;
 }
 
-.profile__avatar-tip {
-  position: absolute;
-  left: 50%;
-  bottom: -8rpx;
-  transform: translateX(-50%);
-  padding: 2rpx 12rpx;
-  border-radius: 12rpx;
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  font-size: 18rpx;
-  line-height: 1.4;
-  white-space: nowrap;
-}
+
