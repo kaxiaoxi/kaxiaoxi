@@ -12,44 +12,41 @@
     <button class="btn btn--ghost btn-top" bindtap="onArchive">切换学年</button>
   </view>
 
-  <view class="section">任命</view>
+  <view class="section">任命新主席</view>
   <view class="card">
     <view class="line">
-      <text>任命新主席</text>
-      <input
-        class="input"
-        type="number"
-        maxlength="10"
-        placeholder="10 位学号"
-        value="{{chairmanNo}}"
-        bindinput="onChairmanNo"
-      />
+      <text>部门 / 部长</text>
+      <picker
+        mode="multiSelector"
+        range="{{chairmanRange}}"
+        value="{{chairmanValue}}"
+        bindcolumnchange="onChairmanColumn"
+        bindchange="onChairmanChange"
+      >
+        <view class="cascader">{{chairmanText}} ›</view>
+      </picker>
     </view>
     <button class="btn btn--ghost btn-top" bindtap="onAppointChairman">任命为主席</button>
   </view>
 
+  <view class="section">任命新部长</view>
   <view class="card">
     <view class="line">
-      <text>任命新部长</text>
-      <input
-        class="input"
-        type="number"
-        maxlength="10"
-        placeholder="10 位学号"
-        value="{{ministerNo}}"
-        bindinput="onMinisterNo"
-      />
-    </view>
-    <view class="line">
-      <text>所属部门</text>
-      <picker range="{{depts}}" range-key="label" value="{{deptIndex}}" bindchange="onDept">
-        <view class="value">{{depts[deptIndex].label}}</view>
+      <text>部门 / 小干</text>
+      <picker
+        mode="multiSelector"
+        range="{{ministerRange}}"
+        value="{{ministerValue}}"
+        bindcolumnchange="onMinisterColumn"
+        bindchange="onMinisterChange"
+      >
+        <view class="cascader">{{ministerText}} ›</view>
       </picker>
     </view>
     <button class="btn btn--ghost btn-top" bindtap="onAppointMinister">任命为部长</button>
   </view>
 
   <view class="tip">
-    主席从部长中任命，部长从小干中任命；任命可多人，不会降级现任成员；任命后会向对方发送站内消息。学年切换只改统计口径，不会删除历史数据。
+    先选部门，再选该部门的成员：主席从部长中任命，部长从小干中任命；任命后会向对方发送站内消息。学年切换只改统计口径，不会删除历史数据。
   </view>
 </view>

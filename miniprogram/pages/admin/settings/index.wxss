@@ -40,3 +40,13 @@
   color: var(--s-3);
   line-height: 1.6;
 }
+
+.cascader {
+  max-width: 400rpx;
+  font-size: 26rpx;
+  color: var(--blue);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
