@@ -39,7 +39,7 @@ async function submit(payload = {}, openid) {
   const result = await send(
     'feedback',
     recipient,
-    { content, time: new Date() },
+    { name: me.name, content, time: new Date() },
     'pages/message/list'
   )
 
