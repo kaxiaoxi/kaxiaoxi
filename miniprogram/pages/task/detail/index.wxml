@@ -54,7 +54,13 @@
   </view>
   <view class="card participants" wx:else>
     <view class="avatar-wrap" wx:for="{{detail.participants}}" wx:key="name">
-      <view class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+      <image
+        wx:if="{{item.avatarFileID}}"
+        class="avatar"
+        src="{{item.avatarFileID}}"
+        mode="aspectFill"
+      />
+      <view wx:else class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
       <text class="avatar__name">{{item.name}}</text>
     </view>
   </view>

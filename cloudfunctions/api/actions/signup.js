@@ -35,6 +35,7 @@ function toRow(signup, member, leave) {
     phone: member ? member.phone : '',
     avatarText: member ? member.avatarText : '?',
     avatarColor: member ? member.avatarColor : '#8A8A8E',
+    avatarFileID: member ? member.avatarFileID || '' : '',
     leaveReason: leave ? leave.reason : '',
     leaveRequestId: leave ? leave._id : ''
   }

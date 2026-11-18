@@ -1,4 +1,4 @@
-const { db } = require('../lib/db')
+﻿const { db, cloud } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid, requireChairman } = require('../lib/member')
 const { notify } = require('../lib/notify')
@@ -146,6 +146,14 @@ async function updateAvatar(payload = {}, openid) {
 
   const fileID = text(payload.fileID, 300)
   if (!fileID.startsWith('cloud://')) throw new BizError(40001, '头像文件不合法')
+
+  if (me.avatarFileID && me.avatarFileID !== fileID) {
+    try {
+      await cloud.deleteFile({ fileList: [me.avatarFileID] })
+    } catch (err) {
+      console.warn('[profile] 删除旧头像失败', err)
+    }
+  }
 
   await db
     .collection('members')
