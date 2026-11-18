@@ -44,7 +44,8 @@ const routes = {
   'erke.export': erke.exportCsv,
   'admin.getSettings': admin.getSettings,
   'admin.archiveYear': admin.archiveYear,
-  'admin.transferChairman': admin.transferChairman,
+  'admin.appointChairman': admin.appointChairman,
+  'admin.appointMinister': admin.appointMinister,
   'profile.submit': profile.submit,
   'profile.mine': profile.mine,
   'profile.listPending': profile.listPending,
@@ -60,4 +61,5 @@ async function route(action, payload, openid) {
 }
 
 module.exports = { route, routes }
+
 

@@ -12,18 +12,44 @@
     <button class="btn btn--ghost btn-top" bindtap="onArchive">切换学年</button>
   </view>
 
-  <view class="section">主席移交</view>
+  <view class="section">任命</view>
   <view class="card">
     <view class="line">
-      <text>当前主席</text>
-      <text class="value">{{chairmanName}}</text>
+      <text>任命新主席</text>
+      <input
+        class="input"
+        type="number"
+        maxlength="10"
+        placeholder="10 位学号"
+        value="{{chairmanNo}}"
+        bindinput="onChairmanNo"
+      />
     </view>
-    <view class="line">
-      <text>新主席学号</text>
-      <input class="input" type="number" maxlength="10" placeholder="10 位学号" value="{{studentNo}}" bindinput="onStudentNo" />
-    </view>
-    <button class="btn btn--ghost btn-top" bindtap="onTransfer">移交</button>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointChairman">任命为主席</button>
   </view>
 
-  <view class="tip">移交后原主席自动变为部长；学年切换只改统计口径，不会删除历史数据。</view>
+  <view class="card">
+    <view class="line">
+      <text>任命新部长</text>
+      <input
+        class="input"
+        type="number"
+        maxlength="10"
+        placeholder="10 位学号"
+        value="{{ministerNo}}"
+        bindinput="onMinisterNo"
+      />
+    </view>
+    <view class="line">
+      <text>所属部门</text>
+      <picker range="{{depts}}" range-key="label" value="{{deptIndex}}" bindchange="onDept">
+        <view class="value">{{depts[deptIndex].label}}</view>
+      </picker>
+    </view>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointMinister">任命为部长</button>
+  </view>
+
+  <view class="tip">
+    协会可有多位主席与多位部长，任命不会降级现任成员；任命后会向对方发送站内消息。学年切换只改统计口径，不会删除历史数据。
+  </view>
 </view>

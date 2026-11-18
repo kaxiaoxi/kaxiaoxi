@@ -1,11 +1,20 @@
 const { call } = require('../../../services/api')
 
+const DEPTS = [
+  { value: 'photo', label: '摄影师队' },
+  { value: 'pr', label: '宣传部' },
+  { value: 'ops', label: '运营部' }
+]
+
 Page({
   data: {
     year: '',
     chairmanName: '',
     nextYear: '',
-    studentNo: '',
+    chairmanNo: '',
+    ministerNo: '',
+    depts: DEPTS,
+    deptIndex: 0,
     loading: true
   },
 
@@ -33,8 +42,16 @@ Page({
     this.setData({ nextYear: e.detail.value })
   },
 
-  onStudentNo(e) {
-    this.setData({ studentNo: e.detail.value })
+  onChairmanNo(e) {
+    this.setData({ chairmanNo: e.detail.value })
+  },
+
+  onMinisterNo(e) {
+    this.setData({ ministerNo: e.detail.value })
+  },
+
+  onDept(e) {
+    this.setData({ deptIndex: Number(e.detail.value) })
   },
 
   onArchive() {
@@ -54,23 +71,49 @@ Page({
     })
   },
 
-  onTransfer() {
-    const { studentNo } = this.data
-    if (!/^\d{10}$/.test(studentNo)) {
+  onAppointChairman() {
+    const { chairmanNo } = this.data
+    if (!/^\d{10}$/.test(chairmanNo)) {
       wx.showToast({ title: '请填写 10 位学号', icon: 'none' })
       return
     }
     wx.showModal({
-      title: '移交主席',
-      content: '移交后你将成为部长，对方成为主席，确定吗？',
+      title: '任命新主席',
+      content: `确认任命学号 ${chairmanNo} 为影协主席？对方将获得全部管理权限。`,
       success: async (res) => {
         if (!res.confirm) return
         try {
-          const result = await call('admin.transferChairman', { studentNo })
-          wx.showToast({ title: `已移交给 ${result.name}`, icon: 'success' })
-          this.load()
+          const result = await call('admin.appointChairman', { studentNo: chairmanNo })
+          wx.showToast({ title: `已任命 ${result.name}`, icon: 'success' })
+          this.setData({ chairmanNo: '' })
         } catch (err) {
-          wx.showToast({ title: err.message || '操作失败', icon: 'none' })
+          wx.showToast({ title: err.message || '任命失败', icon: 'none' })
+        }
+      }
+    })
+  },
+
+  onAppointMinister() {
+    const { ministerNo, depts, deptIndex } = this.data
+    if (!/^\d{10}$/.test(ministerNo)) {
+      wx.showToast({ title: '请填写 10 位学号', icon: 'none' })
+      return
+    }
+    const dept = depts[deptIndex]
+    wx.showModal({
+      title: '任命新部长',
+      content: `确认任命学号 ${ministerNo} 为${dept.label}部长？`,
+      success: async (res) => {
+        if (!res.confirm) return
+        try {
+          const result = await call('admin.appointMinister', {
+            studentNo: ministerNo,
+            dept: dept.value
+          })
+          wx.showToast({ title: `已任命 ${result.name}`, icon: 'success' })
+          this.setData({ ministerNo: '' })
+        } catch (err) {
+          wx.showToast({ title: err.message || '任命失败', icon: 'none' })
         }
       }
     })
