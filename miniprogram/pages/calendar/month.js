@@ -59,7 +59,8 @@ Page({
       year: now.getFullYear(),
       month: now.getMonth() + 1,
       monthName: MONTH_NAMES[now.getMonth()],
-      pickerValue: `${now.getFullYear()}-${pad(now.getMonth() + 1)}`
+      pickerValue: `${now.getFullYear()}-${pad(now.getMonth() + 1)}`,
+      selected: keyOf(now)
     })
   },
 
@@ -69,16 +70,9 @@ Page({
 
   async load() {
     if (this.data.loading) return
-    const { year, month } = this.data
-    const today = new Date()
-    const fallback =
-      today.getFullYear() === year && today.getMonth() === month - 1
-        ? keyOf(today)
-        : keyOf(new Date(year, month - 1, 1))
-    const selected = this.data.selected || fallback
+    const { year, month, selected } = this.data
     this.setData({
       loading: true,
-      selected,
       monthName: MONTH_NAMES[month - 1],
       pickerValue: `${year}-${pad(month)}`
     })
@@ -126,19 +120,26 @@ Page({
       })
     }
 
-    const dayList = events
-      .filter((e) => selected >= e.startKey && selected <= e.endKey)
-      .map((e) => ({
-        ...e,
-        colorKey: TYPE_KEY[e.type] || 'other',
-        dayText: e.startKey === e.endKey ? '' : `${formatDay(e.startAt)}–${formatDay(e.endAt)}`
-      }))
+    const dayList = selected
+      ? events
+          .filter((e) => selected >= e.startKey && selected <= e.endKey)
+          .map((e) => ({
+            ...e,
+            colorKey: TYPE_KEY[e.type] || 'other',
+            dayText: e.startKey === e.endKey ? '' : `${formatDay(e.startAt)}–${formatDay(e.endAt)}`
+          }))
+      : []
 
-    const [, m, d] = selected.split('-')
+    let selectedLabel = '选择日期查看安排'
+    if (selected) {
+      const [, m, d] = selected.split('-')
+      selectedLabel = `${Number(m)} 月 ${Number(d)} 日`
+    }
+
     this.setData({
       cells,
       selected,
-      selectedLabel: `${Number(m)} 月 ${Number(d)} 日`,
+      selectedLabel,
       dayEvents: dayList
     })
   },
@@ -163,19 +164,17 @@ Page({
   },
 
   shiftMonth(delta) {
-    const { year, month, selected } = this.data
-    const baseDay = selected ? Number(selected.split('-')[2]) : new Date().getDate()
+    const { year, month } = this.data
     const date = new Date(year, month - 1 + delta, 1)
     const y = date.getFullYear()
     const m = date.getMonth() + 1
-    const day = Math.min(baseDay, new Date(y, m, 0).getDate())
     this.setData(
       {
         year: y,
         month: m,
         monthName: MONTH_NAMES[m - 1],
         pickerValue: `${y}-${pad(m)}`,
-        selected: `${y}-${pad(m)}-${pad(day)}`
+        selected: ''
       },
       () => this.load()
     )
@@ -191,16 +190,13 @@ Page({
 
   onPickMonth(e) {
     const [y, m] = e.detail.value.split('-').map(Number)
-    const { selected } = this.data
-    const baseDay = selected ? Number(selected.split('-')[2]) : new Date().getDate()
-    const day = Math.min(baseDay, new Date(y, m, 0).getDate())
     this.setData(
       {
         year: y,
         month: m,
         monthName: MONTH_NAMES[m - 1],
         pickerValue: e.detail.value,
-        selected: `${y}-${pad(m)}-${pad(day)}`
+        selected: ''
       },
       () => this.load()
     )
