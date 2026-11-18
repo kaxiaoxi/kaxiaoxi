@@ -1,4 +1,4 @@
-﻿.page {
+.page {
   background: #fff;
   padding-bottom: 180rpx;
 }
@@ -30,12 +30,29 @@
   line-height: 1;
 }
 
+.month-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16rpx;
+}
+
+.month-arrow {
+  width: 72rpx;
+  text-align: center;
+  font-size: 44rpx;
+  line-height: 1;
+  color: #007aff;
+  padding: 16rpx 0;
+}
+
 .month-title {
-  padding: 6rpx 28rpx 18rpx;
+  padding: 6rpx 0 18rpx;
   font-size: 64rpx;
   font-weight: 700;
   color: #000;
   letter-spacing: 2rpx;
+  text-align: center;
 }
 
 .week {
