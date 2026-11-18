@@ -68,39 +68,26 @@
 }
 
 .daynum-wrap {
-  height: 44rpx;
+  height: 46rpx;
   display: flex;
   justify-content: center;
 }
 
 .daynum {
-  min-width: 44rpx;
-  height: 44rpx;
-  line-height: 44rpx;
+  min-width: 46rpx;
+  height: 46rpx;
+  line-height: 46rpx;
   text-align: center;
-  border-radius: 22rpx;
+  border-radius: 12rpx;
   font-size: 30rpx;
   font-weight: 500;
   color: #000;
 }
 
-.cell--selected {
-  background: var(--blue);
-  border-radius: 12rpx;
-}
-
 .cell--selected .daynum {
+  background: var(--blue);
   color: #fff;
   font-weight: 600;
-}
-
-.cell--selected .pill {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-.cell--selected .pill-more {
-  color: rgba(255, 255, 255, 0.85);
 }
 
 .pills {
