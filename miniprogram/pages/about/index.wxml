@@ -27,16 +27,9 @@
     <textarea
       class="textarea"
       maxlength="500"
-      placeholder="说说你遇到的问题或建议，会直接发给主席团"
+      placeholder="说说你遇到的问题或建议，会直接发给主席"
       value="{{content}}"
       bindinput="onContent"
-    />
-    <input
-      class="contact"
-      maxlength="50"
-      placeholder="联系方式（选填，方便回复你）"
-      value="{{contact}}"
-      bindinput="onContact"
     />
     <button class="btn btn--primary submit" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">
       提交反馈

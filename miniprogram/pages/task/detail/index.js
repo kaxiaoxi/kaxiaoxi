@@ -86,12 +86,28 @@ Page({
             title: result.status === 'waitlisted' ? '已进入候补' : '报名成功',
             icon: 'success'
           })
+          if (result.status === 'approved') {
+            await this.setupReminder()
+          }
           this.load()
         } catch (err) {
           wx.showToast({ title: err.message || '报名失败', icon: 'none' })
         }
       }
     })
+  },
+
+  async setupReminder() {
+    try {
+      const tpl = await call('subscribe.templates', {})
+      if (!tpl.activity) return
+      await new Promise((resolve) => {
+        wx.requestSubscribeMessage({ tmplIds: [tpl.activity], complete: resolve })
+      })
+      await call('reminder.create', { taskId: this.taskId })
+    } catch (err) {
+      console.warn('[task] 订阅提醒失败', err)
+    }
   },
 
   cancel() {
