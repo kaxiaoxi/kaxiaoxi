@@ -1,3 +1,9 @@
 {
-  "triggers": []
+  "triggers": [
+    {
+      "name": "reminderTick",
+      "type": "timer",
+      "config": "0 */5 * * * * *"
+    }
+  ]
 }
