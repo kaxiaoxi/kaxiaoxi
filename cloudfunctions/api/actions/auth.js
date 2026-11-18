@@ -23,6 +23,44 @@ async function currentAcademicYear() {
   return academicYearOf(new Date())
 }
 
+async function createReviewTodos(memberId, member, applicantOpenid) {
+  try {
+    const chairRes = await db
+      .collection('members')
+      .where({ role: 'chairman', status: 'active' })
+      .limit(20)
+      .get()
+    if (!chairRes.data.length) return
+
+    const now = db.serverDate()
+    await Promise.all(
+      chairRes.data.map((chair) =>
+        db.collection('todos').add({
+          data: {
+            title: `审核新成员：${member.name}`,
+            description: `${member.studentNo} · ${member.college || '未填学院'}`,
+            scope: 'personal',
+            dept: '',
+            ownerOpenid: chair._openid,
+            creatorOpenid: applicantOpenid,
+            priority: 3,
+            dueAt: null,
+            status: 'todo',
+            source: 'member',
+            sourceTaskId: '',
+            sourceMemberId: memberId,
+            autoRule: 'review_member',
+            completedAt: null,
+            createdAt: now,
+            updatedAt: now
+          }
+        })
+      )
+    )
+  } catch (err) {
+    console.warn('[auth] 审核待办创建失败', err)
+  }
+}
 async function login(payload, openid) {
   const member = await getMemberByOpenid(openid)
   if (!member) return { state: 'new' }
@@ -69,13 +107,17 @@ async function register(payload, openid) {
         }
       })
 
+    if (target.status !== 'active') {
+      await createReviewTodos(target._id, { name, studentNo, college }, openid)
+    }
+
     return { state: target.status === 'active' ? 'active' : 'pending' }
   }
 
   const year = await currentAcademicYear()
   const now = db.serverDate()
 
-  await db.collection('members').add({
+  const created = await db.collection('members').add({
     data: {
       _openid: openid,
       name,
@@ -96,6 +138,8 @@ async function register(payload, openid) {
       updatedAt: now
     }
   })
+
+  await createReviewTodos(created._id, { name, studentNo, college }, openid)
 
   return { state: 'pending' }
 }

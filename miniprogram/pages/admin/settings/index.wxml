@@ -1,40 +1,74 @@
 <view class="page">
-  <view class="section">年度管理</view>
+  <view class="section">学年</view>
   <view class="card">
-    <view class="row" bindtap="onYear">
-      <text>学年管理</text>
-      <view class="row__right">
-        <text class="row__value">{{year}}</text>
-        <text class="row__arrow">›</text>
-      </view>
+    <view class="line">
+      <text>当前学年</text>
+      <text class="value">{{year}}</text>
     </view>
-    <view class="row" bindtap="onAppoint">
-      <text>任命主席 / 部长</text>
-      <view class="row__right">
-        <text class="row__value">{{appointText}}</text>
-        <text class="row__arrow">›</text>
-      </view>
+    <view class="line">
+      <text>下一学年</text>
+      <input class="input" value="{{nextYear}}" bindinput="onNextYear" />
     </view>
-    <view class="row" bindtap="onMembers">
-      <text>成员管理</text>
-      <view class="row__right">
-        <text class="row__value">待审 {{pendingCount}}</text>
-        <text class="row__arrow">›</text>
-      </view>
-    </view>
+    <button class="btn btn--ghost btn-top" bindtap="onArchive">切换学年</button>
   </view>
 
-  <view class="section">其他</view>
+  <view class="section">任命新主席</view>
   <view class="card">
-    <view class="row" bindtap="onAbout">
-      <text>关于与反馈</text>
-      <text class="row__arrow">›</text>
+    <view class="dept-tabs">
+      <view
+        class="dept-tab {{index === chairmanDept ? 'dept-tab--on' : ''}}"
+        wx:for="{{deptLabels}}"
+        wx:key="*this"
+        data-index="{{index}}"
+        bindtap="onChairmanDept"
+      >{{item}}</view>
     </view>
-    <view class="row">
-      <text>当前版本</text>
-      <text class="row__value">v1.1.0</text>
+    <view class="line">
+      <text>选择部长</text>
+      <text class="value">已选 {{chairmanCount}} 人</text>
     </view>
+    <view class="chips" wx:if="{{chairmanCandidates.length}}">
+      <view
+        class="chip {{item.checked ? 'chip--on' : ''}}"
+        wx:for="{{chairmanCandidates}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggleChairman"
+      >{{item.name}}</view>
+    </view>
+    <text class="muted" wx:else>该部门暂无可任命的部长</text>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointChairmen">任命为主席</button>
   </view>
 
-  <view class="tip">年度管理里都是低频操作：一学年切换一次、换届时任命、平时审核成员。</view>
+  <view class="section">任命新部长</view>
+  <view class="card">
+    <view class="dept-tabs">
+      <view
+        class="dept-tab {{index === ministerDept ? 'dept-tab--on' : ''}}"
+        wx:for="{{deptLabels}}"
+        wx:key="*this"
+        data-index="{{index}}"
+        bindtap="onMinisterDept"
+      >{{item}}</view>
+    </view>
+    <view class="line">
+      <text>选择小干</text>
+      <text class="value">已选 {{ministerCount}} 人</text>
+    </view>
+    <view class="chips" wx:if="{{ministerCandidates.length}}">
+      <view
+        class="chip {{item.checked ? 'chip--on' : ''}}"
+        wx:for="{{ministerCandidates}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggleMinister"
+      >{{item.name}}</view>
+    </view>
+    <text class="muted" wx:else>该部门暂无可任命的小干</text>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointMinisters">任命为部长</button>
+  </view>
+
+  <view class="tip">
+    先选部门，再选该部门成员：主席从部长中任命，部长从小干中任命，均支持多选；任命后会向对方发送站内消息。
+  </view>
 </view>
