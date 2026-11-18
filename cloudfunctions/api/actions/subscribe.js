@@ -3,11 +3,17 @@ const { BizError } = require('../lib/errors')
 const { getMemberByOpenid } = require('../lib/member')
 const { getTemplates, send } = require('../lib/subscribe')
 
+async function readConfig(key) {
+  const res = await db.collection('configs').where({ key }).limit(1).get()
+  return res.data.length ? res.data[0].value : ''
+}
+
 async function templates(payload = {}, openid) {
   const me = await getMemberByOpenid(openid)
   if (!me || me.status !== 'active') throw new BizError(40301, '账号未激活')
   const list = await getTemplates()
-  return list
+  const owner = await readConfig('ownerOpenid')
+  return { ...list, isOwner: !!owner && owner === openid }
 }
 
 /**

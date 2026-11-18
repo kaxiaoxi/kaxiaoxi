@@ -4,7 +4,8 @@ Page({
   data: {
     version: '1.1.0',
     content: '',
-    submitting: false
+    submitting: false,
+    isOwner: false
   },
 
   onLoad() {
@@ -13,7 +14,9 @@ Page({
 
   async loadTemplates() {
     try {
-      this.templates = await call('subscribe.templates', {})
+      const res = await call('subscribe.templates', {})
+      this.templates = res || {}
+      this.setData({ isOwner: !!res.isOwner })
     } catch (err) {
       this.templates = {}
     }
@@ -28,13 +31,25 @@ Page({
     wx.navigateTo({ url: `/pages/about/doc/index?type=${type}` })
   },
 
-  async askSubscribe() {
+  async onSubscribeOwner() {
     const templateId = this.templates && this.templates.feedback
-    if (!templateId || !wx.requestSubscribeMessage) return
+    if (!templateId) {
+      wx.showToast({ title: '尚未配置反馈模板', icon: 'none' })
+      return
+    }
+    if (!wx.requestSubscribeMessage) {
+      wx.showToast({ title: '当前版本不支持', icon: 'none' })
+      return
+    }
     try {
-      await wx.requestSubscribeMessage({ tmplIds: [templateId] })
+      const res = await wx.requestSubscribeMessage({ tmplIds: [templateId] })
+      if (res[templateId] === 'accept') {
+        wx.showToast({ title: '已授权接收 1 条', icon: 'success' })
+      } else {
+        wx.showToast({ title: '未授权', icon: 'none' })
+      }
     } catch (err) {
-      // 用户拒绝订阅不影响反馈提交
+      wx.showToast({ title: '授权失败', icon: 'none' })
     }
   },
 
@@ -48,7 +63,6 @@ Page({
 
     this.setData({ submitting: true })
     try {
-      await this.askSubscribe()
       const res = await call('feedback.submit', { content })
       wx.showToast({
         title: res.delivered ? '已提交并通知主席' : '已提交给主席',
