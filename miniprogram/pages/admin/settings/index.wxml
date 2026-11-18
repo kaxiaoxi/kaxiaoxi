@@ -12,25 +12,37 @@
     <button class="btn btn--ghost btn-top" bindtap="onArchive">切换学年</button>
   </view>
 
-  <view class="section">任命</view>
+  <view class="section">任命新主席</view>
   <view class="card">
     <view class="line">
-      <text>任命新主席</text>
-      <input
-        class="input"
-        type="number"
-        maxlength="10"
-        placeholder="10 位学号"
-        value="{{chairmanNo}}"
-        bindinput="onChairmanNo"
-      />
+      <text>勾选成员</text>
+      <text class="value">已选 {{selectedCount}} 人</text>
     </view>
+    <scroll-view class="member-list" scroll-y>
+      <view
+        class="member {{item.role === 'chairman' ? 'member--disabled' : ''}}"
+        wx:for="{{members}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggle"
+      >
+        <view class="checkbox {{item.checked ? 'checkbox--on' : ''}}">{{item.checked ? '✓' : ''}}</view>
+        <view class="member__main">
+          <view class="member__name">
+            {{item.name}}
+            <text class="member__tag" wx:if="{{item.role === 'chairman'}}">现任主席</text>
+          </view>
+          <view class="member__sub">{{item.studentNo}} · {{item.deptLabel}}</view>
+        </view>
+      </view>
+    </scroll-view>
     <button class="btn btn--ghost btn-top" bindtap="onAppointChairman">任命为主席</button>
   </view>
 
+  <view class="section">任命新部长</view>
   <view class="card">
     <view class="line">
-      <text>任命新部长</text>
+      <text>学号</text>
       <input
         class="input"
         type="number"
