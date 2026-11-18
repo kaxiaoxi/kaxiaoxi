@@ -84,14 +84,23 @@
   color: #000;
 }
 
-.daynum--today {
-  background: #ff3b30;
-  color: #fff !important;
+.cell--selected {
+  background: var(--blue);
+  border-radius: 12rpx;
+}
+
+.cell--selected .daynum {
+  color: #fff;
   font-weight: 600;
 }
 
-.daynum--selected {
-  background: #f2f2f7;
+.cell--selected .pill {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.cell--selected .pill-more {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .pills {

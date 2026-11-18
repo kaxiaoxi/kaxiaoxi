@@ -19,14 +19,12 @@
     <view
       wx:for="{{cells}}"
       wx:key="key"
-      class="cell {{item.inMonth ? '' : 'cell--mute'}}"
+      class="cell {{item.inMonth ? '' : 'cell--mute'}} {{item.key === selected ? 'cell--selected' : ''}}"
       data-key="{{item.key}}"
       bindtap="onSelect"
     >
       <view class="daynum-wrap">
-        <text
-          class="daynum {{item.isToday ? 'daynum--today' : ''}} {{item.key === selected && !item.isToday ? 'daynum--selected' : ''}}"
-        >{{item.day}}</text>
+        <text class="daynum">{{item.day}}</text>
       </view>
       <view class="pills">
         <view
@@ -57,3 +55,4 @@
 
   <view class="fab" bindtap="onToday">今天</view>
 </view>
+
