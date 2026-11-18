@@ -32,6 +32,8 @@
 
 .member__info {
   margin-left: 24rpx;
+  flex: 1;
+  min-width: 0;
 }
 
 .member__name {
@@ -102,4 +104,20 @@
   font-size: 24rpx;
   color: var(--s-2);
   line-height: 1.6;
+}
+
+.group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 28rpx 8rpx 12rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--s-2);
+}
+
+.group-count {
+  font-size: 22rpx;
+  font-weight: 400;
+  color: var(--s-3);
 }

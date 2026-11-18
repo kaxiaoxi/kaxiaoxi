@@ -39,13 +39,27 @@
   </view>
 
   <view class="section">在册 {{active.length}}</view>
-  <view class="card member" wx:for="{{active}}" wx:key="_id">
-    <view class="member__head">
-      <view class="member__avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
-      <view class="member__info">
-        <view class="member__name">{{item.name}}</view>
-        <view class="muted">{{item.deptLabel}} · {{item.roleLabel}}</view>
+  <block wx:for="{{activeGroups}}" wx:key="key" wx:for-item="group">
+    <view class="group-head">
+      <text>{{group.label}}</text>
+      <text class="group-count">{{group.members.length}} 人</text>
+    </view>
+    <view class="card member" wx:for="{{group.members}}" wx:for-item="member" wx:key="_id">
+      <view class="member__head">
+        <image
+          wx:if="{{member.avatarFileID}}"
+          class="member__avatar"
+          src="{{member.avatarFileID}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="member__avatar" style="background: {{member.avatarColor}}">
+          {{member.avatarText}}
+        </view>
+        <view class="member__info">
+          <view class="member__name">{{member.name}}</view>
+          <view class="muted">{{member.roleLabel}} · {{member.studentNo}}</view>
+        </view>
       </view>
     </view>
-  </view>
+  </block>
 </view>
