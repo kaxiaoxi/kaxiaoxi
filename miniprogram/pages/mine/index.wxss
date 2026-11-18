@@ -70,3 +70,48 @@
 .entry__arrow {
   color: var(--s-3);
 }
+
+.profile__avatar-wrap {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+  flex-shrink: 0;
+}
+
+.profile__avatar-img {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  display: block;
+}
+
+.profile__avatar-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 120rpx;
+  height: 120rpx;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border-radius: 60rpx;
+  opacity: 0;
+}
+
+.profile__avatar-btn::after {
+  border: none;
+}
+
+.profile__avatar-tip {
+  position: absolute;
+  left: 50%;
+  bottom: -8rpx;
+  transform: translateX(-50%);
+  padding: 2rpx 12rpx;
+  border-radius: 12rpx;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 18rpx;
+  line-height: 1.4;
+  white-space: nowrap;
+}

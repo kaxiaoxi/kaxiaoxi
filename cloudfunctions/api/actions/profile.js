@@ -137,4 +137,22 @@ async function review(payload = {}, openid) {
   return { status: action }
 }
 
-module.exports = { submit, mine, listPending, review }
+/**
+ * 更新微信头像：客户端先上传到云存储，再把 fileID 写回成员记录。
+ */
+async function updateAvatar(payload = {}, openid) {
+  const me = await getMemberByOpenid(openid)
+  if (!me || me.status !== 'active') throw new BizError(40301, '账号未激活')
+
+  const fileID = text(payload.fileID, 300)
+  if (!fileID.startsWith('cloud://')) throw new BizError(40001, '头像文件不合法')
+
+  await db
+    .collection('members')
+    .doc(me._id)
+    .update({ data: { avatarFileID: fileID, updatedAt: db.serverDate() } })
+
+  return { avatarFileID: fileID }
+}
+
+module.exports = { submit, mine, listPending, review, updateAvatar }
