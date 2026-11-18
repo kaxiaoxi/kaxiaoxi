@@ -46,10 +46,19 @@
       wx:key="key"
       data-index="{{index}}"
       bindtap="onDept"
-    >{{item.label}}</view>
+    >{{item.label}} {{item.count}}</view>
+  </view>
+  <view class="role-tabs">
+    <view
+      class="role-tab {{index === roleIndex ? 'role-tab--on' : ''}}"
+      wx:for="{{roleTabs}}"
+      wx:key="key"
+      data-index="{{index}}"
+      bindtap="onRole"
+    >{{item.label}} {{item.count}}</view>
   </view>
   <view class="card empty" wx:if="{{!activeList.length}}">
-    <text class="muted">该部门暂无在册成员</text>
+    <text class="muted">该分类暂无在册成员</text>
   </view>
   <view class="card member" wx:for="{{activeList}}" wx:key="_id">
     <view class="member__head">
