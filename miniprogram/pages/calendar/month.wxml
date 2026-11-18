@@ -17,24 +17,34 @@
     <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
   </view>
 
-  <view class="grid">
+  <view class="grid" bindtouchstart="onTouchStart" bindtouchend="onTouchEnd">
     <view
       wx:for="{{cells}}"
       wx:key="key"
-      class="cell {{item.inMonth ? '' : 'cell--mute'}} {{item.key === selected ? 'cell--on' : ''}}"
+      class="cell {{item.inMonth ? '' : 'cell--mute'}} {{item.key === selected ? 'cell--on' : ''}} {{item.isToday ? 'cell--today' : ''}}"
       data-key="{{item.key}}"
       bindtap="onSelect"
     >
       <text class="cell__day">{{item.day}}</text>
-      <view class="cell__dot" wx:if="{{item.count}}"></view>
+      <view class="cell__events">
+        <view
+          wx:for="{{item.items}}"
+          wx:for-item="ev"
+          wx:key="id"
+          class="cell__event ev--{{ev.colorKey}}"
+        >{{ev.title}}</view>
+        <view class="cell__more" wx:if="{{item.more}}">+{{item.more}}</view>
+      </view>
     </view>
   </view>
+
+  <view class="loading" wx:if="{{loading}}">加载中…</view>
 
   <view class="section">{{selectedLabel}}</view>
   <view class="empty" wx:if="{{!dayEvents.length}}">当天没有安排</view>
   <view class="card event" wx:for="{{dayEvents}}" wx:key="_id" data-id="{{item._id}}" bindtap="onOpen">
     <view class="event__top">
-      <text class="tag">{{item.type}}</text>
+      <text class="tag tag--{{item.colorKey}}">{{item.type}}</text>
       <text class="event__time">{{item.timeText}}</text>
     </view>
     <view class="event__title">{{item.title}}</view>
