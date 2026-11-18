@@ -8,6 +8,27 @@ const REVIEW_STATUS = {
   reject: 'rejected'
 }
 
+async function closeReviewTodos(memberId) {
+  try {
+    const res = await db
+      .collection('todos')
+      .where({ sourceMemberId: memberId, status: 'todo' })
+      .limit(20)
+      .get()
+    await Promise.all(
+      res.data.map((todo) =>
+        db
+          .collection('todos')
+          .doc(todo._id)
+          .update({
+            data: { status: 'done', completedAt: db.serverDate(), updatedAt: db.serverDate() }
+          })
+      )
+    )
+  } catch (err) {
+    console.warn('[member] 关闭审核待办失败', err)
+  }
+}
 async function review(payload = {}, openid) {
   const me = await requireChairman(openid)
   const memberId = typeof payload.memberId === 'string' ? payload.memberId : ''
@@ -35,6 +56,7 @@ async function review(payload = {}, openid) {
   if (status === 'active') data.joinedAt = now
 
   await db.collection('members').doc(memberId).update({ data })
+  await closeReviewTodos(memberId)
 
   await notify(res.data._openid, {
     type: 'system',
