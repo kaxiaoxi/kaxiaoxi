@@ -1,4 +1,4 @@
-const { db, _ } = require('../lib/db')
+﻿const { db, _ } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid } = require('../lib/member')
 const { validateTask } = require('../lib/validate')
@@ -189,7 +189,8 @@ async function detail(payload = {}, openid) {
     return {
       name: member ? member.name : '成员',
       avatarText: member ? member.avatarText : '?',
-      avatarColor: member ? member.avatarColor : '#8A8A8E'
+      avatarColor: member ? member.avatarColor : '#8A8A8E',
+      avatarFileID: member ? member.avatarFileID || '' : ''
     }
   })
 
