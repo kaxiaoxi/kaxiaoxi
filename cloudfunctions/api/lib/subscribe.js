@@ -1,7 +1,7 @@
 const { db, cloud } = require('./db')
 
 const DEFAULT_FIELDS = {
-  feedback: { thing1: 'content', time2: 'time' },
+  feedback: { thing2: 'name', thing3: 'content', time6: 'time' },
   activity: { thing1: 'title', time2: 'time', thing3: 'location' }
 }
 
