@@ -14,39 +14,61 @@
 
   <view class="section">任命新主席</view>
   <view class="card">
-    <view class="line">
-      <text>部门 / 部长</text>
-      <picker
-        mode="multiSelector"
-        range="{{chairmanRange}}"
-        value="{{chairmanValue}}"
-        bindcolumnchange="onChairmanColumn"
-        bindchange="onChairmanChange"
-      >
-        <view class="cascader">{{chairmanText}} ›</view>
-      </picker>
+    <view class="dept-tabs">
+      <view
+        class="dept-tab {{index === chairmanDept ? 'dept-tab--on' : ''}}"
+        wx:for="{{deptLabels}}"
+        wx:key="*this"
+        data-index="{{index}}"
+        bindtap="onChairmanDept"
+      >{{item}}</view>
     </view>
-    <button class="btn btn--ghost btn-top" bindtap="onAppointChairman">任命为主席</button>
+    <view class="line">
+      <text>选择部长</text>
+      <text class="value">已选 {{chairmanCount}} 人</text>
+    </view>
+    <view class="chips" wx:if="{{chairmanCandidates.length}}">
+      <view
+        class="chip {{item.checked ? 'chip--on' : ''}}"
+        wx:for="{{chairmanCandidates}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggleChairman"
+      >{{item.name}}</view>
+    </view>
+    <text class="muted" wx:else>该部门暂无可任命的部长</text>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointChairmen">任命为主席</button>
   </view>
 
   <view class="section">任命新部长</view>
   <view class="card">
-    <view class="line">
-      <text>部门 / 小干</text>
-      <picker
-        mode="multiSelector"
-        range="{{ministerRange}}"
-        value="{{ministerValue}}"
-        bindcolumnchange="onMinisterColumn"
-        bindchange="onMinisterChange"
-      >
-        <view class="cascader">{{ministerText}} ›</view>
-      </picker>
+    <view class="dept-tabs">
+      <view
+        class="dept-tab {{index === ministerDept ? 'dept-tab--on' : ''}}"
+        wx:for="{{deptLabels}}"
+        wx:key="*this"
+        data-index="{{index}}"
+        bindtap="onMinisterDept"
+      >{{item}}</view>
     </view>
-    <button class="btn btn--ghost btn-top" bindtap="onAppointMinister">任命为部长</button>
+    <view class="line">
+      <text>选择小干</text>
+      <text class="value">已选 {{ministerCount}} 人</text>
+    </view>
+    <view class="chips" wx:if="{{ministerCandidates.length}}">
+      <view
+        class="chip {{item.checked ? 'chip--on' : ''}}"
+        wx:for="{{ministerCandidates}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onToggleMinister"
+      >{{item.name}}</view>
+    </view>
+    <text class="muted" wx:else>该部门暂无可任命的小干</text>
+    <button class="btn btn--ghost btn-top" bindtap="onAppointMinisters">任命为部长</button>
   </view>
 
   <view class="tip">
-    先选部门，再选该部门的成员：主席从部长中任命，部长从小干中任命；任命后会向对方发送站内消息。学年切换只改统计口径，不会删除历史数据。
+    先选部门，再选该部门成员：主席从部长中任命，部长从小干中任命，均支持多选；任命后会向对方发送站内消息。
   </view>
 </view>

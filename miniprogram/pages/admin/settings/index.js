@@ -27,12 +27,12 @@ Page({
     year: '',
     nextYear: '',
     deptLabels: DEPT_KEYS.map(deptLabelOf),
-    chairmanRange: [[], []],
-    chairmanValue: [0, 0],
-    chairmanText: '',
-    ministerRange: [[], []],
-    ministerValue: [0, 0],
-    ministerText: '',
+    chairmanDept: 0,
+    chairmanCandidates: [],
+    chairmanCount: 0,
+    ministerDept: 0,
+    ministerCandidates: [],
+    ministerCount: 0,
     loading: true
   },
 
@@ -51,17 +51,18 @@ Page({
 
       this.chairmanGroups = groupBy(list.filter((item) => item.role === 'minister'))
       this.ministerGroups = groupBy(list.filter((item) => item.role === 'member'))
-
-      const chairmanText = this.buildText(this.chairmanGroups, 0, 0)
-      const ministerText = this.buildText(this.ministerGroups, 0, 0)
+      this.chairmanSelected = []
+      this.ministerSelected = []
 
       this.setData({
         year: settings.academicYear,
         nextYear: `${Number(start) + 1}-${Number(start) + 2}`,
-        chairmanRange: [this.data.deptLabels, this.namesOf(this.chairmanGroups, 0)],
-        chairmanText,
-        ministerRange: [this.data.deptLabels, this.namesOf(this.ministerGroups, 0)],
-        ministerText,
+        chairmanDept: 0,
+        ministerDept: 0,
+        chairmanCandidates: this.candidatesOf(this.chairmanGroups, 0, this.chairmanSelected),
+        ministerCandidates: this.candidatesOf(this.ministerGroups, 0, this.ministerSelected),
+        chairmanCount: 0,
+        ministerCount: 0,
         loading: false
       })
     } catch (err) {
@@ -70,72 +71,60 @@ Page({
     }
   },
 
-  namesOf(groups, deptIndex) {
+  candidatesOf(groups, deptIndex, selected) {
     const key = DEPT_KEYS[deptIndex]
-    const items = groups[key] || []
-    return items.length ? items.map((item) => item.name) : ['暂无成员']
+    return (groups[key] || []).map((item) => ({
+      ...item,
+      checked: selected.includes(item._id)
+    }))
   },
 
-  buildText(groups, deptIndex, memberIndex) {
-    const key = DEPT_KEYS[deptIndex]
-    const items = groups[key] || []
-    if (!items.length) return '暂无可选成员'
-    const member = items[Math.min(memberIndex, items.length - 1)]
-    return `${deptLabelOf(key)} / ${member.name}`
-  },
-
-  onChairmanColumn(e) {
-    const column = e.detail.column
-    const value = e.detail.value
-    if (column !== 0) return
-    const names = this.namesOf(this.chairmanGroups, value)
+  onChairmanDept(e) {
+    const index = Number(e.currentTarget.dataset.index)
     this.setData({
-      chairmanRange: [this.data.deptLabels, names],
-      chairmanValue: [value, 0],
-      chairmanText: this.buildText(this.chairmanGroups, value, 0)
+      chairmanDept: index,
+      chairmanCandidates: this.candidatesOf(this.chairmanGroups, index, this.chairmanSelected)
     })
   },
 
-  onChairmanChange(e) {
-    const [deptIndex, memberIndex] = e.detail.value
+  onMinisterDept(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    this.ministerSelected = []
     this.setData({
-      chairmanValue: [deptIndex, memberIndex],
-      chairmanText: this.buildText(this.chairmanGroups, deptIndex, memberIndex)
+      ministerDept: index,
+      ministerCandidates: this.candidatesOf(this.ministerGroups, index, this.ministerSelected),
+      ministerCount: 0
     })
   },
 
-  onMinisterColumn(e) {
-    const column = e.detail.column
-    const value = e.detail.value
-    if (column !== 0) return
-    const names = this.namesOf(this.ministerGroups, value)
+  onToggleChairman(e) {
+    const id = e.currentTarget.dataset.id
+    this.chairmanSelected = this.chairmanSelected.includes(id)
+      ? this.chairmanSelected.filter((item) => item !== id)
+      : [...this.chairmanSelected, id]
     this.setData({
-      ministerRange: [this.data.deptLabels, names],
-      ministerValue: [value, 0],
-      ministerText: this.buildText(this.ministerGroups, value, 0)
+      chairmanCandidates: this.candidatesOf(
+        this.chairmanGroups,
+        this.data.chairmanDept,
+        this.chairmanSelected
+      ),
+      chairmanCount: this.chairmanSelected.length
     })
   },
 
-  onMinisterChange(e) {
-    const [deptIndex, memberIndex] = e.detail.value
+  onToggleMinister(e) {
+    const id = e.currentTarget.dataset.id
+    this.ministerSelected = this.ministerSelected.includes(id)
+      ? this.ministerSelected.filter((item) => item !== id)
+      : [...this.ministerSelected, id]
     this.setData({
-      ministerValue: [deptIndex, memberIndex],
-      ministerText: this.buildText(this.ministerGroups, deptIndex, memberIndex)
+      ministerCandidates: this.candidatesOf(
+        this.ministerGroups,
+        this.data.ministerDept,
+        this.ministerSelected
+      ),
+      ministerCount: this.ministerSelected.length
     })
-  },
-
-  currentChairman() {
-    const [deptIndex, memberIndex] = this.data.chairmanValue
-    const key = DEPT_KEYS[deptIndex]
-    const items = this.chairmanGroups[key] || []
-    return items[memberIndex] || null
-  },
-
-  currentMinister() {
-    const [deptIndex, memberIndex] = this.data.ministerValue
-    const key = DEPT_KEYS[deptIndex]
-    const items = this.ministerGroups[key] || []
-    return { member: items[memberIndex] || null, dept: key }
   },
 
   onNextYear(e) {
@@ -159,49 +148,62 @@ Page({
     })
   },
 
-  onAppointChairman() {
-    const target = this.currentChairman()
-    if (!target) {
-      wx.showToast({ title: '请选择部长', icon: 'none' })
+  selectedMembers(groups, ids) {
+    const all = DEPT_KEYS.reduce((acc, key) => acc.concat(groups[key] || []), [])
+    return all.filter((item) => ids.includes(item._id))
+  },
+
+  onAppointChairmen() {
+    const targets = this.selectedMembers(this.chairmanGroups, this.chairmanSelected)
+    if (!targets.length) {
+      wx.showToast({ title: '请先选择部长', icon: 'none' })
       return
     }
+    const names = targets.map((item) => item.name).join('、')
     wx.showModal({
       title: '任命新主席',
-      content: `确认任命 ${target.name} 为影协主席？`,
+      content: `确认任命 ${names} 为影协主席？`,
       success: async (res) => {
         if (!res.confirm) return
-        try {
-          const result = await call('admin.appointChairman', { studentNo: target.studentNo })
-          wx.showToast({ title: `已任命 ${result.name}`, icon: 'success' })
-          this.load()
-        } catch (err) {
-          wx.showToast({ title: err.message || '任命失败', icon: 'none' })
+        let success = 0
+        for (const item of targets) {
+          try {
+            await call('admin.appointChairman', { studentNo: item.studentNo })
+            success += 1
+          } catch (err) {
+            // 单个失败不影响其他
+          }
         }
+        wx.showToast({ title: `已任命 ${success} 人`, icon: 'none' })
+        this.load()
       }
     })
   },
 
-  onAppointMinister() {
-    const { member, dept } = this.currentMinister()
-    if (!member) {
-      wx.showToast({ title: '请选择小干', icon: 'none' })
+  onAppointMinisters() {
+    const targets = this.selectedMembers(this.ministerGroups, this.ministerSelected)
+    if (!targets.length) {
+      wx.showToast({ title: '请先选择小干', icon: 'none' })
       return
     }
+    const dept = DEPT_KEYS[this.data.ministerDept]
+    const names = targets.map((item) => item.name).join('、')
     wx.showModal({
       title: '任命新部长',
-      content: `确认任命 ${member.name} 为${deptLabelOf(dept)}部长？`,
+      content: `确认任命 ${names} 为${deptLabelOf(dept)}部长？`,
       success: async (res) => {
         if (!res.confirm) return
-        try {
-          const result = await call('admin.appointMinister', {
-            studentNo: member.studentNo,
-            dept
-          })
-          wx.showToast({ title: `已任命 ${result.name}`, icon: 'success' })
-          this.load()
-        } catch (err) {
-          wx.showToast({ title: err.message || '任命失败', icon: 'none' })
+        let success = 0
+        for (const item of targets) {
+          try {
+            await call('admin.appointMinister', { studentNo: item.studentNo, dept })
+            success += 1
+          } catch (err) {
+            // 单个失败不影响其他
+          }
         }
+        wx.showToast({ title: `已任命 ${success} 人`, icon: 'none' })
+        this.load()
       }
     })
   }
