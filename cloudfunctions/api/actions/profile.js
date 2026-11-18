@@ -1,4 +1,4 @@
-﻿const { db, cloud } = require('../lib/db')
+const { db, cloud } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid, requireChairman } = require('../lib/member')
 const { notify } = require('../lib/notify')

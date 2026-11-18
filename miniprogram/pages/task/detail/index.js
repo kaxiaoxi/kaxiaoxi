@@ -1,4 +1,4 @@
-﻿const { call } = require('../../../services/api')
+const { call } = require('../../../services/api')
 const {
   PHASE_LABEL,
   MY_SIGNUP_LABEL,

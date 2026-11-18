@@ -1,4 +1,4 @@
-﻿const { call } = require('../../../services/api')
+const { call } = require('../../../services/api')
 const { DEPT, DEPT_LABEL } = require('../../../utils/constants')
 
 const DEPT_KEYS = [DEPT.PHOTO, DEPT.PR, DEPT.OPS]

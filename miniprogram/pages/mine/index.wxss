@@ -1,4 +1,4 @@
-﻿.profile {
+.profile {
   display: flex;
   align-items: center;
   padding: 24rpx 8rpx 40rpx;
