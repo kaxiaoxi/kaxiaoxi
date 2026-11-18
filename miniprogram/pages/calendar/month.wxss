@@ -48,26 +48,21 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2rpx;
+  row-gap: 4rpx;
 }
 
 .cell {
-  height: 108rpx;
+  height: 84rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6rpx 2rpx 0;
-  border-radius: 12rpx;
-  overflow: hidden;
+  justify-content: center;
+  border-radius: 16rpx;
+  position: relative;
 }
 
 .cell--mute .cell__day {
   color: var(--s-3);
-}
-
-.cell--today .cell__day {
-  color: var(--blue);
-  font-weight: 700;
 }
 
 .cell--on {
@@ -80,76 +75,24 @@
 }
 
 .cell__day {
-  font-size: 24rpx;
-  line-height: 1.2;
+  font-size: 28rpx;
   color: var(--ink-2);
 }
 
-.cell__events {
-  width: 100%;
-  margin-top: 2rpx;
-  overflow: hidden;
+.cell__dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: #d9a441;
+  margin-top: 4rpx;
 }
 
-.cell__event {
-  font-size: 16rpx;
-  line-height: 1.35;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0 2rpx;
-}
-
-.cell__more {
-  font-size: 15rpx;
-  line-height: 1.2;
-  text-align: center;
-  color: var(--s-3);
-}
-
-.cell--on .cell__event,
-.cell--on .cell__more {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.ev--recruit {
-  color: #2e5f7e;
-}
-
-.ev--meeting {
-  color: #4f7a4f;
-}
-
-.ev--shoot {
-  color: #a9762f;
-}
-
-.ev--contest {
-  color: #a34a3a;
-}
-
-.ev--exhibit {
-  color: #6b5b95;
-}
-
-.ev--deadline {
-  color: #b4392c;
-}
-
-.ev--other {
-  color: #8a8a8e;
-}
-
-.loading {
-  text-align: center;
-  font-size: 22rpx;
-  color: var(--s-3);
-  padding: 12rpx 0;
+.cell--on .cell__dot {
+  background: #fff;
 }
 
 .section {
-  margin: 28rpx 8rpx 16rpx;
+  margin: 32rpx 8rpx 16rpx;
   font-size: 28rpx;
   color: var(--s-2);
   font-weight: 600;
@@ -180,41 +123,8 @@
   border-radius: 10rpx;
   font-size: 22rpx;
   font-weight: 600;
-}
-
-.tag--recruit {
   background: rgba(46, 95, 126, 0.12);
   color: #2e5f7e;
-}
-
-.tag--meeting {
-  background: rgba(79, 122, 79, 0.14);
-  color: #4f7a4f;
-}
-
-.tag--shoot {
-  background: rgba(169, 118, 47, 0.14);
-  color: #a9762f;
-}
-
-.tag--contest {
-  background: rgba(163, 74, 58, 0.14);
-  color: #a34a3a;
-}
-
-.tag--exhibit {
-  background: rgba(107, 91, 149, 0.14);
-  color: #6b5b95;
-}
-
-.tag--deadline {
-  background: rgba(180, 57, 44, 0.12);
-  color: #b4392c;
-}
-
-.tag--other {
-  background: rgba(118, 118, 128, 0.12);
-  color: var(--s-2);
 }
 
 .event__time {
