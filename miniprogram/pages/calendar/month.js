@@ -3,16 +3,6 @@ const { formatDay, formatTime } = require('../../utils/task')
 
 const WEEKDAYS = ['一', '二', '三', '四', '五', '六', '日']
 
-const TYPE_KEY = {
-  招新: 'recruit',
-  例会: 'meeting',
-  外拍: 'shoot',
-  比赛: 'contest',
-  展览: 'exhibit',
-  截止: 'deadline',
-  其他: 'other'
-}
-
 function pad(n) {
   return n < 10 ? `0${n}` : `${n}`
 }
@@ -49,12 +39,7 @@ Page({
   async load() {
     if (this.data.loading) return
     const { year, month } = this.data
-    const today = new Date()
-    const fallback =
-      today.getFullYear() === year && today.getMonth() === month - 1
-        ? keyOf(today)
-        : keyOf(new Date(year, month - 1, 1))
-    const selected = this.data.selected || fallback
+    const selected = this.data.selected || keyOf(new Date(year, month - 1, 1))
     this.setData({ loading: true, selected })
 
     try {
@@ -85,56 +70,35 @@ Page({
     for (let i = 0; i < 42; i += 1) {
       const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i)
       const key = keyOf(date)
-      const dayEvents = events.filter((e) => key >= e.startKey && key <= e.endKey)
+      const count = events.filter((e) => key >= e.startKey && key <= e.endKey).length
       cells.push({
         key,
         day: date.getDate(),
         inMonth: date.getMonth() === month - 1,
         isToday: key === todayKey,
-        items: dayEvents.slice(0, 2).map((e) => ({
-          id: e._id,
-          title: e.title,
-          colorKey: TYPE_KEY[e.type] || 'other'
-        })),
-        more: Math.max(dayEvents.length - 2, 0)
+        count
       })
     }
 
-    const dayList = events
+    const dayEvents = events
       .filter((e) => selected >= e.startKey && selected <= e.endKey)
       .map((e) => ({
         ...e,
-        colorKey: TYPE_KEY[e.type] || 'other',
         dayText: e.startKey === e.endKey ? '' : `${formatDay(e.startAt)}–${formatDay(e.endAt)}`
       }))
 
-    const [, m, d] = selected.split('-')
+    const [y, m, d] = selected.split('-')
     this.setData({
       cells,
       selected,
       selectedLabel: `${Number(m)} 月 ${Number(d)} 日`,
-      dayEvents: dayList
+      dayEvents
     })
   },
 
   onSelect(e) {
     const key = e.currentTarget.dataset.key
     this.render(this.events || [], key)
-  },
-
-  onTouchStart(e) {
-    this.touchX = e.touches[0].clientX
-    this.touchY = e.touches[0].clientY
-  },
-
-  onTouchEnd(e) {
-    if (this.touchX === undefined) return
-    const dx = e.changedTouches[0].clientX - this.touchX
-    const dy = e.changedTouches[0].clientY - this.touchY
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-      if (dx > 0) this.onPrev()
-      else this.onNext()
-    }
   },
 
   onPrev() {
