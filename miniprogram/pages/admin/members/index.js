@@ -11,6 +11,7 @@ Page({
   data: {
     pending: [],
     active: [],
+    activeGroups: [],
     requests: [],
     loading: false
   },
@@ -28,9 +29,11 @@ Page({
         call('member.list', { status: 'active' }),
         call('profile.listPending')
       ])
+      const active = this.decorate(activeRes.list)
       this.setData({
         pending: this.decorate(pendingRes.list),
-        active: this.decorate(activeRes.list),
+        active,
+        activeGroups: this.groupByDept(active),
         requests: (requestRes.list || []).map((item) => this.decorateRequest(item))
       })
     } catch (err) {
@@ -46,6 +49,17 @@ Page({
       deptLabel: DEPT_LABEL[item.dept] || '未分配',
       roleLabel: ROLE_LABEL[item.role] || ''
     }))
+  },
+
+  groupByDept(list = []) {
+    const order = ['photo', 'pr', 'ops', 'none']
+    return order
+      .map((key) => ({
+        key,
+        label: DEPT_LABEL[key] || '未分配',
+        members: list.filter((item) => (item.dept || 'none') === key)
+      }))
+      .filter((group) => group.members.length)
   },
 
   decorateRequest(request) {
