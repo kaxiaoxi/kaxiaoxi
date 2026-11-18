@@ -2,13 +2,16 @@ const { db } = require('../lib/db')
 const { BizError } = require('../lib/errors')
 const { getMemberByOpenid } = require('../lib/member')
 const { notify } = require('../lib/notify')
-const { send } = require('../lib/subscribe')
 
 async function readConfig(key) {
   const res = await db.collection('configs').where({ key }).limit(1).get()
   return res.data.length ? res.data[0].value : ''
 }
 
+/**
+ * 意见反馈走站内消息：写入接收人的消息中心，不依赖订阅消息额度。
+ * 接收人：configs.ownerOpenid；未配置时退回第一位在任主席。
+ */
 async function submit(payload = {}, openid) {
   const me = await getMemberByOpenid(openid)
   if (!me || me.status !== 'active') throw new BizError(40301, '账号未激活')
@@ -16,7 +19,6 @@ async function submit(payload = {}, openid) {
   const content = typeof payload.content === 'string' ? payload.content.trim().slice(0, 500) : ''
   if (!content) throw new BizError(40001, '请填写反馈内容')
 
-  // 反馈接收人：configs.ownerOpenid；未配置时退回第一位在任主席
   let recipient = await readConfig('ownerOpenid')
   if (!recipient) {
     const chairRes = await db
@@ -36,14 +38,7 @@ async function submit(payload = {}, openid) {
     content
   })
 
-  const result = await send(
-    'feedback',
-    recipient,
-    { name: me.name, content, time: new Date() },
-    'pages/message/list'
-  )
-
-  return { delivered: result.ok, reason: result.reason || '' }
+  return { delivered: true }
 }
 
 module.exports = { submit }
