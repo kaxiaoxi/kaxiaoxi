@@ -42,24 +42,20 @@
   <view class="section">开发鸣谢</view>
   <view class="card thanks">
     <view class="thanks__item">
-      <text class="thanks__role">指导</text>
-      <text class="thanks__name">广工摄影协会主席团</text>
-    </view>
-    <view class="thanks__item">
       <text class="thanks__role">开发</text>
-      <text class="thanks__name">卡小西开发组</text>
+      <text class="thanks__name">待补充</text>
     </view>
     <view class="thanks__item">
       <text class="thanks__role">设计</text>
-      <text class="thanks__name">影协视觉组</text>
+      <text class="thanks__name">待补充</text>
     </view>
     <view class="thanks__item">
       <text class="thanks__role">内测</text>
-      <text class="thanks__name">参与内测的全体成员</text>
+      <text class="thanks__name">待补充</text>
     </view>
     <view class="thanks__item">
-      <text class="thanks__role">支持</text>
-      <text class="thanks__name">微信云开发</text>
+      <text class="thanks__role">形象与版权</text>
+      <text class="thanks__name">待补充</text>
     </view>
   </view>
 
