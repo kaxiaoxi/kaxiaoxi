@@ -57,6 +57,10 @@ Page({
     wx.navigateTo({ url: '/pages/profile/edit/index' })
   },
 
+  onOpenAbout() {
+    wx.navigateTo({ url: '/pages/about/index' })
+  },
+
   async onChooseAvatar(e) {
     const tempUrl = e.detail && e.detail.avatarUrl
     const member = this.data.member

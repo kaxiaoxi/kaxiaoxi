@@ -9,6 +9,7 @@ const todo = require('./actions/todo')
 const message = require('./actions/message')
 const erke = require('./actions/erke')
 const admin = require('./actions/admin')
+const feedback = require('./actions/feedback')
 const home = require('./actions/home')
 
 const routes = {
@@ -51,6 +52,7 @@ const routes = {
   'profile.listPending': profile.listPending,
   'profile.review': profile.review,
   'profile.updateAvatar': profile.updateAvatar,
+  'feedback.submit': feedback.submit,
   'home.summary': home.summary
 }
 
@@ -61,5 +63,6 @@ async function route(action, payload, openid) {
 }
 
 module.exports = { route, routes }
+
 
 

@@ -1,0 +1,34 @@
+.doc-title {
+  padding: 24rpx 8rpx 8rpx;
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.doc-meta {
+  padding: 0 8rpx 24rpx;
+  font-size: 22rpx;
+  color: var(--s-3);
+}
+
+.doc-section {
+  margin-bottom: 32rpx;
+}
+
+.doc-h {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+
+.doc-p {
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: var(--s-2);
+}
+
+.doc-footer {
+  margin: 48rpx 0 64rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--s-3);
+}
