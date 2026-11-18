@@ -1,10 +1,16 @@
-﻿const { call } = require('../../../services/api')
+const { call } = require('../../../services/api')
 const { DEPT_LABEL, ROLE_LABEL } = require('../../../utils/constants')
 
 const MEMBER_DEPTS = [
   { key: 'photo', label: '摄影师队' },
   { key: 'pr', label: '宣传部' },
   { key: 'ops', label: '运营部' }
+]
+
+const ROLES = [
+  { key: 'chairman', label: '主席' },
+  { key: 'minister', label: '部长' },
+  { key: 'member', label: '小干' }
 ]
 
 const FIELD_LABEL = {
@@ -18,8 +24,10 @@ Page({
     pending: [],
     active: [],
     activeList: [],
-    deptTabs: MEMBER_DEPTS,
+    deptTabs: MEMBER_DEPTS.map((item) => ({ ...item, count: 0 })),
+    roleTabs: ROLES.map((item) => ({ ...item, count: 0 })),
     deptIndex: 0,
+    roleIndex: 0,
     requests: [],
     loading: false
   },
@@ -41,14 +49,31 @@ Page({
       this.setData({
         pending: this.decorate(pendingRes.list),
         active,
-        activeList: this.filterDept(active, this.data.deptIndex),
         requests: (requestRes.list || []).map((item) => this.decorateRequest(item))
       })
+      this.applyFilter(active, this.data.deptIndex, this.data.roleIndex)
     } catch (err) {
       wx.showToast({ title: err.message || '加载失败', icon: 'none' })
     } finally {
       this.setData({ loading: false })
     }
+  },
+
+  applyFilter(active, deptIndex, roleIndex) {
+    const deptKey = MEMBER_DEPTS[deptIndex].key
+    const roleKey = ROLES[roleIndex].key
+    const deptTabs = MEMBER_DEPTS.map((item) => ({
+      ...item,
+      count: active.filter((member) => member.dept === item.key).length
+    }))
+    const inDept = active.filter((member) => member.dept === deptKey)
+    const roleTabs = ROLES.map((item) => ({
+      ...item,
+      count: inDept.filter((member) => member.role === item.key).length
+    }))
+    const activeList = inDept.filter((member) => member.role === roleKey)
+
+    this.setData({ deptTabs, roleTabs, activeList })
   },
 
   decorate(list = []) {
@@ -59,17 +84,16 @@ Page({
     }))
   },
 
-  filterDept(list = [], index = 0) {
-    const key = MEMBER_DEPTS[index].key
-    return list.filter((item) => item.dept === key)
-  },
-
   onDept(e) {
     const index = Number(e.currentTarget.dataset.index)
-    this.setData({
-      deptIndex: index,
-      activeList: this.filterDept(this.data.active, index)
-    })
+    this.setData({ deptIndex: index })
+    this.applyFilter(this.data.active, index, this.data.roleIndex)
+  },
+
+  onRole(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    this.setData({ roleIndex: index })
+    this.applyFilter(this.data.active, this.data.deptIndex, index)
   },
 
   decorateRequest(request) {
