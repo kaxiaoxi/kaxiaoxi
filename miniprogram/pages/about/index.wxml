@@ -16,6 +16,10 @@
       <text>隐私政策</text>
       <text class="row__arrow">›</text>
     </view>
+    <view class="row" data-type="changelog" bindtap="onOpenDoc">
+      <text>版本更新</text>
+      <text class="row__arrow">›</text>
+    </view>
   </view>
 
   <view class="section">意见反馈</view>
