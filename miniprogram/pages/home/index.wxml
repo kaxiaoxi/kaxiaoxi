@@ -91,12 +91,28 @@
       data-id="{{item._id}}"
       bindtap="onOpenTodo"
     >
-      <view class="todo__check"></view>
+      <view class="todo__check" wx:if="{{!item.isReview}}"></view>
       <view class="todo__body">
         <view class="todo__title">{{item.title}}</view>
-        <view class="todo__meta">{{item.dueText}}</view>
+        <view class="todo__meta">{{item.isReview ? item.description : item.dueText}}</view>
+        <view class="todo__actions" wx:if="{{item.isReview}}">
+          <button
+            class="todo__btn todo__btn--ghost"
+            data-id="{{item.sourceMemberId || item.sourceRequestId}}"
+            data-type="{{item.autoRule}}"
+            data-action="reject"
+            catchtap="onReview"
+          >拒绝</button>
+          <button
+            class="todo__btn todo__btn--primary"
+            data-id="{{item.sourceMemberId || item.sourceRequestId}}"
+            data-type="{{item.autoRule}}"
+            data-action="approve"
+            catchtap="onReview"
+          >通过</button>
+        </view>
       </view>
-      <view class="todo__dot"></view>
+      <view class="todo__dot" wx:if="{{!item.isReview}}"></view>
     </view>
   </view>
   <view class="card empty-card empty-card--compact" wx:else>

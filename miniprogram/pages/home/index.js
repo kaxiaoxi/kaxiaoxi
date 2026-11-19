@@ -72,7 +72,8 @@ Page({
       }))
       const todos = (todoRes.list || []).slice(0, 3).map((item) => ({
         ...item,
-        dueText: dueText(item.dueAt)
+        dueText: dueText(item.dueAt),
+        isReview: item.autoRule === 'review_member' || item.autoRule === 'review_profile'
       }))
       const unreadMessages = (msgRes.list || []).map((item) => ({
         ...item,
@@ -107,6 +108,29 @@ Page({
 
   onOpenTodoList() {
     wx.navigateTo({ url: '/pages/todo/list/index' })
+  },
+
+  onReview(e) {
+    const { id, type, action } = e.currentTarget.dataset
+    const isApprove = action === 'approve'
+    wx.showModal({
+      title: isApprove ? '确认通过' : '确认拒绝',
+      content: isApprove ? '通过后会通知对方。' : '拒绝后会通知对方。',
+      success: async (res) => {
+        if (!res.confirm) return
+        try {
+          if (type === 'review_member') {
+            await call('member.review', { memberId: id, action })
+          } else {
+            await call('profile.review', { requestId: id, action })
+          }
+          wx.showToast({ title: isApprove ? '已通过' : '已拒绝', icon: 'success' })
+          this.load()
+        } catch (err) {
+          wx.showToast({ title: err.message || '操作失败', icon: 'none' })
+        }
+      }
+    })
   },
 
   onOpenTodo(e) {
