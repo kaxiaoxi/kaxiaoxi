@@ -2,6 +2,16 @@
 
 格式：`版本 · 日期 · 变更摘要`
 
+## v1.3.0 · 2026-11-19（提醒模块）
+
+- 修正订阅授权时机：`requestSubscribeMessage` 从 `await` 之后挪到点击处理函数里，避免 `can only be invoked by user TAP gesture`
+- 新增待办截止提醒：加入协作时登记，截止当天 09:00（北京时间）发送
+- `cron` 增加站内信兜底：无论微信推送成功与否都写一条 `type: remind` 的消息
+- `cron` 增加失败重试（最多 2 次），模板缺失/拒收类错误不重试，直接记 `failed` / `cancelled`
+- 新增 `reminder.createTodo`、`reminder.status` 两个 action
+- 新增「我的 → 提醒设置」页：显示两种提醒的开通状态与待发送/已发送/失败统计
+- `reminders` 表新增 `kind`、`todoId`，支持活动与待办两类提醒共用一张表
+
 ## v1.1.0-dev · 2026-11-19（feature/ui）
 
 - 确定本轮界面视觉方向，以原生分组卡片为基础，局部使用半透明液态玻璃

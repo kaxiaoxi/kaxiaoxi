@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="intro">
+    <view class="intro__title">提醒设置</view>
+    <view class="intro__text">微信的订阅消息一次授权只能发一条。报名活动、加入待办协作时，会在点击的那一刻顺带申请授权，到点给你发一条服务通知。</view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <view class="row__main">
+        <view class="row__title">活动开始提醒</view>
+        <view class="row__desc">报名的活动开始前 2 小时</view>
+      </view>
+      <view class="state {{templates.activity ? 'state--on' : 'state--off'}}">
+        {{templates.activity ? '已开通' : '未配置'}}
+      </view>
+    </view>
+    <view class="row">
+      <view class="row__main">
+        <view class="row__title">待办截止提醒</view>
+        <view class="row__desc">待办截止当天 9:00</view>
+      </view>
+      <view class="state {{templates.todo ? 'state--on' : 'state--off'}}">
+        {{templates.todo ? '已开通' : '未配置'}}
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row row--stat">
+      <view class="stat">
+        <view class="stat__value">{{stats.pending}}</view>
+        <view class="stat__label">待发送</view>
+      </view>
+      <view class="stat">
+        <view class="stat__value">{{stats.sent}}</view>
+        <view class="stat__label">已发送</view>
+      </view>
+      <view class="stat">
+        <view class="stat__value">{{stats.failed}}</view>
+        <view class="stat__label">发送失败</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="btn btn--ghost" bindtap="onOpenTasks">去任务页报名</button>
+    <button class="btn btn--ghost" bindtap="onOpenTodos">去待办页加入</button>
+  </view>
+
+  <view class="tip">即使没开提醒，每次提醒也会写进「消息」，不会漏。</view>
+</view>

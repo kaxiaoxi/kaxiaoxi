@@ -7,6 +7,7 @@ const {
   dueText
 } = require('../../../utils/todo')
 const { DEPT_LABEL } = require('../../../utils/constants')
+const { loadTemplates, requestSubscribe } = require('../../../utils/remind')
 
 Page({
   data: {
@@ -19,7 +20,7 @@ Page({
 
   onLoad(options) {
     this.todoId = options.id || ''
-    this.load()
+    loadTemplates().then(() => this.load())
   },
 
   onShow() {
@@ -51,14 +52,21 @@ Page({
     }
   },
 
-  async onJoin() {
-    try {
-      await call('todo.join', { id: this.todoId })
-      wx.showToast({ title: '已加入', icon: 'success' })
-      this.load()
-    } catch (err) {
-      wx.showToast({ title: err.message || '加入失败', icon: 'none' })
-    }
+  onJoin() {
+    // 授权必须同步发起，保持 tap 上下文
+    requestSubscribe('todo', async () => {
+      try {
+        await call('todo.join', { id: this.todoId })
+        wx.showToast({ title: '已加入', icon: 'success' })
+        this.load()
+        // 加入成功后再登记截止提醒（没授权过也不会报错，走站内信兜底）
+        call('reminder.createTodo', { todoId: this.todoId }).catch((err) => {
+          console.warn('[todo] 登记提醒失败', err)
+        })
+      } catch (err) {
+        wx.showToast({ title: err.message || '加入失败', icon: 'none' })
+      }
+    })
   },
 
   async onQuit() {

@@ -1,0 +1,101 @@
+.intro {
+  padding: 8rpx 8rpx 28rpx;
+}
+
+.intro__title {
+  font-size: 44rpx;
+  font-weight: 700;
+}
+
+.intro__text {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--s-2);
+}
+
+.card {
+  margin-bottom: 20rpx;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--sep);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.row__title {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.row__desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--s-2);
+}
+
+.state {
+  font-size: 24rpx;
+  font-weight: 600;
+  padding: 6rpx 18rpx;
+  border-radius: 10rpx;
+}
+
+.state--on {
+  color: var(--green);
+  background: rgba(44, 122, 75, 0.12);
+}
+
+.state--off {
+  color: var(--s-2);
+  background: rgba(118, 118, 128, 0.12);
+}
+
+.row--stat {
+  justify-content: space-around;
+  padding: 12rpx 0;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat__value {
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.stat__label {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--s-2);
+}
+
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 8rpx;
+}
+
+.actions .btn {
+  flex: 1;
+}
+
+.tip {
+  margin-top: 24rpx;
+  padding: 0 8rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--s-3);
+}

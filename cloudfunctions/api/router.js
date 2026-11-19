@@ -60,6 +60,8 @@ const routes = {
   'feedback.submit': feedback.submit,
   'subscribe.templates': subscribe.templates,
   'reminder.create': subscribe.createReminder,
+  'reminder.createTodo': subscribe.createTodoReminder,
+  'reminder.status': subscribe.reminderStatus,
   'home.summary': home.summary
 }
 
