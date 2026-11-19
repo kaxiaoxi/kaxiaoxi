@@ -2,5 +2,6 @@
   "navigationBarTitleText": "报名管理",
   "usingComponents": {
     "bottom-sheet": "../../../components/bottom-sheet/index"
-  }
+  },
+  "enablePullDownRefresh": true
 }

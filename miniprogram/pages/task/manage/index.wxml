@@ -21,7 +21,7 @@
   <block wx:if="{{tab === 'pending'}}">
     <view class="card person" wx:for="{{current}}" wx:key="signupId">
       <view class="person__head">
-        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" />
+        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" data-id="{{item.signupId}}" binderror="onAvatarError" />
         <view wx:else class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
         <view class="person__info">
           <view class="person__name">{{item.name}}</view>
@@ -39,7 +39,7 @@
   <block wx:if="{{tab === 'approved'}}">
     <view class="card person" wx:for="{{current}}" wx:key="signupId">
       <view class="person__head">
-        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" />
+        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" data-id="{{item.signupId}}" binderror="onAvatarError" />
         <view wx:else class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
         <view class="person__info">
           <view class="person__name">{{item.name}}</view>
@@ -53,7 +53,7 @@
   <block wx:if="{{tab === 'waitlisted'}}">
     <view class="card person" wx:for="{{current}}" wx:key="signupId">
       <view class="person__head">
-        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" />
+        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" data-id="{{item.signupId}}" binderror="onAvatarError" />
         <view wx:else class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
         <view class="person__info">
           <view class="person__name">{{item.name}}</view>
@@ -67,7 +67,7 @@
   <block wx:if="{{tab === 'leave'}}">
     <view class="card person" wx:for="{{current}}" wx:key="signupId">
       <view class="person__head">
-        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" />
+        <image wx:if="{{item.avatarFileID}}" class="avatar" src="{{item.avatarFileID}}" mode="aspectFill" data-id="{{item.signupId}}" binderror="onAvatarError" />
         <view wx:else class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
         <view class="person__info">
           <view class="person__name">{{item.name}}</view>

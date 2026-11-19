@@ -40,6 +40,23 @@ Page({
     if (this.data.task) this.load()
   },
 
+  async onPullDownRefresh() {
+    this.setData({ loading: false })
+    await this.load()
+    wx.stopPullDownRefresh()
+  },
+
+  onAvatarError(e) {
+    const id = e.currentTarget.dataset.id
+    const patch = (list) =>
+      list.map((item) => (item.signupId === id ? { ...item, avatarFileID: '' } : item))
+    const groups = {}
+    Object.keys(this.data.groups).forEach((key) => {
+      groups[key] = patch(this.data.groups[key])
+    })
+    this.setData({ groups, current: groups[this.data.tab] || [] })
+  },
+
   async load() {
     if (!this.data.taskId || this.data.loading) return
     this.setData({ loading: true })
