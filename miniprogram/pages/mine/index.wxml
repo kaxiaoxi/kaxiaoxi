@@ -6,7 +6,7 @@
         class="profile__avatar-img"
         src="{{member.avatarUrl || member.avatarFileID}}"
         mode="aspectFill"
-        style="background: {{member.avatarColor || '#2E5F7E'}}"
+
       />
       <view wx:else class="profile__avatar" style="background: {{member.avatarColor || '#2E5F7E'}}">
         {{member.avatarText || '?'}}
@@ -111,3 +111,4 @@
 
   <view class="mine-footer">卡小西 · 广工影协内部版</view>
 </view>
+
