@@ -1,43 +1,128 @@
 <view class="page">
   <view class="card">
     <view class="field">
-      <view class="field__label">事件名称</view>
-      <input class="field__input" maxlength="30" data-field="title" value="{{form.title}}" bindinput="onInput" />
+      <view class="field__label">名称</view>
+      <input
+        class="field__input"
+        maxlength="30"
+        data-field="title"
+        value="{{form.title}}"
+        bindinput="onInput"
+        placeholder="如：大学城秋日人像外拍"
+      />
     </view>
-    <view class="field">
+
+    <view class="field field--row">
       <view class="field__label">类型</view>
-      <picker mode="selector" range="{{types}}" value="{{typeIndex}}" bindchange="onType">
-        <view class="field__input">{{types[typeIndex]}}</view>
+      <picker range="{{types}}" value="{{typeIndex}}" bindchange="onType">
+        <view class="picker">{{types[typeIndex]}}</view>
       </picker>
     </view>
-    <view class="field">
-      <view class="field__label">日期</view>
-      <picker mode="date" value="{{date}}" bindchange="onDate">
-        <view class="field__input">{{date}}</view>
+
+    <view class="field field--row">
+      <view class="field__label">开始日期</view>
+      <picker mode="date" value="{{startDate}}" bindchange="onStartDate">
+        <view class="picker">{{startDate}}</view>
       </picker>
     </view>
-    <view class="field row" wx:if="{{!allDay}}">
-      <view class="field__label">时间</view>
-      <view class="times">
-        <picker mode="time" value="{{startTime}}" bindchange="onStartTime"><view class="picker">{{startTime}}</view></picker>
-        <text class="sep">–</text>
-        <picker mode="time" value="{{endTime}}" bindchange="onEndTime"><view class="picker">{{endTime}}</view></picker>
+
+    <view class="field field--row">
+      <view class="field__label">结束日期</view>
+      <view class="field__inline">
+        <picker mode="date" value="{{endDate || startDate}}" bindchange="onEndDate">
+          <view class="picker">{{endDate || '单日'}}</view>
+        </picker>
+        <text class="field__clear" wx:if="{{endDate}}" bindtap="onClearEndDate">清除</text>
       </view>
     </view>
-    <view class="field row">
-      <view class="field__label">全天</view>
-      <switch checked="{{allDay}}" color="#2E5F7E" bindchange="onAllDay" />
+
+    <view class="field">
+      <view class="field__label">时间</view>
+      <input
+        class="field__input"
+        maxlength="20"
+        data-field="timeText"
+        value="{{form.timeText}}"
+        bindinput="onInput"
+        placeholder="14:00-17:00 / 待定"
+      />
+      <view class="quick">
+        <text class="quick__item" data-text="全天" bindtap="onQuickTime">全天</text>
+        <text class="quick__item" data-text="待定" bindtap="onQuickTime">待定</text>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field__label">地点</view>
+      <input
+        class="field__input"
+        maxlength="40"
+        data-field="location"
+        value="{{form.location}}"
+        bindinput="onInput"
+        placeholder="大学城中心湖"
+      />
     </view>
   </view>
 
   <view class="card">
-    <view class="field">
-      <view class="field__label">地点</view>
-      <input class="field__input" maxlength="40" data-field="locationName" value="{{form.locationName}}" bindinput="onInput" />
+    <view class="field field--row">
+      <view class="field__label">主负责人</view>
+      <picker range="{{memberNames}}" value="{{ownerIndex}}" bindchange="onOwner">
+        <view class="picker">{{ownerIndex >= 0 && members[ownerIndex] ? members[ownerIndex].name : '请选择'}}</view>
+      </picker>
     </view>
+
+    <view class="field field--row">
+      <view class="field__label">副负责人</view>
+      <picker range="{{deputyNames}}" value="{{deputyIndex}}" bindchange="onDeputy">
+        <view class="picker">{{deputyNames[deputyIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="field field--row">
+      <view class="field__label">状态</view>
+      <picker range="{{statuses}}" value="{{statusIndex}}" bindchange="onStatus">
+        <view class="picker">{{statuses[statusIndex]}}</view>
+      </picker>
+    </view>
+
     <view class="field">
-      <view class="field__label">说明</view>
-      <textarea class="textarea" maxlength="500" data-field="description" value="{{form.description}}" bindinput="onInput" />
+      <view class="field__label">可见范围</view>
+      <view class="seg">
+        <view
+          class="seg__item {{visibility === 'public' ? 'seg__item--on' : ''}}"
+          data-value="public"
+          bindtap="onVisibility"
+        >全体可见</view>
+        <view
+          class="seg__item {{visibility === 'staff' ? 'seg__item--on' : ''}}"
+          data-value="staff"
+          bindtap="onVisibility"
+        >仅部长主席</view>
+      </view>
+    </view>
+
+    <view class="field field--row">
+      <view class="field__label">提醒日</view>
+      <view class="field__inline">
+        <picker mode="date" value="{{remindDate || startDate}}" bindchange="onRemindDate">
+          <view class="picker">{{remindDate || '不提醒'}}</view>
+        </picker>
+        <text class="field__clear" wx:if="{{remindDate}}" bindtap="onClearRemindDate">清除</text>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field__label">备注</view>
+      <textarea
+        class="textarea"
+        maxlength="500"
+        data-field="note"
+        value="{{form.note}}"
+        bindinput="onInput"
+        placeholder="集合方式、报名链接等"
+      />
     </view>
   </view>
 

@@ -59,6 +59,10 @@ Page({
     wx.navigateTo({ url: '/pages/message/list/index' })
   },
 
+  onOpenRemind() {
+    wx.navigateTo({ url: '/pages/mine/remind/index' })
+  },
+
   onOpenSettings() {
     wx.navigateTo({ url: '/pages/admin/settings/index' })
   },

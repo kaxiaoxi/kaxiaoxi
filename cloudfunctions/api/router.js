@@ -18,6 +18,7 @@ const routes = {
   'auth.register': auth.register,
   'member.list': member.list,
   'member.review': member.review,
+  'member.options': member.options,
   'task.create': task.create,
   'task.list': task.list,
   'task.detail': task.detail,
@@ -30,6 +31,7 @@ const routes = {
   'signup.reviewLeave': signup.reviewLeave,
   'signup.remove': signup.remove,
   'calendar.month': calendar.month,
+  'calendar.list': calendar.list,
   'calendar.detail': calendar.detail,
   'calendar.save': calendar.save,
   'calendar.remove': calendar.remove,
@@ -38,6 +40,8 @@ const routes = {
   'todo.save': todo.save,
   'todo.complete': todo.complete,
   'todo.remove': todo.remove,
+  'todo.join': todo.join,
+  'todo.quit': todo.quit,
   'message.list': message.list,
   'message.read': message.read,
   'message.unread': message.unread,
@@ -56,6 +60,8 @@ const routes = {
   'feedback.submit': feedback.submit,
   'subscribe.templates': subscribe.templates,
   'reminder.create': subscribe.createReminder,
+  'reminder.createTodo': subscribe.createTodoReminder,
+  'reminder.status': subscribe.reminderStatus,
   'home.summary': home.summary
 }
 
@@ -66,7 +72,3 @@ async function route(action, payload, openid) {
 }
 
 module.exports = { route, routes }
-
-
-
-

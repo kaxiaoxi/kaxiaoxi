@@ -96,6 +96,11 @@
       <text class="entry__text">设置</text>
       <text class="entry__arrow">›</text>
     </view>
+    <view class="entry" hover-class="entry--pressed" bindtap="onOpenRemind">
+      <view class="entry__icon entry__icon--message"></view>
+      <text class="entry__text">提醒设置</text>
+      <text class="entry__arrow">›</text>
+    </view>
     <view class="entry" hover-class="entry--pressed" bindtap="onOpenAbout">
       <view class="entry__icon entry__icon--about"></view>
       <text class="entry__text">关于</text>

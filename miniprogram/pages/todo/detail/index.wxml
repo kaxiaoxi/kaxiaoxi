@@ -1,0 +1,61 @@
+<view class="page" wx:if="{{todo}}">
+  <view class="hero">
+    <view class="hero__title {{todo.done ? 'hero__title--done' : ''}}">{{todo.title}}</view>
+    <view class="hero__chips">
+      <text class="prio {{todo.priorityClass}}">{{todo.priorityLabel}}</text>
+      <text class="chip">{{todo.audienceLabel}}</text>
+      <text class="chip chip--done" wx:if="{{todo.done}}">已完成</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{todo.description}}">
+    <view class="desc">{{todo.description}}</view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <text class="row__key">主责人</text>
+      <text class="row__value">{{todo.ownerName || '未指定'}}</text>
+    </view>
+    <view class="row" wx:if="{{todo.deptLabel}}">
+      <text class="row__key">部门</text>
+      <text class="row__value">{{todo.deptLabel}}</text>
+    </view>
+    <view class="row" wx:if="{{todo.dueLabel}}">
+      <text class="row__key">截止</text>
+      <text class="row__value">{{todo.dueLabel}}</text>
+    </view>
+    <view class="row">
+      <text class="row__key">可见范围</text>
+      <text class="row__value">{{todo.audienceLabel}} · {{todo.audienceDesc}}</text>
+    </view>
+    <view class="row" wx:if="{{todo.source === 'task'}}" bindtap="onOpenTask">
+      <text class="row__key">来源</text>
+      <text class="row__value row__value--link">任务 ›</text>
+    </view>
+    <view class="row" wx:if="{{todo.sourceEventId}}" bindtap="onOpenEvent">
+      <text class="row__key">来源</text>
+      <text class="row__value row__value--link">年历日程 ›</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{participants.length}}">
+    <view class="sub">协作人（{{participants.length}}）</view>
+    <view class="people">
+      <text class="people__item" wx:for="{{participants}}" wx:key="openid">{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="btn btn--primary" wx:if="{{can.join}}" bindtap="onJoin">加入协作</button>
+    <button class="btn btn--ghost" wx:if="{{can.quit}}" bindtap="onQuit">退出协作</button>
+    <button class="btn btn--ghost" wx:if="{{can.complete}}" bindtap="onComplete">
+      {{todo.done ? '取消完成' : '标记完成'}}
+    </button>
+  </view>
+
+  <view class="actions" wx:if="{{can.edit || can.remove}}">
+    <button class="btn btn--ghost" wx:if="{{can.edit}}" bindtap="onEdit">编辑</button>
+    <button class="btn btn--danger" wx:if="{{can.remove}}" bindtap="onRemove">删除</button>
+  </view>
+</view>

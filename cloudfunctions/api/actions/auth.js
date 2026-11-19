@@ -39,13 +39,16 @@ async function createReviewTodos(memberId, member, applicantOpenid) {
           data: {
             title: `审核新成员：${member.name}`,
             description: `${member.studentNo} · ${member.college || '未填学院'}`,
-            scope: 'personal',
+            // 审核待办只有主席能看到，用新版四档可见范围的 staff
+            audience: 'staff',
             dept: '',
+            participants: [],
             ownerOpenid: chair._openid,
             creatorOpenid: applicantOpenid,
             priority: 3,
             dueAt: null,
-            status: 'todo',
+            done: false,
+            deleted: false,
             source: 'member',
             sourceTaskId: '',
             sourceMemberId: memberId,
