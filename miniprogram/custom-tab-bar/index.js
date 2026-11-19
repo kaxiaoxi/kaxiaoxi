@@ -1,6 +1,7 @@
 Component({
   data: {
     selected: 0,
+    animate: false,
     list: [
       {
         pagePath: '/pages/home/index',
@@ -29,7 +30,18 @@ Component({
     ]
   },
 
+  lifetimes: {
+    attached() {
+      const app = getApp()
+      if (app && typeof app.globalData.tabIndex === 'number') {
+        this.setData({ selected: app.globalData.tabIndex })
+      }
+    }
+  },
+
   methods: {
+    noop() {},
+
     onSwitchTab(e) {
       const index = Number(e.currentTarget.dataset.index)
       const { path } = e.currentTarget.dataset
