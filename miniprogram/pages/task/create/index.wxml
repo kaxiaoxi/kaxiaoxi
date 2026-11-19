@@ -104,8 +104,8 @@
     <view class="field">
       <view class="field__label">报名方式</view>
       <view class="seg">
-        <view class="seg__item {{form.signupMode === 'review' ? 'seg__item--on' : ''}}" data-mode="review" bindtap="onSignupMode">报名审核</view>
         <view class="seg__item {{form.signupMode === 'first_come' ? 'seg__item--on' : ''}}" data-mode="first_come" bindtap="onSignupMode">先到先得</view>
+        <view class="seg__item {{form.signupMode === 'review' ? 'seg__item--on' : ''}}" data-mode="review" bindtap="onSignupMode">报名审核</view>
       </view>
     </view>
 
@@ -142,8 +142,8 @@
     <view class="field">
       <view class="field__label">可见范围</view>
       <view class="seg">
-        <view class="seg__item {{form.audience === 'all' ? 'seg__item--on' : ''}}" data-mode="all" bindtap="onAudience">全体</view>
         <view class="seg__item {{form.audience === 'depts' ? 'seg__item--on' : ''}}" data-mode="depts" bindtap="onAudience">指定部门</view>
+        <view class="seg__item {{form.audience === 'all' ? 'seg__item--on' : ''}}" data-mode="all" bindtap="onAudience">全体</view>
       </view>
     </view>
 
