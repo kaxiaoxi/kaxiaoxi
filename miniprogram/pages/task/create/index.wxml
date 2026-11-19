@@ -55,7 +55,7 @@
     </view>
     <view class="hint">留空或填 0 表示不限人数</view>
     <view class="field field--row">
-      <text class="field__label">二课学时</text>
+      <text class="field__label">每场二课学时</text>
       <input
         class="field__input field__input--right"
         type="number"
@@ -64,7 +64,7 @@
         bindinput="onInput"
       />
     </view>
-    <view class="hint">整数，填 0 表示不计二课</view>
+    <view class="hint">整数，按报名的场次累计；填 0 表示不计二课</view>
 
     <view class="field field--row field--switch">
       <view>

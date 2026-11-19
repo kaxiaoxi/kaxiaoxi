@@ -36,6 +36,10 @@
       <text class="row__value">{{detail.deadlineText}}</text>
     </view>
     <view class="row">
+      <text class="row__key">二课</text>
+      <text class="row__value">{{detail.erkeHours}} 学时/场</text>
+    </view>
+    <view class="row">
       <text class="row__key">收图方式</text>
       <text class="row__value">{{detail.collectMethod}}</text>
     </view>
@@ -71,6 +75,24 @@
       />
       <view wx:else class="avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
       <text class="avatar__name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="section-head section-head--spaced" wx:if="{{detail.roleStats.length}}">
+    <view class="section-head__title">分工情况</view>
+  </view>
+  <view class="card role-stats" wx:if="{{detail.roleStats.length}}">
+    <view class="role-stat" wx:for="{{detail.roleStats}}" wx:key="name">
+      <view class="role-stat__name">{{item.name}}</view>
+      <view class="role-stat__list">
+        <view
+          class="role-stat__item"
+          wx:for="{{item.counts}}"
+          wx:for-item="count"
+          wx:for-index="si"
+          wx:key="si"
+        >第 {{si + 1}} 场 · {{count}}/{{item.quota}}</view>
+      </view>
     </view>
   </view>
 
