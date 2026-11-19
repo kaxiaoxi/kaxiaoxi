@@ -8,6 +8,15 @@ function pad(n) {
   return n < 10 ? `0${n}` : `${n}`
 }
 
+function addHours(time, hours) {
+  const [h, m] = String(time || '09:00')
+    .split(':')
+    .map(Number)
+  let total = h * 60 + m + hours * 60
+  if (total > 23 * 60 + 59) total = 23 * 60 + 59
+  return `${pad(Math.floor(total / 60))}:${pad(total % 60)}`
+}
+
 function dateAfter(days) {
   const d = new Date()
   d.setDate(d.getDate() + days)
@@ -65,8 +74,8 @@ Page({
         {
           key: Date.now(),
           date: last ? last.date : dateAfter(1),
-          start: '09:00',
-          end: '12:00'
+          start: last ? last.end : '09:00',
+          end: last ? addHours(last.end, 3) : '12:00'
         }
       ])
     })
