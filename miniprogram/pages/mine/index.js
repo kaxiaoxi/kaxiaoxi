@@ -1,4 +1,5 @@
 const { call } = require('../../services/api')
+const { resolve, urlOf } = require('../../utils/avatar')
 const { DEPT_LABEL, ROLE_LABEL, MEMBER_STATUS_LABEL } = require('../../utils/constants')
 const { syncTabBar } = require('../../utils/tabbar')
 
@@ -29,6 +30,11 @@ Page({
     } catch (err) {
       console.warn('[mine] 刷新资料失败', err)
       loadError = true
+    }
+
+    if (member && member.avatarFileID) {
+      await resolve([member.avatarFileID])
+      member = { ...member, avatarUrl: urlOf(member.avatarFileID) }
     }
 
     this.setData({
@@ -79,6 +85,22 @@ Page({
     wx.navigateTo({ url: '/pages/about/index' })
   },
 
+  async compressAvatar(path) {
+    if (!wx.compressImage) return path
+    try {
+      const res = await wx.compressImage({
+        src: path,
+        quality: 60,
+        compressedWidth: 300,
+        compressedHeight: 300
+      })
+      return res.tempFilePath || path
+    } catch (err) {
+      console.warn('[mine] 头像压缩失败，使用原图', err)
+      return path
+    }
+  },
+
   async onChooseAvatar(e) {
     const tempUrl = e.detail && e.detail.avatarUrl
     const member = this.data.member
@@ -86,13 +108,19 @@ Page({
 
     wx.showLoading({ title: '上传中', mask: true })
     try {
-      const ext = (tempUrl.match(/\.(\w+)$/) || [])[1] || 'png'
+      const filePath = await this.compressAvatar(tempUrl)
+      const ext = (filePath.match(/\.(\w+)$/) || [])[1] || 'jpg'
       const upload = await wx.cloud.uploadFile({
         cloudPath: `avatars/${member._id}-${Date.now()}.${ext}`,
-        filePath: tempUrl
+        filePath
       })
       const res = await call('profile.updateAvatar', { fileID: upload.fileID })
-      const updated = { ...member, avatarFileID: res.avatarFileID }
+      await resolve([res.avatarFileID])
+      const updated = {
+        ...member,
+        avatarFileID: res.avatarFileID,
+        avatarUrl: urlOf(res.avatarFileID)
+      }
       this.setData({ member: updated })
       getApp().globalData.member = updated
       wx.hideLoading()

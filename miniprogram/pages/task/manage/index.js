@@ -1,4 +1,5 @@
 const { call } = require('../../../services/api')
+const { resolve, urlOf } = require('../../../utils/avatar')
 
 const TABS = [
   { key: 'pending', label: '待审' },
@@ -63,6 +64,14 @@ Page({
     try {
       const res = await call('signup.list', { taskId: this.data.taskId })
       const groups = res.groups
+      const rows = Object.keys(groups).reduce((acc, key) => acc.concat(groups[key] || []), [])
+      await resolve(rows.map((row) => row.avatarFileID).filter(Boolean))
+      Object.keys(groups).forEach((key) => {
+        groups[key] = (groups[key] || []).map((row) => ({
+          ...row,
+          avatarUrl: row.avatarFileID ? urlOf(row.avatarFileID) : ''
+        }))
+      })
       const tabs = TABS.map((item) => ({
         ...item,
         count: (groups[item.key] || []).length

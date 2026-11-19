@@ -1,4 +1,5 @@
 const { call } = require('../../../services/api')
+const { withAvatarUrls } = require('../../../utils/avatar')
 const {
   PHASE_LABEL,
   MY_SIGNUP_LABEL,
@@ -46,11 +47,12 @@ Page({
       const task = res.task
       const myStatus = res.mySignup ? res.mySignup.status : ''
       const action = this.resolveAction(task, myStatus)
+      const participants = await withAvatarUrls(res.participants || [])
 
       this.setData({
         detail: {
           ...task,
-          participants: res.participants || [],
+          participants,
           pendingCount: res.pendingCount || 0,
           phaseLabel: PHASE_LABEL[task.phase] || '',
           sessionsText: (task.sessions || []).map((s) => formatSession(s)),
