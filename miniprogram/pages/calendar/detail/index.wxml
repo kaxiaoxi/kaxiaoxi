@@ -1,9 +1,10 @@
 <view class="page" wx:if="{{event}}">
   <view class="hero">
     <view class="hero__title">{{event.title}}</view>
-    <view class="row">
-      <text class="tag">{{event.type}}</text>
-      <text class="tag" wx:if="{{event.allDay}}">全天</text>
+    <view class="hero__chips">
+      <text class="chip chip--type">{{event.type}}</text>
+      <text class="chip {{event.statusClass}}">{{event.status}}</text>
+      <text class="chip" wx:if="{{event.visibility === 'staff'}}">内部</text>
     </view>
   </view>
 
@@ -12,15 +13,48 @@
       <text class="row__key">时间</text>
       <text class="row__value">{{event.dateText}}</text>
     </view>
-    <view class="row" wx:if="{{event.locationName}}">
+    <view class="row" wx:if="{{event.location}}">
       <text class="row__key">地点</text>
-      <text class="row__value">{{event.locationName}}</text>
+      <text class="row__value">{{event.location}}</text>
     </view>
-    <view class="row" wx:if="{{event.description}}">
-      <text class="row__key">说明</text>
-      <text class="row__value">{{event.description}}</text>
+    <view class="row">
+      <text class="row__key">主负责人</text>
+      <text class="row__value">{{event.ownerName || '未指定'}}</text>
+    </view>
+    <view class="row" wx:if="{{event.deputyName}}">
+      <text class="row__key">副负责人</text>
+      <text class="row__value">{{event.deputyName}}</text>
+    </view>
+    <view class="row" wx:if="{{event.remindDate}}">
+      <text class="row__key">提醒日</text>
+      <text class="row__value">{{event.remindDate}}</text>
+    </view>
+    <view class="row" wx:if="{{event.note}}">
+      <text class="row__key">备注</text>
+      <text class="row__value">{{event.note}}</text>
     </view>
   </view>
+
+  <view class="card link" wx:if="{{sourceTask}}" bindtap="onOpenTask">
+    <view class="link__main">
+      <view class="link__title">关联任务：{{sourceTask.title}}</view>
+      <view class="muted">{{sourceTask.locationName}}</view>
+    </view>
+    <text class="link__arrow">›</text>
+  </view>
+
+  <block wx:if="{{relatedTodos.length}}">
+    <view class="section">关联待办</view>
+    <view class="card">
+      <view
+        class="todo"
+        wx:for="{{relatedTodos}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onOpenTodo"
+      >{{item.title}}</view>
+    </view>
+  </block>
 
   <view class="actions" wx:if="{{canEdit}}">
     <button class="btn btn--ghost" bindtap="onEdit">编辑</button>

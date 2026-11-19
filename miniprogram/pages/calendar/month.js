@@ -1,8 +1,11 @@
 const { call } = require('../../services/api')
-const { formatDay, formatTime } = require('../../utils/task')
 const { syncTabBar } = require('../../utils/tabbar')
+const { TYPE_KEY, STATUS_CLASS } = require('../../utils/calendar')
+const { ROLE } = require('../../utils/constants')
+const { ensureMember } = require('../../utils/session')
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六']
+
 const MONTH_NAMES = [
   '一月',
   '二月',
@@ -18,26 +21,12 @@ const MONTH_NAMES = [
   '十二月'
 ]
 
-const TYPE_KEY = {
-  招新: 'recruit',
-  例会: 'meeting',
-  外拍: 'shoot',
-  比赛: 'contest',
-  展览: 'exhibit',
-  截止: 'deadline',
-  其他: 'other'
-}
-
 function pad(n) {
   return n < 10 ? `0${n}` : `${n}`
 }
 
 function keyOf(date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
-}
-
-function toDate(value) {
-  return value instanceof Date ? value : new Date(value)
 }
 
 Page({
@@ -49,11 +38,12 @@ Page({
     weekdays: WEEKDAYS,
     cells: [],
     selected: '',
-    selectedLabel: '',
+    selectedLabel: '选择日期查看安排',
     dayEvents: [],
     loading: false,
     loadError: false,
-    tabPageEnter: false
+    tabPageEnter: false,
+    isStaff: false
   },
 
   onLoad() {
@@ -67,8 +57,11 @@ Page({
     })
   },
 
-  onShow() {
+  async onShow() {
     syncTabBar(this, 2, 'calendar')
+    // 冷启动直接进年历页时 globalData 可能是空的，先补一次登录态
+    const member = await ensureMember()
+    this.setData({ isStaff: !!member && member.role !== ROLE.MEMBER })
     this.load()
   },
 
@@ -86,9 +79,10 @@ Page({
       const res = await call('calendar.month', { year, month })
       const events = (res.list || []).map((item) => ({
         ...item,
-        startKey: keyOf(toDate(item.startAt)),
-        endKey: keyOf(toDate(item.endAt)),
-        timeText: item.allDay ? '全天' : `${formatTime(item.startAt)}–${formatTime(item.endAt)}`
+        startKey: item.startDate,
+        // 单日活动 endDate 为空，用开始日兜底，避免跨天判断出错
+        endKey: item.endDate || item.startDate,
+        colorKey: TYPE_KEY[item.type] || 'other'
       }))
       this.events = events
       this.render(events, selected)
@@ -121,7 +115,8 @@ Page({
         items: dayEvents.slice(0, 3).map((e) => ({
           id: e._id,
           title: e.title,
-          colorKey: TYPE_KEY[e.type] || 'other'
+          colorKey: e.colorKey,
+          isStaff: e.visibility === 'staff'
         })),
         more: Math.max(dayEvents.length - 3, 0)
       })
@@ -132,8 +127,13 @@ Page({
           .filter((e) => selected >= e.startKey && selected <= e.endKey)
           .map((e) => ({
             ...e,
-            colorKey: TYPE_KEY[e.type] || 'other',
-            dayText: e.startKey === e.endKey ? '' : `${formatDay(e.startAt)}–${formatDay(e.endAt)}`
+            colorKey: e.colorKey,
+            statusClass: STATUS_CLASS[e.status] || 'chip--gray',
+            isStaffTag: e.visibility === 'staff',
+            dayText:
+              e.startKey === e.endKey
+                ? ''
+                : `${e.startKey.slice(5).replace('-', '/')}–${e.endKey.slice(5).replace('-', '/')}`
           }))
       : []
 
@@ -143,12 +143,7 @@ Page({
       selectedLabel = `${Number(m)} 月 ${Number(d)} 日`
     }
 
-    this.setData({
-      cells,
-      selected,
-      selectedLabel,
-      dayEvents: dayList
-    })
+    this.setData({ cells, selected, selectedLabel, dayEvents: dayList })
   },
 
   onSelect(e) {
@@ -233,5 +228,9 @@ Page({
 
   onRetry() {
     this.load()
+  },
+
+  onList() {
+    wx.navigateTo({ url: '/pages/calendar/list/index' })
   }
 })

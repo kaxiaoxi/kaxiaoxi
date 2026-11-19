@@ -1,6 +1,6 @@
 const { db } = require('../lib/db')
 const { BizError } = require('../lib/errors')
-const { toProfile, requireChairman } = require('../lib/member')
+const { toProfile, requireChairman, getMemberByOpenid } = require('../lib/member')
 const { notify } = require('../lib/notify')
 
 const REVIEW_STATUS = {
@@ -12,7 +12,7 @@ async function closeReviewTodos(memberId) {
   try {
     const res = await db
       .collection('todos')
-      .where({ sourceMemberId: memberId, status: 'todo' })
+      .where({ sourceMemberId: memberId, done: false, deleted: false })
       .limit(20)
       .get()
     await Promise.all(
@@ -21,13 +21,19 @@ async function closeReviewTodos(memberId) {
           .collection('todos')
           .doc(todo._id)
           .update({
-            data: { status: 'done', completedAt: db.serverDate(), updatedAt: db.serverDate() }
+            data: { done: true, completedAt: db.serverDate(), updatedAt: db.serverDate() }
           })
       )
     )
   } catch (err) {
     console.warn('[member] 关闭审核待办失败', err)
   }
+}
+
+async function requireActive(openid) {
+  const me = await getMemberByOpenid(openid)
+  if (!me || me.status !== 'active') throw new BizError(40301, '账号未激活')
+  return me
 }
 async function review(payload = {}, openid) {
   const me = await requireChairman(openid)
@@ -82,4 +88,27 @@ async function list(payload = {}, openid) {
   return { list: res.data.map(toProfile), total: res.data.length }
 }
 
-module.exports = { review, list }
+/**
+ * 选人用的成员清单：年历的主/副负责人、待办的主责人都要用。
+ * 权限：仅部长与主席；只返回 openid / 姓名 / 部门 / 角色，不返回学号电话。
+ */
+async function options(payload = {}, openid) {
+  const me = await requireActive(openid)
+  if (me.role === 'member') throw new BizError(40301, '仅部长或主席可选择负责人')
+
+  const res = await db.collection('members').where({ status: 'active' }).limit(100).get()
+
+  // 不在数据库层排序，避免依赖 name 索引
+  const list = (res.data || [])
+    .map((member) => ({
+      openid: member._openid,
+      name: member.name,
+      dept: member.dept,
+      role: member.role
+    }))
+    .sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh'))
+
+  return { list }
+}
+
+module.exports = { review, list, options }

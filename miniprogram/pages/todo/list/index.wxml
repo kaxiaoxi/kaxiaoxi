@@ -14,23 +14,36 @@
     >{{item.label}}</view>
   </view>
 
-  <view class="empty" wx:if="{{!loading && !list.length}}">暂无待办</view>
+  <view class="empty" wx:if="{{!loading && !list.length}}">{{emptyText}}</view>
 
   <view class="list">
-    <view class="row" wx:for="{{list}}" wx:key="_id">
+    <view
+      class="todo"
+      wx:for="{{list}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="onOpen"
+    >
       <view
-        class="check {{item.status === 'done' ? 'check--on' : ''}}"
+        class="check {{item.done ? 'check--on' : ''}}"
+        wx:if="{{tab === 'mine' || tab === 'done'}}"
         data-id="{{item._id}}"
-        data-done="{{item.status === 'done' ? '1' : '0'}}"
+        data-done="{{item.done ? '0' : '1'}}"
         catchtap="onToggle"
-      >{{item.status === 'done' ? '✓' : ''}}</view>
-      <view class="row__main" data-id="{{item._id}}" bindtap="onOpen">
-        <view class="row__title {{item.status === 'done' ? 'row__title--done' : ''}}">{{item.title}}</view>
-        <view class="row__meta">
+      >{{item.done ? '✓' : ''}}</view>
+
+      <view class="todo__main">
+        <view class="todo__title {{item.done ? 'todo__title--done' : ''}}">{{item.title}}</view>
+        <view class="todo__meta">
           <text class="prio {{item.priorityClass}}">{{item.priorityLabel}}</text>
+          <text wx:if="{{item.ownerName}}">{{item.ownerName}} 主责</text>
+          <text wx:if="{{item.deptLabel}}">{{item.deptLabel}}</text>
           <text wx:if="{{item.dueLabel}}">{{item.dueLabel}}</text>
-          <text wx:if="{{item.scope === 'dept'}}">部门</text>
-          <text wx:if="{{item.source === 'task'}}">自动</text>
+        </view>
+        <view class="todo__foot">
+          <text class="chip" wx:if="{{item.audience !== 'self'}}">{{item.audienceLabel}}</text>
+          <text class="chip chip--join" wx:if="{{item.joinText}}">{{item.joinText}}</text>
+          <text class="chip chip--src" wx:if="{{item.source === 'task'}}">来自任务</text>
         </view>
       </view>
     </view>

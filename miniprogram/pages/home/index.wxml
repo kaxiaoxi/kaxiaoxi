@@ -30,6 +30,14 @@
     </view>
   </view>
 
+  <view class="dept-entry card" wx:if="{{isStaff && deptTodoCount}}" bindtap="onOpenDeptTodo">
+    <view class="dept-entry__main">
+      <view class="dept-entry__title">{{deptTodoCount}} 条部门待办可加入</view>
+      <view class="dept-entry__text">本部门还没人认领的活，可以加入协作</view>
+    </view>
+    <view class="dept-entry__arrow">›</view>
+  </view>
+
   <view class="section-head">
     <view class="section-head__title">近期任务</view>
     <view class="section-head__action" bindtap="onOpenTaskList">全部</view>
@@ -76,7 +84,13 @@
   </view>
 
   <view class="card todo-list" wx:if="{{todos.length}}">
-    <view class="todo" wx:for="{{todos}}" wx:key="_id">
+    <view
+      class="todo"
+      wx:for="{{todos}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="onOpenTodo"
+    >
       <view class="todo__check"></view>
       <view class="todo__body">
         <view class="todo__title">{{item.title}}</view>

@@ -108,4 +108,3 @@ async function appointMinister(payload = {}, openid) {
 }
 
 module.exports = { getSettings, archiveYear, appointChairman, appointMinister }
-

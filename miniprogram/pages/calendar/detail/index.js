@@ -1,10 +1,12 @@
 const { call } = require('../../../services/api')
-const { formatDay, formatTime } = require('../../../utils/task')
+const { STATUS_CLASS, TYPE_KEY } = require('../../../utils/calendar')
 const { ROLE } = require('../../../utils/constants')
 
 Page({
   data: {
     event: null,
+    sourceTask: null,
+    relatedTodos: [],
     canEdit: false,
     loading: true
   },
@@ -23,11 +25,20 @@ Page({
       const res = await call('calendar.detail', { id: this.eventId })
       const event = res.event
       const member = getApp().globalData.member
+      const range =
+        event.endDate && event.endDate !== event.startDate
+          ? `${event.startDate} – ${event.endDate}`
+          : event.startDate
+
       this.setData({
         event: {
           ...event,
-          dateText: `${formatDay(event.startAt)} ${event.allDay ? '全天' : formatTime(event.startAt) + '–' + formatTime(event.endAt)}`
+          colorKey: TYPE_KEY[event.type] || 'other',
+          statusClass: STATUS_CLASS[event.status] || 'chip--gray',
+          dateText: `${range} ${event.timeText || ''}`.trim()
         },
+        sourceTask: res.sourceTask || null,
+        relatedTodos: res.relatedTodos || [],
         canEdit: !!member && member.role !== ROLE.MEMBER,
         loading: false
       })
@@ -42,9 +53,19 @@ Page({
     wx.navigateTo({ url: `/pages/calendar/edit/index?id=${this.eventId}` })
   },
 
+  onOpenTask() {
+    const task = this.data.sourceTask
+    if (!task) return
+    wx.navigateTo({ url: `/pages/task/detail/index?id=${task._id}` })
+  },
+
+  onOpenTodo(e) {
+    wx.navigateTo({ url: `/pages/todo/detail/index?id=${e.currentTarget.dataset.id}` })
+  },
+
   onDelete() {
     wx.showModal({
-      title: '删除事件',
+      title: '删除日程',
       content: '删除后年历中不再显示，确定吗？',
       success: async (res) => {
         if (!res.confirm) return

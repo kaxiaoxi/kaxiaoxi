@@ -357,3 +357,98 @@
 .fab:active {
   opacity: 0.68;
 }
+
+/* ---- 新版 10 类活动类型：补 lecture / gear / article / party 配色 ---- */
+.pill--lecture {
+  color: #0b6e99;
+  background: rgba(90, 200, 250, 0.2);
+}
+
+.pill--gear {
+  color: #6c6c70;
+  background: rgba(142, 142, 147, 0.16);
+}
+
+.pill--article {
+  color: #8a6d00;
+  background: rgba(255, 204, 0, 0.2);
+}
+
+.pill--party {
+  color: #8944ab;
+  background: rgba(175, 82, 222, 0.16);
+}
+
+/* 内部日程：格子里加左侧竖条，部长与主席一眼能分辨 */
+.pill--staff {
+  border-left: 4rpx solid rgba(60, 60, 67, 0.32);
+}
+
+.bar--lecture {
+  background: #5ac8fa;
+}
+
+.bar--gear {
+  background: #8e8e93;
+}
+
+.bar--article {
+  background: #ffcc00;
+}
+
+.bar--party {
+  background: #af52de;
+}
+
+/* ---- 当日列表的类型 / 状态 / 负责人 ---- */
+.event__tags {
+  margin-top: 10rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.event__owner {
+  font-size: 22rpx;
+  color: var(--s-2);
+}
+
+.chip {
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  line-height: 28rpx;
+  background: rgba(142, 142, 147, 0.14);
+  color: #6c6c70;
+}
+
+.chip--type {
+  background: rgba(46, 95, 126, 0.08);
+  color: var(--blue);
+}
+
+.chip--gray {
+  background: rgba(142, 142, 147, 0.14);
+  color: #6c6c70;
+}
+
+.chip--blue {
+  background: rgba(0, 122, 255, 0.12);
+  color: #007aff;
+}
+
+.chip--green {
+  background: rgba(52, 199, 89, 0.16);
+  color: #248a3d;
+}
+
+.chip--red {
+  background: rgba(255, 59, 48, 0.14);
+  color: #d70015;
+}
+
+.chip--staff {
+  background: rgba(142, 142, 147, 0.14);
+  color: #6c6c70;
+}

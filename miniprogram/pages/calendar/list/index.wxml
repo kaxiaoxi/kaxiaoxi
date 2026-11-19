@@ -1,0 +1,62 @@
+<view class="page">
+  <view class="filters">
+    <view class="seg">
+      <view
+        wx:for="{{ranges}}"
+        wx:key="key"
+        class="seg__item {{range === item.key ? 'seg__item--on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onRange"
+      >{{item.label}}</view>
+    </view>
+    <view class="seg">
+      <view
+        wx:for="{{visibilities}}"
+        wx:key="key"
+        class="seg__item {{visibility === item.key ? 'seg__item--on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onVisibility"
+      >{{item.label}}</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-x class="table-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="table">
+      <view class="tr tr--head">
+        <view class="td td--date td--sticky">日期</view>
+        <view class="td td--title">名称</view>
+        <view class="td td--type">类型</view>
+        <view class="td td--loc">地点</view>
+        <view class="td td--owner">负责人</view>
+        <view class="td td--status">状态</view>
+        <view class="td td--vis">可见</view>
+      </view>
+
+      <view
+        class="tr"
+        wx:for="{{list}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onOpen"
+      >
+        <view class="td td--date td--sticky">{{item.dateText}}</view>
+        <view class="td td--title">{{item.title}}</view>
+        <view class="td td--type">
+          <text class="dot dot--{{item.colorKey}}"></text>
+          <text class="td__text">{{item.type}}</text>
+        </view>
+        <view class="td td--loc">{{item.location || '—'}}</view>
+        <view class="td td--owner">{{item.ownerName || '—'}}</view>
+        <view class="td td--status">
+          <text class="chip {{item.statusClass}}">{{item.status}}</text>
+        </view>
+        <view class="td td--vis">{{item.visibilityLabel}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="empty" wx:if="{{loading === false && !list.length}}">这个范围还没有日程</view>
+  <view class="loading" wx:if="{{loading === 'busy'}}">加载中…</view>
+
+  <view class="fab" bindtap="onCreate">＋ 新建</view>
+</view>

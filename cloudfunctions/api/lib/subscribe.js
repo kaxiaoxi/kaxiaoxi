@@ -2,7 +2,14 @@ const { db, cloud } = require('./db')
 
 const DEFAULT_FIELDS = {
   feedback: { thing2: 'name', thing3: 'content', time6: 'time' },
-  activity: { thing1: 'title', time2: 'time', thing3: 'location' }
+  activity: {
+    thing10: 'title',
+    thing14: 'memo',
+    thing7: 'tip',
+    thing15: 'owner',
+    time6: 'endTime'
+  },
+  todo: { thing1: 'title', time2: 'time' }
 }
 
 async function readConfig(key) {
@@ -13,7 +20,8 @@ async function readConfig(key) {
 async function getTemplates() {
   const feedback = await readConfig('tplFeedback')
   const activity = await readConfig('tplActivity')
-  return { feedback, activity }
+  const todo = await readConfig('tplTodo')
+  return { feedback, activity, todo }
 }
 
 async function getFields(kind) {
@@ -46,7 +54,8 @@ async function send(kind, openid, data, page) {
   const payload = {}
   Object.keys(fields).forEach((key) => {
     const raw = data[fields[key]]
-    const value = fields[key] === 'time' ? formatTime(raw) : raw
+    // 模板字段以 time 开头的按时间格式化，其余按 20 字截断（微信 thing 类型限制）
+    const value = key.indexOf('time') === 0 ? formatTime(raw) : raw
     if (value !== undefined && value !== '') {
       payload[key] = clip(value, 20)
     }
@@ -67,4 +76,12 @@ async function send(kind, openid, data, page) {
   }
 }
 
-module.exports = { getTemplates, send, formatTime }
+/** 云函数跑在 UTC，这里显式按 Asia/Shanghai(+8) 求「当天 09:00」。 */
+function shanghaiMorningOf(value, hour = 9) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return null
+  const tz = new Date(date.getTime() + 8 * 60 * 60 * 1000)
+  return Date.UTC(tz.getUTCFullYear(), tz.getUTCMonth(), tz.getUTCDate(), hour - 8, 0, 0)
+}
+
+module.exports = { getTemplates, getFields, send, formatTime, shanghaiMorningOf }

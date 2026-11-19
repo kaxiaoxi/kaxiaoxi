@@ -24,6 +24,14 @@ Page({
 
   onLoad(options) {
     this.taskId = options.id || ''
+    // 提前缓存模板 ID，点「确认报名」时才能同步发起授权
+    call('subscribe.templates', {})
+      .then((tpl) => {
+        this.remindTpl = (tpl && tpl.activity) || ''
+      })
+      .catch(() => {
+        this.remindTpl = ''
+      })
     this.load()
   },
 
@@ -95,8 +103,23 @@ Page({
     this.setData({ showApplySheet: false })
   },
 
-  async confirmApply() {
+  confirmApply() {
     if (this.data.applyLoading) return
+
+    // requestSubscribeMessage 只认用户点击上下文：
+    // 必须在这里同步发起，不能放到 await 之后（否则报 can only be invoked by user TAP gesture）
+    const tmplId = this.remindTpl || ''
+    if (!tmplId) {
+      this.doApply()
+      return
+    }
+    wx.requestSubscribeMessage({
+      tmplIds: [tmplId],
+      complete: () => this.doApply()
+    })
+  },
+
+  async doApply() {
     this.setData({ applyLoading: true })
     try {
       const result = await call('task.apply', { taskId: this.taskId })
@@ -117,14 +140,11 @@ Page({
 
   async setupReminder() {
     try {
-      const tpl = await call('subscribe.templates', {})
-      if (!tpl.activity) return
-      await new Promise((resolve) => {
-        wx.requestSubscribeMessage({ tmplIds: [tpl.activity], complete: resolve })
-      })
+      // 授权已经在 confirmApply 里完成，这里只登记一条待发提醒
+      if (!this.remindTpl) return
       await call('reminder.create', { taskId: this.taskId })
     } catch (err) {
-      console.warn('[task] 订阅提醒失败', err)
+      console.warn('[task] 登记提醒失败', err)
     }
   },
 
