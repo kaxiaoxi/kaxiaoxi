@@ -13,7 +13,13 @@ Page({
     detail: null,
     loading: true,
     action: 'none',
-    isOwner: false
+    isOwner: false,
+    loadError: false,
+    showApplySheet: false,
+    applyLoading: false,
+    showLeaveSheet: false,
+    leaveLoading: false,
+    leaveReason: ''
   },
 
   onLoad(options) {
@@ -26,6 +32,7 @@ Page({
   },
 
   async load() {
+    this.setData({ loading: true, loadError: false })
     try {
       const res = await call('task.detail', { taskId: this.taskId })
       const task = res.task
@@ -50,9 +57,14 @@ Page({
       })
       wx.setNavigationBarTitle({ title: task.title })
     } catch (err) {
-      this.setData({ loading: false })
+      console.warn('[task.detail] 加载失败', err)
+      this.setData({ loading: false, loadError: true })
       wx.showToast({ title: err.message || '加载失败', icon: 'none' })
     }
+  },
+
+  onRetry() {
+    this.load()
   },
 
   resolveAction(task, myStatus) {
@@ -66,7 +78,7 @@ Page({
 
   onAction() {
     const { action } = this.data
-    if (action === 'apply') return this.apply()
+    if (action === 'apply') return this.onOpenApply()
     if (action === 'cancel') return this.cancel()
   },
 
@@ -74,27 +86,33 @@ Page({
     wx.navigateTo({ url: `/pages/task/manage/index?id=${this.taskId}` })
   },
 
-  apply() {
-    wx.showModal({
-      title: '确认报名',
-      content: '报名后请按时参加，临时有事请提前请假。',
-      success: async (res) => {
-        if (!res.confirm) return
-        try {
-          const result = await call('task.apply', { taskId: this.taskId })
-          wx.showToast({
-            title: result.status === 'waitlisted' ? '已进入候补' : '报名成功',
-            icon: 'success'
-          })
-          if (result.status === 'approved') {
-            await this.setupReminder()
-          }
-          this.load()
-        } catch (err) {
-          wx.showToast({ title: err.message || '报名失败', icon: 'none' })
-        }
+  onOpenApply() {
+    this.setData({ showApplySheet: true })
+  },
+
+  onCloseApplySheet() {
+    if (this.data.applyLoading) return
+    this.setData({ showApplySheet: false })
+  },
+
+  async confirmApply() {
+    if (this.data.applyLoading) return
+    this.setData({ applyLoading: true })
+    try {
+      const result = await call('task.apply', { taskId: this.taskId })
+      this.setData({ showApplySheet: false, applyLoading: false })
+      wx.showToast({
+        title: result.status === 'waitlisted' ? '已进入候补' : '报名成功',
+        icon: 'success'
+      })
+      if (result.status === 'approved') {
+        await this.setupReminder()
       }
-    })
+      this.load()
+    } catch (err) {
+      this.setData({ applyLoading: false })
+      wx.showToast({ title: err.message || '报名失败', icon: 'none' })
+    }
   },
 
   async setupReminder() {
@@ -128,25 +146,35 @@ Page({
   },
 
   onLeave() {
-    wx.showModal({
-      title: '请假',
-      editable: true,
-      placeholderText: '请填写请假原因',
-      success: async (res) => {
-        if (!res.confirm) return
-        const reason = (res.content || '').trim()
-        if (!reason) {
-          wx.showToast({ title: '请填写请假原因', icon: 'none' })
-          return
-        }
-        try {
-          await call('signup.requestLeave', { taskId: this.taskId, reason })
-          wx.showToast({ title: '已提交，等待审批', icon: 'success' })
-          this.load()
-        } catch (err) {
-          wx.showToast({ title: err.message || '提交失败', icon: 'none' })
-        }
-      }
-    })
+    this.setData({ showLeaveSheet: true, leaveReason: '' })
+  },
+
+  onCloseLeaveSheet() {
+    if (this.data.leaveLoading) return
+    this.setData({ showLeaveSheet: false })
+  },
+
+  onLeaveInput(e) {
+    this.setData({ leaveReason: e.detail.value })
+  },
+
+  async confirmLeave() {
+    if (this.data.leaveLoading) return
+    const reason = this.data.leaveReason.trim()
+    if (!reason) {
+      wx.showToast({ title: '请填写请假原因', icon: 'none' })
+      return
+    }
+
+    this.setData({ leaveLoading: true })
+    try {
+      await call('signup.requestLeave', { taskId: this.taskId, reason })
+      this.setData({ showLeaveSheet: false, leaveLoading: false })
+      wx.showToast({ title: '已提交，等待审批', icon: 'success' })
+      this.load()
+    } catch (err) {
+      this.setData({ leaveLoading: false })
+      wx.showToast({ title: err.message || '提交失败', icon: 'none' })
+    }
   }
 })

@@ -1,0 +1,48 @@
+<view
+  class="sheet-root {{visible ? 'sheet-root--open' : ''}}"
+  aria-hidden="{{!visible}}"
+>
+  <view
+    class="sheet-mask"
+    catchtap="onMaskTap"
+    catchtouchmove="noop"
+  ></view>
+  <view class="sheet" aria-role="dialog" aria-modal="true" aria-label="{{title}}">
+    <view class="sheet__grabber"></view>
+    <view
+      class="sheet__header"
+      bindtouchstart="onTouchStart"
+      catchtouchmove="onTouchMove"
+      bindtouchend="onTouchEnd"
+    >
+      <view class="sheet__heading">
+        <view class="sheet__title">{{title}}</view>
+        <view class="sheet__description" wx:if="{{description}}">{{description}}</view>
+      </view>
+      <view
+        class="sheet__close"
+        aria-role="button"
+        aria-label="关闭"
+        bindtap="onClose"
+      ></view>
+    </view>
+
+    <scroll-view class="sheet__body" scroll-y enable-flex>
+      <slot></slot>
+    </scroll-view>
+
+    <view class="sheet__footer" catchtouchmove="noop">
+      <button class="sheet__button sheet__button--cancel" bindtap="onClose" disabled="{{loading}}">
+        {{cancelText}}
+      </button>
+      <button
+        class="sheet__button {{danger ? 'sheet__button--danger' : 'sheet__button--primary'}}"
+        loading="{{loading}}"
+        disabled="{{loading}}"
+        bindtap="onConfirm"
+      >
+        {{confirmText}}
+      </button>
+    </view>
+  </view>
+</view>

@@ -15,7 +15,20 @@ Page({
     current: [],
     tabs: [],
     tab: 'pending',
-    loading: false
+    loading: false,
+    sheetLoading: false,
+    sheet: {
+      visible: false,
+      type: '',
+      action: '',
+      title: '',
+      description: '',
+      confirmText: '',
+      danger: false,
+      member: null,
+      signupId: '',
+      requestId: ''
+    }
   },
 
   onLoad(options) {
@@ -71,41 +84,78 @@ Page({
 
   onReviewLeave(e) {
     const { id, action } = e.currentTarget.dataset
-    wx.showModal({
-      title: action === 'approve' ? '准假' : '拒绝请假',
-      content: action === 'approve' ? '准假后名额会自动转给候补同学。' : '拒绝后该成员仍在名单中。',
-      success: async (res) => {
-        if (!res.confirm) return
-        try {
-          await call('signup.reviewLeave', {
-            taskId: this.data.taskId,
-            requestId: id,
-            action
-          })
-          wx.showToast({ title: '已处理', icon: 'success' })
-          this.load()
-        } catch (err) {
-          wx.showToast({ title: err.message || '操作失败', icon: 'none' })
-        }
+    const member = this.data.current.find((item) => item.leaveRequestId === id)
+    const isApprove = action === 'approve'
+    this.setData({
+      sheet: {
+        visible: true,
+        type: 'leave',
+        action,
+        title: isApprove ? '准假' : '拒绝请假',
+        description: isApprove ? '准假后名额会自动转给候补同学。' : '拒绝后该成员仍在名单中。',
+        confirmText: isApprove ? '确认准假' : '确认拒绝',
+        danger: !isApprove,
+        member,
+        signupId: '',
+        requestId: id
       }
     })
   },
 
   onRemove(e) {
     const id = e.currentTarget.dataset.id
-    wx.showModal({
-      title: '移出名单',
-      content: '移出后该成员不计二课，名额会给候补同学。',
-      success: async (res) => {
-        if (!res.confirm) return
-        try {
-          await call('signup.remove', { taskId: this.data.taskId, signupId: id })
-          wx.showToast({ title: '已移出', icon: 'success' })
-          this.load()
-        } catch (err) {
-          wx.showToast({ title: err.message || '操作失败', icon: 'none' })
-        }
+    const member = this.data.current.find((item) => item.signupId === id)
+    this.setData({
+      sheet: {
+        visible: true,
+        type: 'remove',
+        action: '',
+        title: '移出名单',
+        description: '移出后该成员不计二课，名额会给候补同学。',
+        confirmText: '确认移出',
+        danger: true,
+        member,
+        signupId: id,
+        requestId: ''
       }
     })
+  },
+
+  onCloseSheet() {
+    if (this.data.sheetLoading) return
+    this.setData({ 'sheet.visible': false })
+  },
+
+  async confirmSheet() {
+    if (this.data.sheetLoading) return
+    const { sheet } = this.data
+    this.setData({ sheetLoading: true })
+    try {
+      if (sheet.type === 'remove') {
+        await call('signup.remove', {
+          taskId: this.data.taskId,
+          signupId: sheet.signupId
+        })
+        wx.showToast({ title: '已移出', icon: 'success' })
+      }
+
+      if (sheet.type === 'leave') {
+        await call('signup.reviewLeave', {
+          taskId: this.data.taskId,
+          requestId: sheet.requestId,
+          action: sheet.action
+        })
+        wx.showToast({ title: '已处理', icon: 'success' })
+      }
+
+      this.setData({
+        'sheet.visible': false,
+        sheetLoading: false
+      })
+      this.load()
+    } catch (err) {
+      this.setData({ sheetLoading: false })
+      wx.showToast({ title: err.message || '操作失败', icon: 'none' })
+    }
   }
 })

@@ -1,5 +1,6 @@
 const { call } = require('../../services/api')
 const { DEPT_LABEL, ROLE_LABEL, MEMBER_STATUS_LABEL } = require('../../utils/constants')
+const { syncTabBar } = require('../../utils/tabbar')
 
 Page({
   data: {
@@ -8,11 +9,17 @@ Page({
     roleLabel: '',
     statusLabel: '',
     isChairman: false,
-    isMinister: false
+    isMinister: false,
+    isLoading: false,
+    loadError: false,
+    tabPageEnter: false
   },
 
   async onShow() {
+    syncTabBar(this, 3, 'mine')
     let member = getApp().globalData.member
+    let loadError = false
+    this.setData({ isLoading: true, loadError: false })
     try {
       const res = await call('auth.login')
       if (res.member) {
@@ -21,6 +28,7 @@ Page({
       }
     } catch (err) {
       console.warn('[mine] 刷新资料失败', err)
+      loadError = true
     }
 
     this.setData({
@@ -29,8 +37,14 @@ Page({
       roleLabel: member ? ROLE_LABEL[member.role] || '' : '',
       statusLabel: member ? MEMBER_STATUS_LABEL[member.status] || '' : '',
       isChairman: !!(member && member.role === 'chairman'),
-      isMinister: !!(member && member.role !== 'member')
+      isMinister: !!(member && member.role !== 'member'),
+      isLoading: false,
+      loadError
     })
+  },
+
+  onRetry() {
+    this.onShow()
   },
 
   onOpenErke() {

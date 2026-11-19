@@ -82,3 +82,46 @@
     </view>
   </block>
 </view>
+
+<bottom-sheet
+  visible="{{sheet.visible}}"
+  title="{{sheet.title}}"
+  description="{{sheet.description}}"
+  confirm-text="{{sheet.confirmText}}"
+  danger="{{sheet.danger}}"
+  loading="{{sheetLoading}}"
+  bind:close="onCloseSheet"
+  bind:confirm="confirmSheet"
+>
+  <view class="sheet-person" wx:if="{{sheet.member}}">
+    <image
+      wx:if="{{sheet.member.avatarFileID}}"
+      class="sheet-person__avatar"
+      src="{{sheet.member.avatarFileID}}"
+      mode="aspectFill"
+    />
+    <view
+      wx:else
+      class="sheet-person__avatar"
+      style="background: {{sheet.member.avatarColor}}"
+    >{{sheet.member.avatarText}}</view>
+    <view class="sheet-person__meta">
+      <view class="sheet-person__name">{{sheet.member.name}}</view>
+      <view class="sheet-person__sub">
+        {{sheet.member.dept}}<text wx:if="{{sheet.member.phone}}"> · {{sheet.member.phone}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="sheet-reason" wx:if="{{sheet.type === 'leave'}}">
+    <view class="sheet-reason__label">请假原因</view>
+    <view class="sheet-reason__text">{{sheet.member.leaveReason}}</view>
+  </view>
+
+  <view class="sheet-warning" wx:if="{{sheet.type === 'remove'}}">
+    <view class="sheet-warning__title">请确认移出后果</view>
+    <view class="sheet-warning__text">
+      该成员将不再计入本任务二课；若活动尚未开始，候补名单会自动递补。
+    </view>
+  </view>
+</bottom-sheet>

@@ -1,5 +1,5 @@
-<view class="page">
-  <view class="profile">
+<view class="page page--tab mine-page {{tabPageEnter ? 'tab-page-enter' : ''}}">
+  <view class="profile glass-strong">
     <view class="profile__avatar-wrap">
       <image
         wx:if="{{member.avatarFileID}}"
@@ -19,11 +19,20 @@
     </view>
     <view class="profile__meta">
       <view class="profile__name">{{member.name || '未登录'}}</view>
-      <view class="profile__sub">{{deptLabel}} · {{roleLabel}} · {{member.academicYear || ''}}</view>
+      <view class="profile__sub">{{deptLabel}} · {{roleLabel}}</view>
+      <view class="profile__year">{{member.academicYear || ''}}</view>
     </view>
+    <view class="profile__status" wx:if="{{statusLabel}}">{{statusLabel}}</view>
   </view>
 
-  <view class="list">
+  <view class="error card" wx:if="{{loadError}}">
+    <view class="error__title">资料刷新失败</view>
+    <view class="error__text">当前展示的是本地缓存资料，检查网络后可重试。</view>
+    <button class="btn btn--ghost error__btn" bindtap="onRetry">重新刷新</button>
+  </view>
+
+  <view class="section-label">个人信息</view>
+  <view class="list card">
     <view class="row">
       <text class="row__key">学号</text>
       <text class="row__value">{{member.studentNo || '-'}}</text>
@@ -44,51 +53,55 @@
       <text class="row__key">宿舍</text>
       <text class="row__value">{{member.dorm || '-'}}</text>
     </view>
-    <view class="row">
-      <text class="row__key">状态</text>
-      <text class="row__value">{{statusLabel || '-'}}</text>
+  </view>
+
+  <view class="section-label">我的工作台</view>
+  <view class="menu card">
+    <view class="entry" hover-class="entry--pressed" bindtap="onOpenTodos">
+      <view class="entry__icon entry__icon--todo"></view>
+      <text class="entry__text">我的待办</text>
+      <text class="entry__arrow">›</text>
+    </view>
+    <view class="entry" hover-class="entry--pressed" bindtap="onOpenErke">
+      <view class="entry__icon entry__icon--erke"></view>
+      <text class="entry__text">我的二课</text>
+      <text class="entry__arrow">›</text>
+    </view>
+    <view class="entry" hover-class="entry--pressed" bindtap="onOpenMessages">
+      <view class="entry__icon entry__icon--message"></view>
+      <text class="entry__text">已读消息</text>
+      <text class="entry__arrow">›</text>
     </view>
   </view>
 
-  <view class="entry" bindtap="onOpenTodos">
-    <text>我的待办</text>
-    <text class="entry__arrow">›</text>
+  <view class="section-label">账号与设置</view>
+  <view class="menu card">
+    <view class="entry" hover-class="entry--pressed" bindtap="onEditProfile">
+      <view class="entry__icon entry__icon--profile"></view>
+      <text class="entry__text">编辑资料</text>
+      <text class="entry__arrow">›</text>
+    </view>
+    <view class="entry" wx:if="{{isMinister}}" hover-class="entry--pressed" bindtap="onOpenSummary">
+      <view class="entry__icon entry__icon--erke"></view>
+      <text class="entry__text">二课汇总</text>
+      <text class="entry__arrow">›</text>
+    </view>
+    <view class="entry" wx:if="{{isChairman}}" hover-class="entry--pressed" bindtap="onOpenMembers">
+      <view class="entry__icon entry__icon--members"></view>
+      <text class="entry__text">成员管理</text>
+      <text class="entry__arrow">›</text>
+    </view>
+    <view class="entry" wx:if="{{isChairman}}" hover-class="entry--pressed" bindtap="onOpenSettings">
+      <view class="entry__icon entry__icon--settings"></view>
+      <text class="entry__text">设置</text>
+      <text class="entry__arrow">›</text>
+    </view>
+    <view class="entry" hover-class="entry--pressed" bindtap="onOpenAbout">
+      <view class="entry__icon entry__icon--about"></view>
+      <text class="entry__text">关于</text>
+      <text class="entry__arrow">›</text>
+    </view>
   </view>
 
-  <view class="entry" bindtap="onOpenErke">
-    <text>我的二课</text>
-    <text class="entry__arrow">›</text>
-  </view>
-
-  <view class="entry" bindtap="onOpenMessages">
-    <text>已读消息</text>
-    <text class="entry__arrow">›</text>
-  </view>
-
-  <view class="entry" bindtap="onEditProfile">
-    <text>编辑资料</text>
-    <text class="entry__arrow">›</text>
-  </view>
-
-  <view class="entry" bindtap="onOpenAbout">
-    <text>关于</text>
-    <text class="entry__arrow">›</text>
-  </view>
-
-  <view class="entry" wx:if="{{isMinister}}" bindtap="onOpenSummary">
-    <text>二课汇总</text>
-    <text class="entry__arrow">›</text>
-  </view>
-
-  <view class="entry" wx:if="{{isChairman}}" bindtap="onOpenSettings">
-    <text>设置</text>
-    <text class="entry__arrow">›</text>
-  </view>
-
-  <view class="entry" wx:if="{{isChairman}}" bindtap="onOpenMembers">
-    <text>成员管理</text>
-    <text class="entry__arrow">›</text>
-  </view>
+  <view class="mine-footer">卡小西 · 广工影协内部版</view>
 </view>
-
-

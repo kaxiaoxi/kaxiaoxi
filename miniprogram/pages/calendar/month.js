@@ -1,5 +1,6 @@
 const { call } = require('../../services/api')
 const { formatDay, formatTime } = require('../../utils/task')
+const { syncTabBar } = require('../../utils/tabbar')
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六']
 const MONTH_NAMES = [
@@ -50,7 +51,9 @@ Page({
     selected: '',
     selectedLabel: '',
     dayEvents: [],
-    loading: false
+    loading: false,
+    loadError: false,
+    tabPageEnter: false
   },
 
   onLoad() {
@@ -65,6 +68,7 @@ Page({
   },
 
   onShow() {
+    syncTabBar(this, 2, 'calendar')
     this.load()
   },
 
@@ -73,6 +77,7 @@ Page({
     const { year, month, selected } = this.data
     this.setData({
       loading: true,
+      loadError: false,
       monthName: MONTH_NAMES[month - 1],
       pickerValue: `${year}-${pad(month)}`
     })
@@ -88,6 +93,8 @@ Page({
       this.events = events
       this.render(events, selected)
     } catch (err) {
+      console.warn('[calendar] 加载失败', err)
+      this.setData({ loadError: true })
       wx.showToast({ title: err.message || '加载失败', icon: 'none' })
     } finally {
       this.setData({ loading: false })
@@ -222,5 +229,9 @@ Page({
 
   onCreate() {
     wx.navigateTo({ url: '/pages/calendar/edit/index' })
+  },
+
+  onRetry() {
+    this.load()
   }
 })

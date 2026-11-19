@@ -1,71 +1,89 @@
-<view class="page">
-  <view class="topbar">
+<view class="page page--tab calendar-page {{tabPageEnter ? 'tab-page-enter' : ''}}">
+  <view class="calendar-top">
     <view class="topbar__year" bindtap="onToday">
       <text class="topbar__chev">‹</text>
       <text>{{year}}年</text>
     </view>
-    <view class="topbar__actions">
-      <text class="topbar__btn" bindtap="onCreate">＋</text>
+    <view class="calendar-top__actions">
+      <view class="calendar-top__btn glass" bindtap="onToday">今天</view>
+      <view class="calendar-top__add glass" bindtap="onCreate">＋</view>
     </view>
   </view>
 
-  <view class="month-row">
-    <text class="month-arrow" bindtap="onPrev">‹</text>
-    <picker
-      mode="date"
-      fields="month"
-      value="{{pickerValue}}"
-      start="2020-01"
-      end="2035-12"
-      bindchange="onPickMonth"
-    >
-      <view class="month-title">{{monthName}}</view>
-    </picker>
-    <text class="month-arrow" bindtap="onNext">›</text>
-  </view>
-
-  <view class="week">
-    <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
-  </view>
-
-  <view class="grid" bindtouchstart="onTouchStart" bindtouchend="onTouchEnd">
-    <view
-      wx:for="{{cells}}"
-      wx:key="key"
-      class="cell {{item.inMonth ? '' : 'cell--mute'}} {{item.key === selected ? 'cell--selected' : ''}}"
-      data-key="{{item.key}}"
-      bindtap="onSelect"
-    >
-      <view class="daynum-wrap">
-        <text class="daynum">{{item.day}}</text>
-      </view>
-      <view class="pills">
-        <view
-          wx:for="{{item.items}}"
-          wx:for-item="ev"
-          wx:key="id"
-          class="pill pill--{{ev.colorKey}}"
-        >{{ev.title}}</view>
-        <view class="pill-more" wx:if="{{item.more}}">+{{item.more}}</view>
-      </view>
+  <view class="calendar-panel card">
+    <view class="month-row">
+      <text class="month-arrow" bindtap="onPrev">‹</text>
+      <picker
+        mode="date"
+        fields="month"
+        value="{{pickerValue}}"
+        start="2020-01"
+        end="2035-12"
+        bindchange="onPickMonth"
+      >
+        <view class="month-title">{{monthName}}</view>
+      </picker>
+      <text class="month-arrow" bindtap="onNext">›</text>
     </view>
-  </view>
 
-  <view class="loading" wx:if="{{loading}}">加载中…</view>
+    <view class="week">
+      <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
+    </view>
 
-  <view class="day-head">{{selectedLabel}}</view>
-  <view class="empty" wx:if="{{selected && !dayEvents.length}}">当天没有安排</view>
-  <view class="event" wx:for="{{dayEvents}}" wx:key="_id" data-id="{{item._id}}" bindtap="onOpen">
-    <view class="event__bar bar--{{item.colorKey}}"></view>
-    <view class="event__main">
-      <view class="event__title">{{item.title}}</view>
-      <view class="event__meta">
-        <text>{{item.timeText}}</text>
-        <text wx:if="{{item.locationName}}"> · {{item.locationName}}</text>
+    <view class="grid" bindtouchstart="onTouchStart" bindtouchend="onTouchEnd">
+      <view
+        wx:for="{{cells}}"
+        wx:key="key"
+        class="cell {{item.inMonth ? '' : 'cell--mute'}} {{item.key === selected ? 'cell--selected' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onSelect"
+      >
+        <view class="daynum-wrap">
+          <text class="daynum">{{item.day}}</text>
+        </view>
+        <view class="pills">
+          <view
+            wx:for="{{item.items}}"
+            wx:for-item="ev"
+            wx:key="id"
+            class="pill pill--{{ev.colorKey}}"
+          >{{ev.title}}</view>
+          <view class="pill-more" wx:if="{{item.more}}">+{{item.more}}</view>
+        </view>
       </view>
     </view>
   </view>
 
-  <view class="fab" bindtap="onToday">今天</view>
+  <view class="error card" wx:if="{{loadError}}">
+    <view class="error__title">年历没有加载出来</view>
+    <view class="error__text">检查网络后重试，当前月份会保留。</view>
+    <button class="btn btn--ghost error__btn" bindtap="onRetry">重新加载</button>
+  </view>
+  <view class="loading glass" wx:elif="{{loading}}">正在同步年历…</view>
+
+  <view class="day-head">
+    <text>{{selectedLabel}}</text>
+    <text class="day-head__count" wx:if="{{dayEvents.length}}">{{dayEvents.length}} 项安排</text>
+  </view>
+
+  <view class="empty card" wx:if="{{selected && !dayEvents.length}}">
+    <view class="empty__title">当天没有安排</view>
+    <view class="empty__text">可以在右上角新建日程，或选择其他日期。</view>
+  </view>
+
+  <view class="event-group card" wx:if="{{dayEvents.length}}">
+    <view class="event" wx:for="{{dayEvents}}" wx:key="_id" data-id="{{item._id}}" bindtap="onOpen">
+      <view class="event__bar bar--{{item.colorKey}}"></view>
+      <view class="event__main">
+        <view class="event__title">{{item.title}}</view>
+        <view class="event__meta">
+          <text>{{item.timeText}}</text>
+          <text wx:if="{{item.locationName}}"> · {{item.locationName}}</text>
+        </view>
+      </view>
+      <view class="event__arrow">›</view>
+    </view>
+  </view>
+
+  <view class="fab glass-strong" bindtap="onToday">回到今天</view>
 </view>
-

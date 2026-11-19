@@ -2,6 +2,9 @@
 
 page {
   background: var(--bg);
+  background-image:
+    radial-gradient(circle at 8% 84%, rgba(46, 95, 126, 0.1), transparent 34%),
+    radial-gradient(circle at 92% 28%, rgba(217, 164, 65, 0.07), transparent 28%);
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 32rpx;
@@ -20,6 +23,26 @@ scroll-view {
   box-sizing: border-box;
 }
 
+.page--tab {
+  padding-bottom: calc(170rpx + env(safe-area-inset-bottom));
+}
+
+.tab-page-enter {
+  animation: tab-page-enter 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes tab-page-enter {
+  from {
+    opacity: 0.68;
+    transform: translate3d(0, 6rpx, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .btn {
   height: 96rpx;
   border-radius: 24rpx;
@@ -30,10 +53,22 @@ scroll-view {
   justify-content: center;
   padding: 0 32rpx;
   line-height: 1;
+  transition:
+    opacity 120ms var(--ease-standard),
+    transform 120ms var(--ease-standard);
 }
 
 .btn::after {
   border: none;
+}
+
+.btn:active {
+  opacity: 0.82;
+  transform: scale(0.985);
+}
+
+.btn[disabled] {
+  opacity: 0.55;
 }
 
 .btn--primary {
@@ -51,9 +86,40 @@ scroll-view {
   background: var(--card);
   border-radius: var(--radius);
   padding: 32rpx;
+  border: 1rpx solid rgba(60, 60, 67, 0.06);
+  box-shadow: var(--card-shadow);
+}
+
+.glass {
+  background: var(--glass);
+  border: 1rpx solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: saturate(150%) blur(18px);
+  backdrop-filter: saturate(150%) blur(18px);
+}
+
+.glass-strong {
+  background: var(--glass-strong);
+  border: 1rpx solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: saturate(150%) blur(18px);
+  backdrop-filter: saturate(150%) blur(18px);
 }
 
 .muted {
   color: var(--s-2);
   font-size: 26rpx;
+}
+
+.section-title {
+  margin: 36rpx 8rpx 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-page-enter {
+    animation-duration: 1ms;
+  }
 }

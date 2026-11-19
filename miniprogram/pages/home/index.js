@@ -2,6 +2,7 @@ const { call } = require('../../services/api')
 const { DEPT_LABEL, ROLE_LABEL } = require('../../utils/constants')
 const { formatRange, formatDay, formatTime } = require('../../utils/task')
 const { dueText } = require('../../utils/todo')
+const { syncTabBar } = require('../../utils/tabbar')
 
 Page({
   data: {
@@ -12,10 +13,14 @@ Page({
     todos: [],
     unreadMessages: [],
     activeMessage: null,
-    showMessage: false
+    showMessage: false,
+    isLoading: false,
+    loadError: false,
+    tabPageEnter: false
   },
 
   onShow() {
+    syncTabBar(this, 0, 'home')
     const member = getApp().globalData.member
     if (!member) {
       this.restore()
@@ -44,6 +49,8 @@ Page({
   },
 
   async load() {
+    if (this.data.isLoading) return
+    this.setData({ isLoading: true, loadError: false })
     try {
       const [taskRes, todoRes, msgRes] = await Promise.all([
         call('task.list', { scope: 'all', status: 'recruiting' }),
@@ -65,7 +72,31 @@ Page({
       this.setData({ tasks, todos, unreadMessages })
     } catch (err) {
       console.warn('[home] 加载失败', err)
+      this.setData({ loadError: true })
+    } finally {
+      this.setData({ isLoading: false })
     }
+  },
+
+  onRetry() {
+    this.load()
+  },
+
+  onOpenTask(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: `/pages/task/detail/index?id=${id}` })
+  },
+
+  onOpenTaskList() {
+    wx.switchTab({ url: '/pages/task/list' })
+  },
+
+  onOpenTodoList() {
+    wx.navigateTo({ url: '/pages/todo/list/index' })
+  },
+
+  onOpenMessageList() {
+    wx.navigateTo({ url: '/pages/message/list/index' })
   },
 
   async onOpenMessage(e) {
