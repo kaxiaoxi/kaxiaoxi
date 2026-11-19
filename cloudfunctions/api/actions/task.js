@@ -314,6 +314,20 @@ async function detail(payload = {}, openid) {
     }
   })
 
+  const sessionTimes = (task.sessions || []).map((item) => toTime(item.startAt))
+  const roleStats = (task.roles || []).map((role) => ({
+    name: role.name,
+    quota: role.quota,
+    counts: sessionTimes.map(
+      (time) =>
+        approvedRes.data.filter(
+          (signup) =>
+            (signup.roles || []).includes(role.name) &&
+            (signup.sessions || []).some((item) => toTime(item) === time)
+        ).length
+    )
+  }))
+
   const pendingRes = await db
     .collection('task_signups')
     .where({ taskId, status: 'pending' })
@@ -327,6 +341,7 @@ async function detail(payload = {}, openid) {
       collectMethod: task.collectMethod,
       useRoles: task.useRoles === true,
       roles: task.roles || [],
+      roleStats,
       signupStartAt: task.signupStartAt,
       signupDeadline: task.signupDeadline,
       publisherOpenid: task.publisherOpenid

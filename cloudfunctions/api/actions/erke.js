@@ -28,6 +28,12 @@ async function pageAll(build) {
   return out
 }
 
+function hoursOf(task, signup) {
+  const count =
+    Array.isArray(signup && signup.sessions) && signup.sessions.length ? signup.sessions.length : 1
+  return (task.erkeHours || 0) * count
+}
+
 async function fetchTasks(year, dept) {
   const where = {
     academicYear: year,
@@ -68,10 +74,15 @@ async function mine(payload = {}, openid) {
       .orderBy('startAt', 'asc')
   )
 
+  const signupMap = {}
+  signups.forEach((item) => {
+    signupMap[item.taskId] = item
+  })
   const list = tasks.map((task) => ({
     taskId: task._id,
     title: task.title,
-    hours: task.erkeHours,
+    hours: hoursOf(task, signupMap[task._id]),
+    sessionCount: (signupMap[task._id] && (signupMap[task._id].sessions || []).length) || 1,
     startAt: task.startAt
   }))
   const total = list.reduce((sum, item) => sum + item.hours, 0)
@@ -105,7 +116,7 @@ async function summary(payload = {}, openid) {
   signups.forEach((signup) => {
     const task = taskMap[signup.taskId]
     if (!task) return
-    hoursMap[signup.openid] = (hoursMap[signup.openid] || 0) + task.erkeHours
+    hoursMap[signup.openid] = (hoursMap[signup.openid] || 0) + hoursOf(task, signup)
   })
 
   const openids = Object.keys(hoursMap)
