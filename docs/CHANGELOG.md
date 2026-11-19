@@ -2,6 +2,13 @@
 
 格式：`版本 · 日期 · 变更摘要`
 
+## v1.4.0 · 2026-11-19（分工与时段报名）
+
+- 发布任务：需要人数默认留空（0 = 不限），二课学时默认 2
+- 新增「按分工报名」开关：可自由添加分工名称与人数，名额按**每个时段**单独计算
+- 报名：多时段任务支持勾选多个时段；开启分工后支持多选分工，一次提交
+- `tasks` 新增 `useRoles`、`roles`；`task_signups` 新增 `sessions`、`roles`
+
 ## v1.3.0 · 2026-11-19（提醒模块）
 
 - 修正订阅授权时机：`requestSubscribeMessage` 从 `await` 之后挪到点击处理函数里，避免 `can only be invoked by user TAP gesture`
