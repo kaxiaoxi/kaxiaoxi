@@ -18,11 +18,9 @@
   </view>
 
   <view class="card">
-    <view class="field" wx:if="{{showOwner}}">
+    <view class="field field--row" wx:if="{{showOwner}}" bindtap="onOpenOwnerPicker">
       <view class="field__label">主责人</view>
-      <picker range="{{memberNames}}" value="{{ownerIndex}}" bindchange="onOwner">
-        <view class="picker">{{ownerIndex >= 0 && members[ownerIndex] ? members[ownerIndex].name : '请选择'}}</view>
-      </picker>
+      <view class="picker {{ownerName ? '' : 'picker--placeholder'}}">{{ownerName || '请选择'}}</view>
     </view>
 
     <view class="field">
@@ -74,4 +72,14 @@
     <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">保存</button>
     <button class="btn btn--danger" wx:if="{{id}}" bindtap="onDelete">删除</button>
   </view>
+
+  <member-picker
+    id="memberPicker"
+    visible="{{pickerVisible}}"
+    title="选择主责人"
+    members="{{members}}"
+    value="{{pickerValue}}"
+    bind:select="onPickerSelect"
+    bind:close="onPickerClose"
+  />
 </view>

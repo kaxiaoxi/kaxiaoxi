@@ -29,8 +29,10 @@ Page({
     priorities: PRIORITIES,
     priority: 2,
     members: [],
-    memberNames: [],
-    ownerIndex: -1,
+    ownerOpenid: '',
+    ownerName: '',
+    pickerVisible: false,
+    pickerValue: '',
     isStaff: false,
     isChairman: false,
     depts: ['photo', 'pr', 'ops'],
@@ -56,7 +58,6 @@ Page({
       audiences,
       deptIndex,
       showOwner: isStaff,
-      ownerIndex: isStaff ? -1 : 0,
       audienceDesc: AUDIENCE_DESC.self
     })
 
@@ -73,7 +74,7 @@ Page({
     try {
       const res = await call('member.options')
       const members = res.list || []
-      this.setData({ members, memberNames: members.map((item) => item.name) })
+      this.setData({ members })
     } catch (err) {
       wx.showToast({ title: err.message || '成员加载失败', icon: 'none' })
     }
@@ -81,8 +82,25 @@ Page({
 
   setDefaultOwner() {
     const member = getApp().globalData.member || {}
-    const index = this.data.members.findIndex((item) => item.openid === member._openid)
-    this.setData({ ownerIndex: index >= 0 ? index : 0 })
+    const target = this.data.members.find((item) => item.openid === member._openid)
+    if (!target) return
+    this.setData({ ownerOpenid: target.openid, ownerName: target.name })
+  },
+
+  onOpenOwnerPicker() {
+    this.setData({
+      pickerVisible: true,
+      pickerValue: this.data.ownerOpenid
+    })
+  },
+
+  onPickerClose() {
+    this.setData({ pickerVisible: false })
+  },
+
+  onPickerSelect(e) {
+    const { openid, name } = e.detail
+    this.setData({ ownerOpenid: openid, ownerName: name, pickerVisible: false })
   },
 
   async load(id) {
@@ -91,7 +109,7 @@ Page({
       const res = await call('todo.detail', { id })
       const todo = res.todo
       const due = todo.dueAt ? new Date(todo.dueAt) : null
-      const ownerIndex = this.data.members.findIndex((item) => item.openid === todo.ownerOpenid)
+      const owner = this.data.members.find((item) => item.openid === todo.ownerOpenid)
       const deptIndex = Math.max(this.data.depts.indexOf(todo.dept), 0)
 
       this.setData({
@@ -99,7 +117,8 @@ Page({
         audience: todo.audience,
         audienceDesc: AUDIENCE_DESC[todo.audience] || '',
         priority: todo.priority,
-        ownerIndex: ownerIndex >= 0 ? ownerIndex : 0,
+        ownerOpenid: todo.ownerOpenid || '',
+        ownerName: owner ? owner.name : todo.ownerName || '',
         deptIndex,
         dueDate: due ? `${due.getFullYear()}-${pad(due.getMonth() + 1)}-${pad(due.getDate())}` : ''
       })
@@ -132,10 +151,6 @@ Page({
     this.setData({ priority: Number(e.currentTarget.dataset.value) })
   },
 
-  onOwner(e) {
-    this.setData({ ownerIndex: Number(e.detail.value) })
-  },
-
   onDept(e) {
     this.setData({ deptIndex: Number(e.detail.value) })
   },
@@ -150,8 +165,7 @@ Page({
 
   async onSubmit() {
     if (this.data.submitting) return
-    const { id, form, audience, priority, dueDate, isStaff, isChairman, members, ownerIndex } =
-      this.data
+    const { id, form, audience, priority, dueDate, isStaff, isChairman, ownerOpenid } = this.data
 
     if (!form.title.trim()) {
       wx.showToast({ title: '请填写标题', icon: 'none' })
@@ -168,11 +182,11 @@ Page({
     }
 
     if (isStaff) {
-      if (ownerIndex < 0 || !members[ownerIndex]) {
+      if (!ownerOpenid) {
         wx.showToast({ title: '请选择主责人', icon: 'none' })
         return
       }
-      payload.ownerOpenid = members[ownerIndex].openid
+      payload.ownerOpenid = ownerOpenid
     }
     if (isChairman && audience !== 'self') {
       payload.dept = this.data.depts[this.data.deptIndex]
