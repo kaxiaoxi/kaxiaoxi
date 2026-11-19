@@ -7,6 +7,73 @@ const PHONE_RE = /^1[3-9]\d{9}$/
 const DORM_RE = /^[东西][一二三四五六七八九十]+[0-9]{3,4}$/
 const BIRTHDAY_RE = /^\d{4}-\d{2}-\d{2}$/
 
+const CHANGE_LABEL = { phone: '手机号', dorm: '宿舍', birthday: '生日' }
+
+async function createReviewTodos(member, requestId, changes, applicantOpenid) {
+  try {
+    const chairs = await db
+      .collection('members')
+      .where({ role: 'chairman', status: 'active' })
+      .limit(20)
+      .get()
+    if (!chairs.data.length) return
+
+    const summary = Object.keys(changes)
+      .map((key) => CHANGE_LABEL[key] || key)
+      .join('、')
+    const now = db.serverDate()
+
+    await Promise.all(
+      chairs.data.map((chair) =>
+        db.collection('todos').add({
+          data: {
+            title: `资料修改：${member.name}`,
+            description: `${member.studentNo} · ${summary}`,
+            scope: 'personal',
+            dept: '',
+            ownerOpenid: chair._openid,
+            creatorOpenid: applicantOpenid,
+            priority: 2,
+            dueAt: null,
+            status: 'todo',
+            source: 'profile',
+            sourceTaskId: '',
+            sourceRequestId: requestId,
+            autoRule: 'review_profile',
+            completedAt: null,
+            createdAt: now,
+            updatedAt: now
+          }
+        })
+      )
+    )
+  } catch (err) {
+    console.warn('[profile] 审核待办创建失败', err)
+  }
+}
+
+async function closeReviewTodos(requestId) {
+  try {
+    const res = await db
+      .collection('todos')
+      .where({ sourceRequestId: requestId, status: 'todo' })
+      .limit(20)
+      .get()
+    await Promise.all(
+      res.data.map((todo) =>
+        db
+          .collection('todos')
+          .doc(todo._id)
+          .update({
+            data: { status: 'done', completedAt: db.serverDate(), updatedAt: db.serverDate() }
+          })
+      )
+    )
+  } catch (err) {
+    console.warn('[profile] 关闭审核待办失败', err)
+  }
+}
+
 function text(value, max) {
   return typeof value === 'string' ? value.trim().slice(0, max) : ''
 }
@@ -47,7 +114,7 @@ async function submit(payload = {}, openid) {
     .get()
   if (pending.data.length) throw new BizError(40906, '你已有一条待审核的修改申请')
 
-  await db.collection('profile_requests').add({
+  const created = await db.collection('profile_requests').add({
     data: {
       openid,
       memberId: me._id,
@@ -61,6 +128,8 @@ async function submit(payload = {}, openid) {
       updatedAt: db.serverDate()
     }
   })
+
+  await createReviewTodos(me, created._id, changes, openid)
 
   return { status: 'pending' }
 }
@@ -124,6 +193,8 @@ async function review(payload = {}, openid) {
         updatedAt: db.serverDate()
       }
     })
+
+  await closeReviewTodos(requestId)
 
   await notify(request.openid, {
     type: 'system',
