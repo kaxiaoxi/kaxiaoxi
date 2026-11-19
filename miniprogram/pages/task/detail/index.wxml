@@ -1,19 +1,22 @@
-<view class="page" wx:if="{{detail}}">
+<view class="page detail-page" wx:if="{{detail}}">
   <view class="hero">
+    <view class="hero__eyebrow">拍摄任务 · {{detail.phaseLabel}}</view>
     <view class="hero__title">{{detail.title}}</view>
     <view class="hero__tags">
-      <text class="tag tag--gray">{{detail.phaseLabel}}</text>
       <text class="tag tag--gold">二课 {{detail.erkeHours}} 学时</text>
       <text class="tag tag--gray" wx:if="{{detail.myStatusLabel}}">{{detail.myStatusLabel}}</text>
     </view>
   </view>
 
-  <view class="card manage" wx:if="{{isOwner}}" bindtap="onManage">
-    <text>报名管理</text>
+  <view class="card manage glass-strong" wx:if="{{isOwner}}" bindtap="onManage">
+    <view>
+      <view class="manage__title">报名管理</view>
+      <view class="manage__sub">审核、候补、请假与名单</view>
+    </view>
     <text class="manage__arrow">›</text>
   </view>
 
-  <view class="card">
+  <view class="card facts">
     <view class="row">
       <text class="row__key">场次</text>
       <view class="row__value">
@@ -38,16 +41,19 @@
     </view>
   </view>
 
-  <view class="section">活动详情</view>
-  <view class="card">
-    <text class="desc">{{detail.description}}</text>
+  <view class="section-title">活动详情</view>
+  <view class="card description">
+    <text class="description__text">{{detail.description}}</text>
   </view>
 
-  <view class="section">
-    已报名 {{detail.approvedCount}} 人
-    <text class="section__extra" wx:if="{{detail.pendingCount}}"> · 审核中 {{detail.pendingCount}}</text>
-    <text class="section__extra" wx:if="{{detail.waitlistCount}}"> · 候补 {{detail.waitlistCount}}</text>
+  <view class="section-head">
+    <view class="section-head__title">已报名 {{detail.approvedCount}} 人</view>
+    <view class="section-head__meta" wx:if="{{detail.pendingCount || detail.waitlistCount}}">
+      <text wx:if="{{detail.pendingCount}}">审核中 {{detail.pendingCount}}</text>
+      <text wx:if="{{detail.waitlistCount}}"> · 候补 {{detail.waitlistCount}}</text>
+    </view>
   </view>
+
   <view class="card empty" wx:if="{{!detail.participants.length}}">
     <text class="muted" wx:if="{{detail.pendingCount}}">暂无已通过成员，{{detail.pendingCount}} 人待审核</text>
     <text class="muted" wx:else>还没有人报名</text>
@@ -67,10 +73,10 @@
 
   <view class="placeholder"></view>
 
-  <view class="bottom">
+  <view class="bottom glass-strong">
     <button class="btn btn--ghost bottom__btn" bindtap="onLeave" wx:if="{{detail.myStatus === 'approved'}}">请假</button>
     <button class="btn btn--primary bottom__btn" bindtap="onAction" wx:if="{{action === 'apply'}}">
-      报名{{detail.quota ? '（剩 ' + (detail.quota - detail.approvedCount) + ' 个名额）' : ''}}
+      报名{{detail.quota ? ' · 剩 ' + (detail.quota - detail.approvedCount) + ' 个名额' : ''}}
     </button>
     <button class="btn btn--ghost bottom__btn" bindtap="onAction" wx:elif="{{action === 'cancel'}}">取消报名</button>
     <button class="btn btn--disabled bottom__btn" disabled wx:elif="{{action === 'not_open'}}">报名未开放</button>
@@ -78,6 +84,80 @@
   </view>
 </view>
 
-<view class="page loading" wx:else>
-  <text class="muted">加载中…</text>
+<view class="page detail-page" wx:elif="{{loadError}}">
+  <view class="card error-card">
+    <view class="error-card__title">任务详情加载失败</view>
+    <view class="error-card__text">检查网络后重试，不会重复提交报名。</view>
+    <button class="btn btn--primary error-card__btn" bindtap="onRetry">重新加载</button>
+  </view>
 </view>
+
+<view class="page detail-page" wx:else>
+  <view class="detail-skeleton">
+    <view class="detail-skeleton__title"></view>
+    <view class="detail-skeleton__tags"></view>
+    <view class="detail-skeleton__card"></view>
+    <view class="detail-skeleton__line"></view>
+    <view class="detail-skeleton__line detail-skeleton__line--short"></view>
+  </view>
+</view>
+
+<bottom-sheet
+  visible="{{showApplySheet}}"
+  title="确认报名"
+  description="报名后会占用名额，请确认能够按时参加。"
+  confirm-text="确认报名"
+  loading="{{applyLoading}}"
+  bind:close="onCloseApplySheet"
+  bind:confirm="confirmApply"
+>
+  <view class="sheet-summary">
+    <view class="sheet-summary__title">{{detail.title}}</view>
+    <view class="sheet-row">
+      <text class="sheet-row__key">场次</text>
+      <view class="sheet-row__value">
+        <view wx:for="{{detail.sessionsText}}" wx:key="*this">{{item}}</view>
+      </view>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-row__key">地点</text>
+      <text class="sheet-row__value">{{detail.locationName}}</text>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-row__key">名额</text>
+      <text class="sheet-row__value">{{detail.quotaText}}</text>
+    </view>
+  </view>
+  <view class="sheet-notice">
+    临时有事请在活动开始前请假；需要候补时，系统会按顺序自动递补。
+  </view>
+</bottom-sheet>
+
+<bottom-sheet
+  visible="{{showLeaveSheet}}"
+  title="提交请假"
+  description="提交后将等待任务负责人审批。"
+  confirm-text="提交请假"
+  loading="{{leaveLoading}}"
+  bind:close="onCloseLeaveSheet"
+  bind:confirm="confirmLeave"
+>
+  <view class="sheet-summary sheet-summary--compact">
+    <view class="sheet-summary__title">{{detail.title}}</view>
+    <view class="sheet-summary__meta">{{detail.sessionsText[0]}} · {{detail.locationName}}</view>
+  </view>
+  <view class="sheet-field">
+    <view class="sheet-field__label">请假原因</view>
+    <textarea
+      class="sheet-textarea"
+      value="{{leaveReason}}"
+      maxlength="200"
+      placeholder="请说明原因，便于负责人判断"
+      placeholder-class="sheet-textarea__placeholder"
+      cursor-spacing="24"
+      focus="{{showLeaveSheet}}"
+      bindinput="onLeaveInput"
+    />
+    <view class="sheet-field__counter">{{leaveReason.length}} / 200</view>
+  </view>
+</bottom-sheet>

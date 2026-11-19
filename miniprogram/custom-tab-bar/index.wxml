@@ -1,0 +1,31 @@
+<view class="tabbar-shell">
+  <view class="tabbar">
+    <view class="tabbar__indicator-track">
+      <view
+        class="tabbar__indicator"
+        style="transform: translate3d({{selected * 100}}%, 0, 0)"
+      ></view>
+    </view>
+    <view
+      wx:for="{{list}}"
+      wx:key="pagePath"
+      class="tabbar__item {{selected === index ? 'tabbar__item--on' : ''}}"
+      hover-class="tabbar__item--pressed"
+      data-index="{{index}}"
+      data-path="{{item.pagePath}}"
+      bindtap="onSwitchTab"
+    >
+      <view class="tabbar__content">
+        <view class="tabbar__icon-stack">
+          <image class="tabbar__icon tabbar__icon--idle" src="{{item.iconPath}}" mode="aspectFit" />
+          <image
+            class="tabbar__icon tabbar__icon--active"
+            src="{{item.selectedIconPath}}"
+            mode="aspectFit"
+          />
+        </view>
+        <text class="tabbar__label">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+</view>

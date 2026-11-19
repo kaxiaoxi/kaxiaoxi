@@ -1,5 +1,6 @@
 const { call } = require('../../services/api')
 const { PHASE_LABEL, PHASE_CLASS, formatRange, quotaText } = require('../../utils/task')
+const { syncTabBar } = require('../../utils/tabbar')
 
 const TABS = [
   { key: 'all', label: '全部' },
@@ -28,10 +29,13 @@ Page({
     tab: 'all',
     status: 'all',
     list: [],
-    loading: false
+    loading: false,
+    loadError: false,
+    tabPageEnter: false
   },
 
   onShow() {
+    syncTabBar(this, 1, 'task')
     this.load()
   },
 
@@ -45,7 +49,7 @@ Page({
 
   async load() {
     if (this.data.loading) return
-    this.setData({ loading: true })
+    this.setData({ loading: true, loadError: false })
     try {
       const { tab, status } = this.data
       const res =
@@ -60,6 +64,8 @@ Page({
       }))
       this.setData({ list })
     } catch (err) {
+      console.warn('[task.list] 加载失败', err)
+      this.setData({ loadError: true })
       wx.showToast({ title: err.message || '加载失败', icon: 'none' })
     } finally {
       this.setData({ loading: false })
@@ -73,5 +79,9 @@ Page({
 
   onCreate() {
     wx.navigateTo({ url: '/pages/task/create/index' })
+  },
+
+  onRetry() {
+    this.load()
   }
 })

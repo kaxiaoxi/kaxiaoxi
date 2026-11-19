@@ -1,46 +1,119 @@
-<view class="page">
-  <view class="greet">
-    <view class="greet__title">你好，{{member.name || '同学'}}</view>
-    <view class="greet__sub">{{deptLabel}}<text wx:if="{{roleLabel}}"> · {{roleLabel}}</text></view>
+<view class="page page--tab home {{tabPageEnter ? 'tab-page-enter' : ''}}">
+  <view class="intro">
+    <view class="intro__copy">
+      <view class="intro__eyebrow">广工影协 · {{deptLabel}}</view>
+      <view class="intro__title">你好，{{member.name || '同学'}}</view>
+      <view class="intro__sub">
+        <text wx:if="{{roleLabel}}">{{roleLabel}} · </text>
+        <text>{{tasks.length}} 个近期任务 · {{todos.length}} 项待办</text>
+      </view>
+    </view>
+    <view class="intro__avatar glass">
+      <image class="intro__mascot" src="/images/kaxiaoxi-mascot.png" mode="aspectFit" />
+    </view>
   </view>
 
-  <view class="section">
-    未读消息
-    <text class="section__count" wx:if="{{unreadMessages.length}}">{{unreadMessages.length}}</text>
+  <view class="overview glass-strong">
+    <view class="overview__item" bindtap="onOpenTaskList">
+      <view class="overview__value">{{tasks.length}}</view>
+      <view class="overview__label">近期任务</view>
+    </view>
+    <view class="overview__divider"></view>
+    <view class="overview__item" bindtap="onOpenTodoList">
+      <view class="overview__value">{{todos.length}}</view>
+      <view class="overview__label">我的待办</view>
+    </view>
+    <view class="overview__divider"></view>
+    <view class="overview__item" bindtap="onOpenMessageList">
+      <view class="overview__value">{{unreadMessages.length}}</view>
+      <view class="overview__label">未读消息</view>
+    </view>
   </view>
-  <view class="card msg" wx:if="{{!unreadMessages.length}}">
-    <view class="muted">没有未读消息</view>
+
+  <view class="section-head">
+    <view class="section-head__title">近期任务</view>
+    <view class="section-head__action" bindtap="onOpenTaskList">全部</view>
   </view>
+
+  <view class="state-card card" wx:if="{{loadError}}">
+    <view class="state-card__title">暂时没有加载出来</view>
+    <view class="state-card__text">检查网络后重试，已加载的内容仍然可继续使用。</view>
+    <button class="btn btn--ghost state-card__btn" bindtap="onRetry">重新加载</button>
+  </view>
+
+  <view class="skeleton-group" wx:elif="{{isLoading && !tasks.length}}">
+    <view class="skeleton card"></view>
+    <view class="skeleton card"></view>
+  </view>
+
+  <view class="card empty-card" wx:elif="{{!tasks.length}}">
+    <view class="empty-card__icon">○</view>
+    <view class="empty-card__title">最近还没有任务</view>
+    <view class="empty-card__text">部长发布新任务后，会优先出现在这里。</view>
+  </view>
+
   <view
-    class="card msg"
+    class="card task-card"
+    wx:for="{{tasks}}"
+    wx:key="_id"
+    data-id="{{item._id}}"
+    bindtap="onOpenTask"
+  >
+    <view class="task-card__head">
+      <view class="task-card__date">{{item.dateText}}</view>
+      <view class="task-card__arrow">›</view>
+    </view>
+    <view class="task-card__title">{{item.title}}</view>
+    <view class="task-card__tags">
+      <text class="tag tag--gray">{{item.phaseLabel}}</text>
+      <text class="tag tag--gold">二课 {{item.erkeHours}} 学时</text>
+    </view>
+  </view>
+
+  <view class="section-head section-head--spaced">
+    <view class="section-head__title">我的待办</view>
+    <view class="section-head__action" bindtap="onOpenTodoList">查看全部</view>
+  </view>
+
+  <view class="card todo-list" wx:if="{{todos.length}}">
+    <view class="todo" wx:for="{{todos}}" wx:key="_id">
+      <view class="todo__check"></view>
+      <view class="todo__body">
+        <view class="todo__title">{{item.title}}</view>
+        <view class="todo__meta">{{item.dueText}}</view>
+      </view>
+      <view class="todo__dot"></view>
+    </view>
+  </view>
+  <view class="card empty-card empty-card--compact" wx:else>
+    <view class="empty-card__title">今天没有待办</view>
+    <view class="empty-card__text">可以安心整理照片，或者刷新看看新安排。</view>
+  </view>
+
+  <view class="section-head section-head--spaced">
+    <view class="section-head__title">
+      新消息
+      <text class="message-count" wx:if="{{unreadMessages.length}}">{{unreadMessages.length}}</text>
+    </view>
+    <view class="section-head__action" bindtap="onOpenMessageList">消息中心</view>
+  </view>
+
+  <view
+    class="card message"
     wx:for="{{unreadMessages}}"
     wx:key="_id"
     data-id="{{item._id}}"
     bindtap="onOpenMessage"
   >
-    <view class="msg__head">
-      <text class="msg__title">{{item.title}}</text>
-      <text class="msg__time">{{item.timeText}}</text>
+    <view class="message__head">
+      <text class="message__title">{{item.title}}</text>
+      <text class="message__time">{{item.timeText}}</text>
     </view>
-    <view class="msg__content">{{item.content}}</view>
+    <view class="message__content">{{item.content}}</view>
   </view>
-
-  <view class="section">近期任务</view>
-  <view class="card" wx:if="{{!tasks.length}}">
-    <view class="muted">还没有任务，等部长发布后这里会出现</view>
-  </view>
-  <view class="card task" wx:for="{{tasks}}" wx:key="_id">
-    <view class="task__title">{{item.title}}</view>
-    <view class="muted">{{item.dateText}}</view>
-  </view>
-
-  <view class="section">我的待办</view>
-  <view class="card" wx:if="{{!todos.length}}">
-    <view class="muted">暂时没有待办</view>
-  </view>
-  <view class="card task" wx:for="{{todos}}" wx:key="_id">
-    <view class="task__title">{{item.title}}</view>
-    <view class="muted">{{item.dueText}}</view>
+  <view class="card empty-card empty-card--compact" wx:if="{{!unreadMessages.length}}">
+    <view class="empty-card__title">没有未读消息</view>
+    <view class="empty-card__text">任务和审核有新动态时会在这里提醒你。</view>
   </view>
 </view>
 
