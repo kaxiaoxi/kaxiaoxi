@@ -93,7 +93,7 @@
   <view class="bottom glass-strong">
     <button class="btn btn--ghost bottom__btn" bindtap="onLeave" wx:if="{{detail.myStatus === 'approved'}}">请假</button>
     <button class="btn btn--primary bottom__btn" bindtap="onAction" wx:if="{{action === 'apply'}}">
-      报名{{detail.quota ? ' · 剩 ' + (detail.quota - detail.approvedCount) + ' 个名额' : ''}}
+      报名{{detail.quota && !detail.useRoles ? ' · 剩 ' + (detail.quota - detail.approvedCount) + ' 个名额' : ''}}
     </button>
     <button class="btn btn--ghost bottom__btn" bindtap="onAction" wx:elif="{{action === 'cancel'}}">取消报名</button>
     <button class="btn btn--disabled bottom__btn" disabled wx:elif="{{action === 'not_open'}}">报名未开放</button>

@@ -140,16 +140,22 @@ Page({
     return ''
   },
 
+  syncQuota() {
+    if (!this.data.useRoles) return
+    const total = this.data.roles.reduce((sum, item) => sum + (Number(item.quota) || 0), 0)
+    this.setData({ 'form.quota': String(total) })
+  },
+
   onToggleRoles(e) {
     const useRoles = !!e.detail.value
     const roles = useRoles && !this.data.roles.length ? [{ name: '', quota: '' }] : this.data.roles
-    this.setData({ useRoles, roles })
+    this.setData({ useRoles, roles }, () => this.syncQuota())
   },
 
   onRoleInput(e) {
     const index = Number(e.currentTarget.dataset.index)
     const field = e.currentTarget.dataset.field
-    this.setData({ [`roles[${index}].${field}`]: e.detail.value })
+    this.setData({ [`roles[${index}].${field}`]: e.detail.value }, () => this.syncQuota())
   },
 
   onAddRole() {
@@ -157,14 +163,16 @@ Page({
       wx.showToast({ title: '分工最多 8 个', icon: 'none' })
       return
     }
-    this.setData({ roles: this.data.roles.concat([{ name: '', quota: '' }]) })
+    this.setData({ roles: this.data.roles.concat([{ name: '', quota: '' }]) }, () =>
+      this.syncQuota()
+    )
   },
 
   onRemoveRole(e) {
     const index = Number(e.currentTarget.dataset.index)
     const roles = this.data.roles.slice()
     roles.splice(index, 1)
-    this.setData({ roles })
+    this.setData({ roles }, () => this.syncQuota())
   },
 
   async onSubmit() {
