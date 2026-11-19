@@ -22,8 +22,9 @@
 }
 
 .profile__avatar {
-  width: 112rpx;
-  height: 112rpx;
+  width: 100%;
+  height: 100%;
+  border-radius: 38rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,17 +34,19 @@
 }
 
 .profile__avatar-img {
-  width: 112rpx;
-  height: 112rpx;
+  width: 100%;
+  height: 100%;
+  border-radius: 38rpx;
   display: block;
+  background: #ffffff;
 }
 
 .profile__avatar-btn {
   position: absolute;
   left: 0;
   top: 0;
-  width: 112rpx;
-  height: 112rpx;
+  width: 100%;
+  height: 100%;
   min-width: 0;
   min-height: 0;
   padding: 0;
