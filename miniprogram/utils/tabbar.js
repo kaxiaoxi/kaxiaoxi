@@ -4,22 +4,22 @@ function syncTabBar(page, selected, route) {
   if (!page || typeof page.getTabBar !== 'function') return
   const tabBar = page.getTabBar()
   const app = getApp()
+
   if (tabBar) {
     const prev = app.globalData.tabIndex
     if (typeof prev === 'number' && prev !== selected) {
       tabBar.setData({ selected: prev, animate: false })
-      wx.nextTick(() => tabBar.setData({ selected, animate: true }))
+      setTimeout(() => {
+        tabBar.setData({ animate: true })
+        setTimeout(() => tabBar.setData({ selected }), 20)
+      }, 20)
     } else {
       tabBar.setData({ selected, animate: false })
     }
   }
-  app.globalData.tabIndex = selected
 
-  if (!route || route === lastTabRoute) return
+  app.globalData.tabIndex = selected
   lastTabRoute = route
-  page.setData({ tabPageEnter: false }, () => {
-    wx.nextTick(() => page.setData({ tabPageEnter: true }))
-  })
 }
 
 module.exports = {
