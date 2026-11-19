@@ -44,14 +44,59 @@
   <view class="card">
     <view class="field field--row">
       <text class="field__label">需要人数</text>
-      <input class="field__input field__input--right" type="number" data-field="quota" value="{{form.quota}}" bindinput="onInput" />
+      <input
+        class="field__input field__input--right"
+        type="number"
+        placeholder="不限"
+        data-field="quota"
+        value="{{form.quota}}"
+        bindinput="onInput"
+      />
     </view>
-    <view class="hint">填 0 表示不限人数</view>
+    <view class="hint">留空或填 0 表示不限人数</view>
     <view class="field field--row">
       <text class="field__label">二课学时</text>
-      <input class="field__input field__input--right" type="number" data-field="erkeHours" value="{{form.erkeHours}}" bindinput="onInput" />
+      <input
+        class="field__input field__input--right"
+        type="number"
+        data-field="erkeHours"
+        value="{{form.erkeHours}}"
+        bindinput="onInput"
+      />
     </view>
     <view class="hint">整数，填 0 表示不计二课</view>
+
+    <view class="field field--row field--switch">
+      <view>
+        <view class="field__label">按分工报名</view>
+        <view class="hint hint--inline">开启后每个时段按分工单独计名额</view>
+      </view>
+      <switch checked="{{useRoles}}" color="#2E5F7E" bindchange="onToggleRoles" />
+    </view>
+
+    <block wx:if="{{useRoles}}">
+      <view class="role-row" wx:for="{{roles}}" wx:key="index">
+        <input
+          class="role-row__name"
+          placeholder="分工名，如摄影"
+          value="{{item.name}}"
+          data-index="{{index}}"
+          data-field="name"
+          bindinput="onRoleInput"
+        />
+        <input
+          class="role-row__quota"
+          type="number"
+          placeholder="人数"
+          value="{{item.quota}}"
+          data-index="{{index}}"
+          data-field="quota"
+          bindinput="onRoleInput"
+        />
+        <text class="role-row__del" data-index="{{index}}" bindtap="onRemoveRole">删除</text>
+      </view>
+      <view class="role-add" bindtap="onAddRole">＋ 添加分工</view>
+    </block>
   </view>
 
   <view class="section">报名设置</view>

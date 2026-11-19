@@ -21,14 +21,16 @@ Page({
       description: '',
       locationName: '',
       collectMethod: '',
-      quota: '6',
-      erkeHours: '4',
+      quota: '',
+      erkeHours: '2',
       signupMode: 'first_come',
       audience: 'all',
       targetDepts: []
     },
     deptOptions: DEPT_OPTIONS,
     sessions: [],
+    useRoles: false,
+    roles: [],
     deadlineDate: '',
     deadlineTime: '08:00',
     startMode: 'now',
@@ -138,6 +140,33 @@ Page({
     return ''
   },
 
+  onToggleRoles(e) {
+    const useRoles = !!e.detail.value
+    const roles = useRoles && !this.data.roles.length ? [{ name: '', quota: '' }] : this.data.roles
+    this.setData({ useRoles, roles })
+  },
+
+  onRoleInput(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    const field = e.currentTarget.dataset.field
+    this.setData({ [`roles[${index}].${field}`]: e.detail.value })
+  },
+
+  onAddRole() {
+    if (this.data.roles.length >= 8) {
+      wx.showToast({ title: '分工最多 8 个', icon: 'none' })
+      return
+    }
+    this.setData({ roles: this.data.roles.concat([{ name: '', quota: '' }]) })
+  },
+
+  onRemoveRole(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    const roles = this.data.roles.slice()
+    roles.splice(index, 1)
+    this.setData({ roles })
+  },
+
   async onSubmit() {
     if (this.data.submitting) return
     const message = this.validate()
@@ -152,8 +181,14 @@ Page({
       description: form.description,
       locationName: form.locationName,
       collectMethod: form.collectMethod,
-      quota: Number(form.quota),
-      erkeHours: Number(form.erkeHours),
+      quota: Number(form.quota) || 0,
+      erkeHours: Number(form.erkeHours) || 0,
+      useRoles: this.data.useRoles,
+      roles: this.data.useRoles
+        ? this.data.roles
+            .filter((item) => item.name.trim())
+            .map((item) => ({ name: item.name.trim(), quota: Number(item.quota) || 0 }))
+        : [],
       signupMode: form.signupMode,
       audience: form.audience,
       targetDepts: form.targetDepts,

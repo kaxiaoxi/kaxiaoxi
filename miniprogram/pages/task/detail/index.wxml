@@ -114,6 +114,32 @@
   bind:close="onCloseApplySheet"
   bind:confirm="confirmApply"
 >
+  <view class="sheet-pick">
+    <view class="sheet-pick__label">选择时段（可多选）</view>
+    <view class="sheet-chips">
+      <view
+        class="sheet-chip {{item.checked ? 'sheet-chip--on' : ''}}"
+        wx:for="{{sessionOptions}}"
+        wx:key="value"
+        data-index="{{index}}"
+        bindtap="onToggleApplySession"
+      >{{item.label}}</view>
+    </view>
+  </view>
+
+  <view class="sheet-pick" wx:if="{{roleOptions.length}}">
+    <view class="sheet-pick__label">选择分工（可多选）</view>
+    <view class="sheet-chips">
+      <view
+        class="sheet-chip {{item.checked ? 'sheet-chip--on' : ''}}"
+        wx:for="{{roleOptions}}"
+        wx:key="name"
+        data-index="{{index}}"
+        bindtap="onToggleApplyRole"
+      >{{item.name}} · {{item.quota}} 人/场</view>
+    </view>
+  </view>
+
   <view class="sheet-summary">
     <view class="sheet-summary__title">{{detail.title}}</view>
     <view class="sheet-row">
