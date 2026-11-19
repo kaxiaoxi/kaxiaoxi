@@ -83,16 +83,8 @@
   </view>
   <view class="card role-stats" wx:if="{{detail.roleStats.length}}">
     <view class="role-stat" wx:for="{{detail.roleStats}}" wx:key="name">
-      <view class="role-stat__name">{{item.name}}</view>
-      <view class="role-stat__list">
-        <view
-          class="role-stat__item"
-          wx:for="{{item.counts}}"
-          wx:for-item="count"
-          wx:for-index="si"
-          wx:key="si"
-        >第 {{si + 1}} 场 · {{count}}/{{item.quota}}</view>
-      </view>
+      <view class="role-stat__name">{{item.name}}：</view>
+      <view class="role-stat__list">{{item.membersText}}</view>
     </view>
   </view>
 

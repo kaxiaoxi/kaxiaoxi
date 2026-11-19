@@ -314,19 +314,22 @@ async function detail(payload = {}, openid) {
     }
   })
 
-  const sessionTimes = (task.sessions || []).map((item) => toTime(item.startAt))
-  const roleStats = (task.roles || []).map((role) => ({
-    name: role.name,
-    quota: role.quota,
-    counts: sessionTimes.map(
-      (time) =>
-        approvedRes.data.filter(
-          (signup) =>
-            (signup.roles || []).includes(role.name) &&
-            (signup.sessions || []).some((item) => toTime(item) === time)
-        ).length
-    )
-  }))
+  const roleStats = (task.roles || []).map((role) => {
+    const seen = {}
+    const names = []
+    approvedRes.data.forEach((signup) => {
+      if (!(signup.roles || []).includes(role.name)) return
+      if (seen[signup.openid]) return
+      seen[signup.openid] = true
+      const member = memberMap[signup.openid]
+      names.push(member ? member.name : '成员')
+    })
+    return {
+      name: role.name,
+      quota: role.quota,
+      membersText: names.length ? names.join('、') : '暂无报名'
+    }
+  })
 
   const pendingRes = await db
     .collection('task_signups')
