@@ -415,7 +415,7 @@ async function apply(payload = {}, openid) {
       })
     }
 
-    const full = current.quota > 0 && current.approvedCount >= current.quota
+    const full = !current.useRoles && current.quota > 0 && current.approvedCount >= current.quota
     const status = current.signupMode === 'review' ? 'pending' : full ? 'waitlisted' : 'approved'
 
     if (previous) {

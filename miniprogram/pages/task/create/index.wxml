@@ -48,12 +48,14 @@
         class="field__input field__input--right"
         type="number"
         placeholder="不限"
+        disabled="{{useRoles}}"
         data-field="quota"
         value="{{form.quota}}"
         bindinput="onInput"
       />
     </view>
-    <view class="hint">留空或填 0 表示不限人数</view>
+    <view class="hint" wx:if="{{!useRoles}}">留空或填 0 表示不限人数</view>
+    <view class="hint" wx:else>已按各分工人数自动汇总（每场）</view>
     <view class="field field--row">
       <text class="field__label">每场二课学时</text>
       <input
