@@ -68,7 +68,6 @@
         src="{{item.avatarUrl || item.avatarFileID}}"
         mode="aspectFill"
         lazy-load="{{true}}"
-        style="background: {{item.avatarColor}}"
         data-id="{{item._id}}"
         binderror="onAvatarError"
       />
