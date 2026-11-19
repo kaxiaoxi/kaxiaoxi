@@ -454,3 +454,28 @@
   font-size: 36rpx;
   color: var(--s-3);
 }
+
+.todo__actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.todo__btn {
+  height: 56rpx;
+  margin: 0;
+  padding: 0 30rpx;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  line-height: 56rpx;
+}
+
+.todo__btn--ghost {
+  background: #f2f2f7;
+  color: var(--s-2);
+}
+
+.todo__btn--primary {
+  background: var(--blue);
+  color: #fff;
+}
