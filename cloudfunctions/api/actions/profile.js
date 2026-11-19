@@ -29,7 +29,10 @@ async function createReviewTodos(member, requestId, changes, applicantOpenid) {
           data: {
             title: `资料修改：${member.name}`,
             description: `${member.studentNo} · ${summary}`,
-            scope: 'personal',
+            audience: 'self',
+            deleted: false,
+            done: false,
+            participants: [],
             dept: '',
             ownerOpenid: chair._openid,
             creatorOpenid: applicantOpenid,
@@ -56,7 +59,7 @@ async function closeReviewTodos(requestId) {
   try {
     const res = await db
       .collection('todos')
-      .where({ sourceRequestId: requestId, status: 'todo' })
+      .where({ sourceRequestId: requestId, done: false })
       .limit(20)
       .get()
     await Promise.all(
@@ -65,7 +68,7 @@ async function closeReviewTodos(requestId) {
           .collection('todos')
           .doc(todo._id)
           .update({
-            data: { status: 'done', completedAt: db.serverDate(), updatedAt: db.serverDate() }
+            data: { done: true, completedAt: db.serverDate(), updatedAt: db.serverDate() }
           })
       )
     )
