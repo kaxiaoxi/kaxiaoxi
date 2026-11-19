@@ -35,7 +35,6 @@ function toCard(task, now) {
   }
 }
 
-
 function normalizeRoles(raw, useRoles) {
   if (!useRoles) return []
   const list = (Array.isArray(raw) ? raw : [])
@@ -59,13 +58,24 @@ function normalizeRoles(raw, useRoles) {
   return list
 }
 
+function toTime(value) {
+  const time = new Date(value).getTime()
+  return Number.isNaN(time) ? null : time
+}
+
 function pickSessions(raw, task) {
-  const all = (task.sessions || []).map((item) => item.startAt)
-  if (!all.length) return []
-  const chosen = (Array.isArray(raw) ? raw : []).filter((item) => all.includes(item))
-  const list = [...new Set(chosen)]
+  const sessions = task.sessions || []
+  if (!sessions.length) return []
+
+  const allowed = sessions.map((item) => toTime(item.startAt)).filter((time) => time !== null)
+
+  const chosen = (Array.isArray(raw) ? raw : [])
+    .map((item) => toTime(item))
+    .filter((time) => time !== null && allowed.includes(time))
+
+  const list = [...new Set(chosen)].map((time) => new Date(time).toISOString())
   if (!list.length) {
-    if (all.length === 1) return [all[0]]
+    if (allowed.length === 1) return [new Date(allowed[0]).toISOString()]
     throw new BizError(40001, '请选择参加的时段')
   }
   return list
