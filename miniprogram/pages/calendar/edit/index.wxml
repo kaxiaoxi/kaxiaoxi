@@ -66,18 +66,14 @@
   </view>
 
   <view class="card">
-    <view class="field field--row">
+    <view class="field field--row" bindtap="onOpenOwnerPicker">
       <view class="field__label">主负责人</view>
-      <picker range="{{memberNames}}" value="{{ownerIndex}}" bindchange="onOwner">
-        <view class="picker">{{ownerIndex >= 0 && members[ownerIndex] ? members[ownerIndex].name : '请选择'}}</view>
-      </picker>
+      <view class="picker {{ownerName ? '' : 'picker--placeholder'}}">{{ownerName || '请选择'}}</view>
     </view>
 
-    <view class="field field--row">
+    <view class="field field--row" bindtap="onOpenDeputyPicker">
       <view class="field__label">副负责人</view>
-      <picker range="{{deputyNames}}" value="{{deputyIndex}}" bindchange="onDeputy">
-        <view class="picker">{{deputyNames[deputyIndex]}}</view>
-      </picker>
+      <view class="picker {{deputyName ? '' : 'picker--placeholder'}}">{{deputyName || '不设置'}}</view>
     </view>
 
     <view class="field field--row">
@@ -129,4 +125,17 @@
   <view class="footer">
     <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">保存</button>
   </view>
+
+  <member-picker
+    id="memberPicker"
+    visible="{{pickerVisible}}"
+    title="{{pickerTitle}}"
+    members="{{members}}"
+    value="{{pickerValue}}"
+    exclude="{{pickerExclude}}"
+    allow-empty="{{pickerTarget === 'deputy'}}"
+    empty-text="不设置"
+    bind:select="onPickerSelect"
+    bind:close="onPickerClose"
+  />
 </view>

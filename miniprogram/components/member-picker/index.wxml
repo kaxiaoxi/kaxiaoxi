@@ -1,0 +1,53 @@
+<view class="picker-root {{visible ? 'picker-root--open' : ''}}" aria-hidden="{{!visible}}">
+  <view class="picker-mask" catchtap="onClose" catchtouchmove="noop"></view>
+
+  <view class="picker-panel" aria-role="dialog" aria-modal="true" aria-label="{{title}}">
+    <view class="picker-head">
+      <view class="picker-title">{{title}}</view>
+      <view class="picker-close" bindtap="onClose">取消</view>
+    </view>
+
+    <view class="picker-search">
+      <input
+        class="picker-input"
+        value="{{keyword}}"
+        bindinput="onInput"
+        placeholder="搜索姓名或部门"
+        placeholder-class="picker-placeholder"
+        confirm-type="search"
+      />
+      <text class="picker-clear" wx:if="{{keyword}}" bindtap="onClear">清除</text>
+    </view>
+
+    <scroll-view class="picker-list" scroll-y>
+      <view class="picker-opt" wx:if="{{allowEmpty}}" bindtap="onPickEmpty">
+        <view class="picker-avatar picker-avatar--none">—</view>
+        <view class="picker-opt__main">
+          <view class="picker-opt__name">{{emptyText}}</view>
+        </view>
+        <view class="picker-opt__check" wx:if="{{!value}}">✓</view>
+      </view>
+
+      <block wx:for="{{groups}}" wx:key="key" wx:for-item="group">
+        <view class="picker-group">{{group.label}}</view>
+        <view
+          class="picker-opt"
+          wx:for="{{group.list}}"
+          wx:key="openid"
+          data-openid="{{item.openid}}"
+          data-name="{{item.name}}"
+          bindtap="onPick"
+        >
+          <view class="picker-avatar" style="background: {{item.avatarColor}}">{{item.avatarText}}</view>
+          <view class="picker-opt__main">
+            <view class="picker-opt__name">{{item.name}}</view>
+            <view class="picker-opt__meta">{{item.roleLabel}}</view>
+          </view>
+          <view class="picker-opt__check" wx:if="{{item.checked}}">✓</view>
+        </view>
+      </block>
+
+      <view class="picker-empty" wx:if="{{!groups.length}}">没有匹配的成员</view>
+    </scroll-view>
+  </view>
+</view>
