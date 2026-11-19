@@ -90,6 +90,19 @@ Page({
     if (action === 'cancel') return this.cancel()
   },
 
+  async onPullDownRefresh() {
+    await this.load()
+    wx.stopPullDownRefresh()
+  },
+
+  onAvatarError(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    const participants = (this.data.detail.participants || []).map((item, i) =>
+      i === index ? { ...item, avatarFileID: '' } : item
+    )
+    this.setData({ 'detail.participants': participants })
+  },
+
   onManage() {
     wx.navigateTo({ url: `/pages/task/manage/index?id=${this.taskId}` })
   },

@@ -36,6 +36,19 @@ Page({
     this.load()
   },
 
+  async onPullDownRefresh() {
+    this.setData({ loading: false })
+    await this.load()
+    wx.stopPullDownRefresh()
+  },
+
+  onAvatarError(e) {
+    const id = e.currentTarget.dataset.id
+    const patch = (list) =>
+      list.map((item) => (item._id === id ? { ...item, avatarFileID: '' } : item))
+    this.setData({ active: patch(this.data.active), activeList: patch(this.data.activeList) })
+  },
+
   async load() {
     if (this.data.loading) return
     this.setData({ loading: true })

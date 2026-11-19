@@ -67,6 +67,8 @@
         class="member__avatar"
         src="{{item.avatarFileID}}"
         mode="aspectFill"
+        data-id="{{item._id}}"
+        binderror="onAvatarError"
       />
       <view wx:else class="member__avatar" style="background: {{item.avatarColor}}">
         {{item.avatarText}}
