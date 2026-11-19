@@ -2,7 +2,13 @@ const { db, cloud } = require('./db')
 
 const DEFAULT_FIELDS = {
   feedback: { thing2: 'name', thing3: 'content', time6: 'time' },
-  activity: { thing1: 'title', time2: 'time', thing3: 'location' },
+  activity: {
+    thing10: 'title',
+    thing14: 'memo',
+    thing7: 'tip',
+    thing15: 'owner',
+    time6: 'endTime'
+  },
   todo: { thing1: 'title', time2: 'time' }
 }
 
@@ -48,7 +54,8 @@ async function send(kind, openid, data, page) {
   const payload = {}
   Object.keys(fields).forEach((key) => {
     const raw = data[fields[key]]
-    const value = fields[key] === 'time' ? formatTime(raw) : raw
+    // 模板字段以 time 开头的按时间格式化，其余按 20 字截断（微信 thing 类型限制）
+    const value = key.indexOf('time') === 0 ? formatTime(raw) : raw
     if (value !== undefined && value !== '') {
       payload[key] = clip(value, 20)
     }

@@ -5,8 +5,14 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
 
-const DEFAULT_FIELDS = { thing1: 'title', time2: 'time', thing3: 'location' }
-const DEFAULT_TODO_FIELDS = { thing1: 'title', time2: 'time' }
+const DEFAULT_FIELDS = {
+  thing10: 'title',
+  thing14: 'memo',
+  thing7: 'tip',
+  thing15: 'owner',
+  time6: 'endTime'
+}
+const DEFAULT_TODO_FIELDS = { thing10: 'title', time2: 'time' }
 const MAX_RETRY = 2
 
 async function readConfig(key) {
@@ -104,17 +110,34 @@ async function sendReminder(reminder) {
   const startAt = first ? first.startAt : task.startAt
   const location = (first && first.locationName) || task.locationName || ''
 
+  // 发布人姓名，用于「联系人」字段
+  let ownerName = ''
+  if (task.publisherOpenid) {
+    const memberRes = await db
+      .collection('members')
+      .where({ _openid: task.publisherOpenid })
+      .limit(1)
+      .get()
+    ownerName = memberRes.data[0] ? memberRes.data[0].name : ''
+  }
+
+  const endAt = first ? first.endAt : task.endAt
+  const values = {
+    title: task.title,
+    memo: task.description || task.collectMethod || '活动安排',
+    tip: '请提前 10 分钟到场',
+    owner: ownerName || '影协',
+    time: startAt,
+    endTime: endAt || startAt,
+    location
+  }
+
   const raw = await readConfig('subscribeFields')
   const fields = raw && typeof raw === 'object' && raw.activity ? raw.activity : DEFAULT_FIELDS
 
   const data = {}
   Object.keys(fields).forEach((key) => {
-    const value =
-      fields[key] === 'time'
-        ? formatTime(startAt)
-        : fields[key] === 'location'
-          ? location
-          : task.title
+    const value = key.indexOf('time') === 0 ? formatTime(values[fields[key]]) : values[fields[key]]
     if (value) data[key] = clip(value, 20)
   })
 
@@ -128,7 +151,11 @@ async function sendReminder(reminder) {
     })
     return { ok: true }
   } catch (err) {
-    return { ok: false, reason: String(err.errCode || err.message || 'send_failed') }
+    return {
+      ok: false,
+      reason: String(err.errCode || err.message || 'send_failed'),
+      detail: String(err.errMsg || err.message || '')
+    }
   }
 }
 
@@ -217,6 +244,7 @@ exports.main = async () => {
           data: {
             status: result.reason === 'no_template' ? 'cancelled' : 'failed',
             error: result.reason,
+            errorDetail: result.detail || '',
             updatedAt: db.serverDate()
           }
         })
