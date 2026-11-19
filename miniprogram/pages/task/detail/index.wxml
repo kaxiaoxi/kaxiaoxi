@@ -63,8 +63,10 @@
       <image
         wx:if="{{item.avatarFileID}}"
         class="avatar"
-        src="{{item.avatarFileID}}"
+        src="{{item.avatarUrl || item.avatarFileID}}"
         mode="aspectFill"
+        lazy-load="{{true}}"
+        style="background: {{item.avatarColor}}"
         data-index="{{index}}"
         binderror="onAvatarError"
       />
