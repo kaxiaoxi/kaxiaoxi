@@ -1,4 +1,5 @@
 const { call } = require('../../../services/api')
+const { withAvatarUrls } = require('../../../utils/avatar')
 const { DEPT_LABEL, ROLE_LABEL } = require('../../../utils/constants')
 
 const MEMBER_DEPTS = [
@@ -58,7 +59,7 @@ Page({
         call('member.list', { status: 'active' }),
         call('profile.listPending')
       ])
-      const active = this.decorate(activeRes.list)
+      const active = await withAvatarUrls(this.decorate(activeRes.list))
       this.setData({
         pending: this.decorate(pendingRes.list),
         active,
