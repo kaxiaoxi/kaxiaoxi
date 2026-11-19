@@ -19,10 +19,15 @@ Page({
     statuses: STATUS,
     statusIndex: 1,
     members: [],
-    memberNames: [],
-    deputyNames: [],
-    ownerIndex: -1,
-    deputyIndex: 0,
+    ownerOpenid: '',
+    ownerName: '',
+    deputyOpenid: '',
+    deputyName: '',
+    pickerVisible: false,
+    pickerTarget: 'owner',
+    pickerTitle: '选择主负责人',
+    pickerExclude: '',
+    pickerValue: '',
     form: {
       title: '',
       location: '',
@@ -40,6 +45,7 @@ Page({
     this.setData({ startDate: todayKey() })
     const member = await ensureMember()
     this.selfOpenid = (member || {})._openid || ''
+    // 冷启动可能拿不到 globalData，先补一次登录态再决定默认负责人
     this.loadMembers().then(() => {
       const id = options.id || ''
       if (id) {
@@ -56,11 +62,7 @@ Page({
     try {
       const res = await call('member.options')
       const members = res.list || []
-      this.setData({
-        members,
-        memberNames: members.map((item) => item.name),
-        deputyNames: ['不设置'].concat(members.map((item) => item.name))
-      })
+      this.setData({ members })
     } catch (err) {
       wx.showToast({ title: err.message || '成员加载失败', icon: 'none' })
     }
@@ -68,9 +70,9 @@ Page({
 
   setDefaultOwner() {
     const { members } = this.data
-    let index = members.findIndex((item) => item.openid === this.selfOpenid)
-    if (index < 0) index = 0
-    this.setData({ ownerIndex: members.length ? index : -1 })
+    const me = members.find((item) => item.openid === this.selfOpenid) || members[0]
+    if (!me) return
+    this.setData({ ownerOpenid: me.openid, ownerName: me.name })
   },
 
   async loadEvent(id) {
@@ -78,10 +80,8 @@ Page({
       const res = await call('calendar.detail', { id })
       const event = res.event
       const { members } = this.data
-      const ownerIndex = members.findIndex((item) => item.openid === event.ownerOpenid)
-      const deputyIndex = event.deputyOpenid
-        ? members.findIndex((item) => item.openid === event.deputyOpenid) + 1
-        : 0
+      const owner = members.find((item) => item.openid === event.ownerOpenid)
+      const deputy = members.find((item) => item.openid === event.deputyOpenid)
 
       this.setData({
         form: {
@@ -92,8 +92,10 @@ Page({
         },
         typeIndex: Math.max(TYPES.indexOf(event.type), 0),
         statusIndex: Math.max(STATUS.indexOf(event.status), 1),
-        ownerIndex,
-        deputyIndex,
+        ownerOpenid: event.ownerOpenid || '',
+        ownerName: owner ? owner.name : event.ownerName || '',
+        deputyOpenid: event.deputyOpenid || '',
+        deputyName: deputy ? deputy.name : event.deputyName || '',
         startDate: event.startDate,
         endDate: event.endDate || '',
         remindDate: event.remindDate || '',
@@ -117,12 +119,43 @@ Page({
     this.setData({ statusIndex: Number(e.detail.value) })
   },
 
-  onOwner(e) {
-    this.setData({ ownerIndex: Number(e.detail.value) })
+  onOpenOwnerPicker() {
+    this.setData({
+      pickerVisible: true,
+      pickerTarget: 'owner',
+      pickerTitle: '选择主负责人',
+      pickerExclude: '',
+      pickerValue: this.data.ownerOpenid
+    })
   },
 
-  onDeputy(e) {
-    this.setData({ deputyIndex: Number(e.detail.value) })
+  onOpenDeputyPicker() {
+    this.setData({
+      pickerVisible: true,
+      pickerTarget: 'deputy',
+      pickerTitle: '选择副负责人',
+      pickerExclude: this.data.ownerOpenid,
+      pickerValue: this.data.deputyOpenid
+    })
+  },
+
+  onPickerClose() {
+    this.setData({ pickerVisible: false })
+  },
+
+  onPickerSelect(e) {
+    const { openid, name } = e.detail
+    if (this.data.pickerTarget === 'owner') {
+      // 主负责人换了，副负责人不能与之相同
+      const patch = { ownerOpenid: openid, ownerName: name, pickerVisible: false }
+      if (openid && openid === this.data.deputyOpenid) {
+        patch.deputyOpenid = ''
+        patch.deputyName = ''
+      }
+      this.setData(patch)
+      return
+    }
+    this.setData({ deputyOpenid: openid, deputyName: name, pickerVisible: false })
   },
 
   onStartDate(e) {
@@ -160,9 +193,8 @@ Page({
       form,
       typeIndex,
       statusIndex,
-      members,
-      ownerIndex,
-      deputyIndex,
+      ownerOpenid,
+      deputyOpenid,
       startDate,
       endDate,
       remindDate,
@@ -181,7 +213,7 @@ Page({
       wx.showToast({ title: '结束日期不能早于开始日期', icon: 'none' })
       return
     }
-    if (ownerIndex < 0 || !members[ownerIndex]) {
+    if (!ownerOpenid) {
       wx.showToast({ title: '请选择主负责人', icon: 'none' })
       return
     }
@@ -196,9 +228,8 @@ Page({
         endDate: endDate || '',
         timeText: form.timeText || '全天',
         location: form.location,
-        ownerOpenid: members[ownerIndex].openid,
-        deputyOpenid:
-          deputyIndex > 0 && members[deputyIndex - 1] ? members[deputyIndex - 1].openid : '',
+        ownerOpenid,
+        deputyOpenid: deputyOpenid || '',
         status: STATUS[statusIndex],
         visibility,
         note: form.note,

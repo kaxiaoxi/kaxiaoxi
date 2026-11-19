@@ -104,7 +104,9 @@ async function options(payload = {}, openid) {
       openid: member._openid,
       name: member.name,
       dept: member.dept,
-      role: member.role
+      role: member.role,
+      avatarText: member.avatarText || (member.name || '').slice(0, 1),
+      avatarColor: member.avatarColor || '#2E5F7E'
     }))
     .sort((a, b) => String(a.name).localeCompare(String(b.name), 'zh'))
 

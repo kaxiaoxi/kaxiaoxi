@@ -103,3 +103,7 @@
 .btn--danger::after {
   border: none;
 }
+
+.picker--placeholder {
+  color: var(--s-3);
+}
