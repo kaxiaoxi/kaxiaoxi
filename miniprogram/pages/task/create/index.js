@@ -24,7 +24,7 @@ Page({
       quota: '',
       erkeHours: '2',
       signupMode: 'first_come',
-      audience: 'all',
+      audience: 'depts',
       targetDepts: []
     },
     deptOptions: DEPT_OPTIONS,
@@ -210,3 +210,4 @@ Page({
     }
   }
 })
+
