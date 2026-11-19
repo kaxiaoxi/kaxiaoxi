@@ -18,6 +18,8 @@ Page({
     loadError: false,
     showApplySheet: false,
     applyLoading: false,
+    sessionOptions: [],
+    roleOptions: [],
     showLeaveSheet: false,
     leaveLoading: false,
     leaveReason: ''
@@ -110,7 +112,32 @@ Page({
   },
 
   onOpenApply() {
-    this.setData({ showApplySheet: true })
+    const task = this.data.detail || {}
+    const sessions = task.sessions || []
+    const roles = task.roles || []
+    this.setData({
+      showApplySheet: true,
+      sessionOptions: sessions.map((item, index) => ({
+        value: item.startAt,
+        label: (task.sessionsText || [])[index] || `第 ${index + 1} 场`,
+        checked: index === 0
+      })),
+      roleOptions: roles.map((item) => ({
+        name: item.name,
+        quota: item.quota,
+        checked: roles.length === 1
+      }))
+    })
+  },
+
+  onToggleApplySession(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    this.setData({ [`sessionOptions[${index}].checked`]: !this.data.sessionOptions[index].checked })
+  },
+
+  onToggleApplyRole(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    this.setData({ [`roleOptions[${index}].checked`]: !this.data.roleOptions[index].checked })
   },
 
   onCloseApplySheet() {
@@ -135,9 +162,22 @@ Page({
   },
 
   async doApply() {
+    const sessions = this.data.sessionOptions
+      .filter((item) => item.checked)
+      .map((item) => item.value)
+    const roles = this.data.roleOptions.filter((item) => item.checked).map((item) => item.name)
+    if (!sessions.length) {
+      wx.showToast({ title: '请选择参加的时段', icon: 'none' })
+      return
+    }
+    if (this.data.roleOptions.length && !roles.length) {
+      wx.showToast({ title: '请选择分工', icon: 'none' })
+      return
+    }
+
     this.setData({ applyLoading: true })
     try {
-      const result = await call('task.apply', { taskId: this.taskId })
+      const result = await call('task.apply', { taskId: this.taskId, sessions, roles })
       this.setData({ showApplySheet: false, applyLoading: false })
       wx.showToast({
         title: result.status === 'waitlisted' ? '已进入候补' : '报名成功',

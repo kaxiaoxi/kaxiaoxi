@@ -35,6 +35,51 @@ function toCard(task, now) {
   }
 }
 
+
+function normalizeRoles(raw, useRoles) {
+  if (!useRoles) return []
+  const list = (Array.isArray(raw) ? raw : [])
+    .map((item) => ({
+      name: typeof item.name === 'string' ? item.name.trim().slice(0, 10) : '',
+      quota: Number(item.quota)
+    }))
+    .filter((item) => item.name)
+
+  if (!list.length) throw new BizError(40001, '请至少添加一个分工')
+  if (list.length > 8) throw new BizError(40001, '分工最多 8 个')
+
+  const seen = {}
+  list.forEach((item) => {
+    if (seen[item.name]) throw new BizError(40001, `分工「${item.name}」重复`)
+    seen[item.name] = true
+    if (!Number.isInteger(item.quota) || item.quota < 1 || item.quota > 99) {
+      throw new BizError(40001, `「${item.name}」的人数需为 1-99`)
+    }
+  })
+  return list
+}
+
+function pickSessions(raw, task) {
+  const all = (task.sessions || []).map((item) => item.startAt)
+  if (!all.length) return []
+  const chosen = (Array.isArray(raw) ? raw : []).filter((item) => all.includes(item))
+  const list = [...new Set(chosen)]
+  if (!list.length) {
+    if (all.length === 1) return [all[0]]
+    throw new BizError(40001, '请选择参加的时段')
+  }
+  return list
+}
+
+function pickRoles(raw, task) {
+  if (!task.useRoles) return []
+  const names = (task.roles || []).map((item) => item.name)
+  const chosen = (Array.isArray(raw) ? raw : []).filter((item) => names.includes(item))
+  const list = [...new Set(chosen)]
+  if (!list.length) throw new BizError(40001, '请选择分工')
+  return list
+}
+
 async function create(payload = {}, openid) {
   const me = await requireActive(openid)
   if (me.role === 'member') throw new BizError(40301, '仅部长或主席可发布任务')
@@ -42,6 +87,9 @@ async function create(payload = {}, openid) {
   const check = validateTask(payload)
   if (!check.ok) throw new BizError(40001, check.message)
   const data = check.data
+
+  const useRoles = payload.useRoles === true
+  const roles = normalizeRoles(payload.roles, useRoles)
 
   const now = db.serverDate()
   const res = await db.collection('tasks').add({
@@ -57,6 +105,8 @@ async function create(payload = {}, openid) {
       signupDeadline: data.signupDeadline,
       quota: data.quota,
       erkeHours: data.erkeHours,
+      useRoles,
+      roles,
       signupMode: data.signupMode,
       audience: data.audience,
       targetDepts: data.targetDepts,
@@ -265,11 +315,19 @@ async function detail(payload = {}, openid) {
       ...toCard(task, now),
       description: task.description,
       collectMethod: task.collectMethod,
+      useRoles: task.useRoles === true,
+      roles: task.roles || [],
       signupStartAt: task.signupStartAt,
       signupDeadline: task.signupDeadline,
       publisherOpenid: task.publisherOpenid
     },
-    mySignup: signupRes.data[0] ? { status: signupRes.data[0].status } : null,
+    mySignup: signupRes.data[0]
+      ? {
+          status: signupRes.data[0].status,
+          sessions: signupRes.data[0].sessions || [],
+          roles: signupRes.data[0].roles || []
+        }
+      : null,
     participants,
     isOwner: task.publisherOpenid === openid
   }
@@ -293,6 +351,9 @@ async function apply(payload = {}, openid) {
   const now = new Date()
   if (signupPhaseOf(task, now) !== 'open') throw new BizError(40010, '报名未开放或已截止')
 
+  const sessionKeys = pickSessions(payload.sessions, task)
+  const roleNames = pickRoles(payload.roles, task)
+
   const BLOCKED = ['pending', 'approved', 'waitlisted', 'leave_pending']
   const exist = await db.collection('task_signups').where({ taskId, openid }).limit(1).get()
   const previous = exist.data[0]
@@ -304,6 +365,28 @@ async function apply(payload = {}, openid) {
   try {
     const fresh = await tx.collection('tasks').doc(taskId).get()
     const current = fresh.data
+
+    if (current.useRoles) {
+      const approved = await tx
+        .collection('task_signups')
+        .where({ taskId, status: 'approved' })
+        .limit(100)
+        .get()
+      const rows = approved.data || []
+      roleNames.forEach((name) => {
+        const role = (current.roles || []).find((item) => item.name === name)
+        const limit = role ? role.quota : 0
+        sessionKeys.forEach((session) => {
+          const used = rows.filter(
+            (row) => (row.sessions || []).includes(session) && (row.roles || []).includes(name)
+          ).length
+          if (limit > 0 && used >= limit) {
+            throw new BizError(40905, `「${name}」在该时段名额已满`)
+          }
+        })
+      })
+    }
+
     const full = current.quota > 0 && current.approvedCount >= current.quota
     const status = current.signupMode === 'review' ? 'pending' : full ? 'waitlisted' : 'approved'
 
@@ -315,6 +398,8 @@ async function apply(payload = {}, openid) {
           data: {
             status,
             note,
+            sessions: sessionKeys,
+            roles: roleNames,
             queueNo: Date.now(),
             reviewedBy: '',
             reviewedAt: null,
@@ -327,6 +412,8 @@ async function apply(payload = {}, openid) {
           taskId,
           openid,
           status,
+          sessions: sessionKeys,
+          roles: roleNames,
           queueNo: Date.now(),
           note,
           reviewedBy: '',

@@ -382,3 +382,33 @@
   font-size: 21rpx;
   text-align: right;
 }
+
+.sheet-pick {
+  margin-bottom: 20rpx;
+}
+
+.sheet-pick__label {
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  color: var(--s-2);
+}
+
+.sheet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.sheet-chip {
+  padding: 12rpx 24rpx;
+  border-radius: 24rpx;
+  background: #f2f2f7;
+  font-size: 24rpx;
+  color: var(--ink);
+}
+
+.sheet-chip--on {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+}
