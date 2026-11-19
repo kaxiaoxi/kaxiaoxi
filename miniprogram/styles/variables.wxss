@@ -1,16 +1,23 @@
 page {
   --ink: #0b0b0c;
   --ink-2: #2c2c2e;
-  --s-2: rgba(60, 60, 67, 0.6);
+  --s-2: #5e5e63;
   --s-3: rgba(60, 60, 67, 0.32);
   --bg: #f2f2f7;
   --card: #ffffff;
   --sep: rgba(60, 60, 67, 0.12);
   --blue: #2e5f7e;
   --blue-soft: rgba(46, 95, 126, 0.1);
-  --gold: #9a6b12;
+  --gold: #7d560d;
   --gold-soft: rgba(217, 164, 65, 0.18);
   --green: #2c7a4b;
   --red: #b4392c;
   --radius: 28rpx;
+  --radius-sm: 18rpx;
+  --glass: rgba(255, 255, 255, 0.68);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.86);
+  --glass-shadow: 0 14rpx 42rpx rgba(43, 78, 98, 0.12);
+  --card-shadow: 0 6rpx 22rpx rgba(35, 63, 80, 0.05);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }

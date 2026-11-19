@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "报名管理"
+  "navigationBarTitleText": "报名管理",
+  "usingComponents": {
+    "bottom-sheet": "../../../components/bottom-sheet/index"
+  }
 }
