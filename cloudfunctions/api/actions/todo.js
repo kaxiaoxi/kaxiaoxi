@@ -100,8 +100,6 @@ function toTodo(item, names = {}) {
     source: item.source || 'manual',
     sourceTaskId: item.sourceTaskId || '',
     sourceEventId: item.sourceEventId || '',
-    sourceMemberId: item.sourceMemberId || '',
-    sourceRequestId: item.sourceRequestId || '',
     autoRule: item.autoRule || '',
     createdAt: item.createdAt || null
   }
