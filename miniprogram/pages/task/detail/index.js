@@ -228,7 +228,8 @@ Page({
   onShareAppMessage() {
     return {
       title: (this.data.detail && this.data.detail.title) || '影协任务',
-      path: `/pages/task/detail/index?id=${this.taskId}`
+      path: `/pages/task/share/index?id=${this.taskId}`,
+      imageUrl: '/images/share-cover.png'
     }
   },
 

@@ -1,0 +1,51 @@
+<view class="share-page">
+  <view class="share-hero">
+    <image class="share-hero__mascot" src="/images/kaxiaoxi-mascot.png" mode="aspectFit" />
+    <view class="share-hero__brand">广工影协 · 卡小西</view>
+    <view class="share-hero__title">{{task ? task.title : '任务报名'}}</view>
+    <view class="share-hero__tip" wx:if="{{fromCreate}}">发布成功，分享到群聊吧</view>
+  </view>
+
+  <view class="share-card" wx:if="{{task}}">
+    <view class="share-row">
+      <text class="share-row__key">时间</text>
+      <text class="share-row__value">{{task.timeText}}</text>
+    </view>
+    <view class="share-row">
+      <text class="share-row__key">地点</text>
+      <text class="share-row__value">{{task.locationName || '待定'}}</text>
+    </view>
+    <view class="share-row">
+      <text class="share-row__key">名额</text>
+      <text class="share-row__value">{{task.quotaText}}</text>
+    </view>
+    <view class="share-row">
+      <text class="share-row__key">二课</text>
+      <text class="share-row__value">{{task.erkeText}}</text>
+    </view>
+
+    <view class="share-block" wx:if="{{task.roleTexts.length}}">
+      <view class="share-block__label">分工</view>
+      <view class="share-chips">
+        <text class="share-chip" wx:for="{{task.roleTexts}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="share-block" wx:if="{{task.description}}">
+      <view class="share-block__label">详情</view>
+      <view class="share-desc">{{task.description}}</view>
+    </view>
+  </view>
+
+  <view class="share-state" wx:elif="{{loading}}">正在加载任务…</view>
+  <view class="share-state" wx:else>
+    <view class="share-state__title">链接失效或任务不可见</view>
+    <view class="share-state__text">请让发布人重新分享，或先登录小程序。</view>
+    <button class="btn btn--ghost share-state__btn" bindtap="onRetry">重试</button>
+  </view>
+
+  <view class="share-actions" wx:if="{{task}}">
+    <button class="btn btn--primary share-actions__btn" bindtap="onOpenDetail">查看详情并报名</button>
+    <button class="btn btn--ghost share-actions__btn" open-type="share">分享给朋友</button>
+  </view>
+</view>
