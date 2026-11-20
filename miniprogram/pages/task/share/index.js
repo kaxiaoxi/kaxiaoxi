@@ -1,5 +1,6 @@
 const { call } = require('../../../services/api')
 const { formatRange, formatSession, quotaText } = require('../../../utils/task')
+const { getShareCover } = require('../../../utils/share-cover')
 
 Page({
   data: {
@@ -12,6 +13,9 @@ Page({
   onLoad(options) {
     this.taskId = options.id || ''
     this.setData({ fromCreate: options.from === 'create' })
+    getShareCover().then((url) => {
+      if (url) this.shareCover = url
+    })
     this.load()
   },
 
@@ -60,7 +64,7 @@ Page({
     return {
       title: (this.data.task && this.data.task.title) || '广工影协任务报名',
       path: `/pages/task/share/index?id=${this.taskId}`,
-      imageUrl: '/images/share-cover.png'
+      imageUrl: this.shareCover || '/images/share-cover.png'
     }
   }
 })
