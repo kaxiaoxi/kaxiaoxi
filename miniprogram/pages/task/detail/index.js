@@ -1,5 +1,6 @@
 const { call } = require('../../../services/api')
 const { withAvatarUrls } = require('../../../utils/avatar')
+const { getShareCover } = require('../../../utils/share-cover')
 const {
   PHASE_LABEL,
   MY_SIGNUP_LABEL,
@@ -28,6 +29,9 @@ Page({
   onLoad(options) {
     this.taskId = options.id || ''
     this.fromShare = options.share === '1'
+    getShareCover().then((url) => {
+      if (url) this.shareCover = url
+    })
     // 提前缓存模板 ID，点「确认报名」时才能同步发起授权
     call('subscribe.templates', {})
       .then((tpl) => {
@@ -229,7 +233,7 @@ Page({
     return {
       title: (this.data.detail && this.data.detail.title) || '影协任务',
       path: `/pages/task/share/index?id=${this.taskId}`,
-      imageUrl: '/images/share-cover.png'
+      imageUrl: this.shareCover || '/images/share-cover.png'
     }
   },
 
