@@ -184,8 +184,9 @@ Page({
     this.setData({ roles }, () => this.syncQuota())
   },
 
-  async onSubmit() {
+  async onSubmit(e) {
     if (this.data.submitting) return
+    const share = e && e.currentTarget && e.currentTarget.dataset.share === '1'
     const message = this.validate()
     if (message) {
       wx.showToast({ title: message, icon: 'none' })
@@ -217,7 +218,11 @@ Page({
 
     this.setData({ submitting: true })
     try {
-      await call('task.create', payload)
+      const created = await call('task.create', payload)
+      if (share) {
+        wx.redirectTo({ url: `/pages/task/detail/index?id=${created.id}&share=1` })
+        return
+      }
       wx.showToast({ title: '发布成功', icon: 'success' })
       setTimeout(() => wx.navigateBack(), 600)
     } catch (err) {

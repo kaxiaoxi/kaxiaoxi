@@ -27,6 +27,7 @@ Page({
 
   onLoad(options) {
     this.taskId = options.id || ''
+    this.fromShare = options.share === '1'
     // 提前缓存模板 ID，点「确认报名」时才能同步发起授权
     call('subscribe.templates', {})
       .then((tpl) => {
@@ -68,6 +69,15 @@ Page({
         loading: false
       })
       wx.setNavigationBarTitle({ title: task.title })
+
+      if (this.fromShare) {
+        this.fromShare = false
+        wx.showModal({
+          title: '发布成功',
+          content: '点击下方「分享」发送到群聊，好友打开即可报名。',
+          showCancel: false
+        })
+      }
     } catch (err) {
       console.warn('[task.detail] 加载失败', err)
       this.setData({ loading: false, loadError: true })
@@ -81,7 +91,7 @@ Page({
 
   resolveAction(task, myStatus) {
     if (myStatus === 'approved' || myStatus === 'waitlisted' || myStatus === 'pending') {
-      return 'cancel'
+      return 'signed'
     }
     if (task.signupPhase === 'open') return 'apply'
     if (task.signupPhase === 'not_open') return 'not_open'
@@ -91,7 +101,6 @@ Page({
   onAction() {
     const { action } = this.data
     if (action === 'apply') return this.onOpenApply()
-    if (action === 'cancel') return this.cancel()
   },
 
   async onPullDownRefresh() {
@@ -203,23 +212,6 @@ Page({
     }
   },
 
-  cancel() {
-    wx.showModal({
-      title: '取消报名',
-      content: '取消后名额会释放给候补同学，确定吗？',
-      success: async (res) => {
-        if (!res.confirm) return
-        try {
-          await call('task.cancelApply', { taskId: this.taskId })
-          wx.showToast({ title: '已取消', icon: 'success' })
-          this.load()
-        } catch (err) {
-          wx.showToast({ title: err.message || '取消失败', icon: 'none' })
-        }
-      }
-    })
-  },
-
   onLeave() {
     this.setData({ showLeaveSheet: true, leaveReason: '' })
   },
@@ -231,6 +223,13 @@ Page({
 
   onLeaveInput(e) {
     this.setData({ leaveReason: e.detail.value })
+  },
+
+  onShareAppMessage() {
+    return {
+      title: (this.data.detail && this.data.detail.title) || '影协任务',
+      path: `/pages/task/detail/index?id=${this.taskId}`
+    }
   },
 
   async confirmLeave() {
@@ -245,7 +244,7 @@ Page({
     try {
       await call('signup.requestLeave', { taskId: this.taskId, reason })
       this.setData({ showLeaveSheet: false, leaveLoading: false })
-      wx.showToast({ title: '已提交，等待审批', icon: 'success' })
+      wx.showToast({ title: '请假已生效，名额已顺延', icon: 'success' })
       this.load()
     } catch (err) {
       this.setData({ leaveLoading: false })
