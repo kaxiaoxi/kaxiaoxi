@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12rpx 8rpx 26rpx;
+  padding: 12rpx 0 24rpx;
 }
 
 .intro__eyebrow {
@@ -89,11 +89,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 34rpx 8rpx 16rpx;
+  margin: 32rpx 0 16rpx;
 }
 
 .section-head--spaced {
-  margin-top: 42rpx;
+  margin-top: 40rpx;
 }
 
 .section-head__title {
