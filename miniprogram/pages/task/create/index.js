@@ -220,7 +220,7 @@ Page({
     try {
       const created = await call('task.create', payload)
       if (share) {
-        wx.redirectTo({ url: `/pages/task/detail/index?id=${created.id}&share=1` })
+        wx.redirectTo({ url: `/pages/task/share/index?id=${created.id}&from=create` })
         return
       }
       wx.showToast({ title: '发布成功', icon: 'success' })

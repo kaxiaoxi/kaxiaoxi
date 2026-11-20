@@ -24,7 +24,8 @@
     "pages/about/doc/index",
     "pages/calendar/list/index",
     "pages/todo/detail/index",
-    "pages/mine/remind/index"
+    "pages/mine/remind/index",
+    "pages/task/share/index"
   ],
   "window": {
     "navigationBarTitleText": "卡小西",

@@ -1,0 +1,163 @@
+page {
+  background: #eef3f6;
+}
+
+.share-page {
+  min-height: 100vh;
+  padding: 0 0 calc(40rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.share-hero {
+  position: relative;
+  padding: 48rpx 40rpx 96rpx;
+  background: linear-gradient(160deg, #2e5f7e 0%, #4f7f9d 58%, #6f9bb5 100%);
+  color: #fff;
+  overflow: hidden;
+}
+
+.share-hero::after {
+  position: absolute;
+  right: -120rpx;
+  top: -160rpx;
+  width: 420rpx;
+  height: 420rpx;
+  border-radius: 50%;
+  content: '';
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 70%);
+}
+
+.share-hero__mascot {
+  position: absolute;
+  right: 28rpx;
+  bottom: -8rpx;
+  width: 196rpx;
+  height: 226rpx;
+}
+
+.share-hero__brand {
+  font-size: 24rpx;
+  opacity: 0.85;
+  letter-spacing: 2rpx;
+}
+
+.share-hero__title {
+  margin-top: 16rpx;
+  max-width: 400rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.share-hero__tip {
+  display: inline-block;
+  margin-top: 20rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 22rpx;
+}
+
+.share-card {
+  position: relative;
+  margin: -60rpx 28rpx 0;
+  padding: 12rpx 32rpx 28rpx;
+  border-radius: 30rpx;
+  background: #fff;
+  box-shadow: 0 18rpx 48rpx rgba(35, 63, 80, 0.12);
+}
+
+.share-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
+}
+
+.share-row:last-of-type {
+  border-bottom: none;
+}
+
+.share-row__key {
+  flex-shrink: 0;
+  font-size: 26rpx;
+  color: #5e5e63;
+}
+
+.share-row__value {
+  flex: 1;
+  text-align: right;
+  font-size: 27rpx;
+  color: #0b0b0c;
+}
+
+.share-block {
+  padding: 20rpx 0 0;
+}
+
+.share-block__label {
+  font-size: 24rpx;
+  color: #5e5e63;
+}
+
+.share-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 14rpx;
+}
+
+.share-chip {
+  padding: 10rpx 22rpx;
+  border-radius: 22rpx;
+  background: rgba(46, 95, 126, 0.1);
+  color: #2e5f7e;
+  font-size: 23rpx;
+}
+
+.share-desc {
+  margin-top: 12rpx;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: #2c2c2e;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.share-state {
+  margin: 40rpx 28rpx;
+  padding: 48rpx 32rpx;
+  border-radius: 28rpx;
+  background: #fff;
+  text-align: center;
+  font-size: 26rpx;
+  color: #5e5e63;
+}
+
+.share-state__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #0b0b0c;
+}
+
+.share-state__text {
+  margin-top: 12rpx;
+}
+
+.share-state__btn {
+  margin-top: 28rpx;
+}
+
+.share-actions {
+  display: flex;
+  gap: 18rpx;
+  margin: 36rpx 28rpx 0;
+}
+
+.share-actions__btn {
+  flex: 1;
+  width: auto;
+  margin: 0;
+}
