@@ -23,7 +23,6 @@ const routes = {
   'task.list': task.list,
   'task.detail': task.detail,
   'task.apply': task.apply,
-  'task.cancelApply': task.cancelApply,
   'task.mine': task.mine,
   'signup.list': signup.list,
   'signup.review': signup.review,

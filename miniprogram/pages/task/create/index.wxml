@@ -158,6 +158,18 @@
   </view>
 
   <view class="footer">
-    <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">发布</button>
+    <button
+      class="btn btn--ghost footer__btn"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bindtap="onSubmit"
+    >发布</button>
+    <button
+      class="btn btn--primary footer__btn"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      data-share="1"
+      bindtap="onSubmit"
+    >发布并分享</button>
   </view>
 </scroll-view>

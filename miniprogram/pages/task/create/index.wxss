@@ -202,3 +202,14 @@
   color: var(--blue);
   font-size: 26rpx;
 }
+
+.footer {
+  display: flex;
+  gap: 16rpx;
+}
+
+.footer__btn {
+  flex: 1;
+  width: auto;
+  margin: 0;
+}

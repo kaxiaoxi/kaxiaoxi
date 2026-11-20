@@ -202,21 +202,14 @@ async function requestLeave(payload = {}, openid) {
   if (new Date(taskRes.data.startAt) <= new Date())
     throw new BizError(40031, '活动已开始，不能请假')
 
-  const exist = await db
-    .collection('leave_requests')
-    .where({ taskId, openid, status: 'pending' })
-    .limit(1)
-    .get()
-  if (exist.data.length) throw new BizError(40909, '已有待审批的请假申请')
-
   await db.collection('leave_requests').add({
     data: {
       taskId,
       openid,
       reason,
-      status: 'pending',
-      reviewedBy: '',
-      reviewedAt: null,
+      status: 'approved',
+      reviewedBy: 'auto',
+      reviewedAt: db.serverDate(),
       createdAt: db.serverDate()
     }
   })
@@ -224,9 +217,34 @@ async function requestLeave(payload = {}, openid) {
   await db
     .collection('task_signups')
     .doc(signup._id)
-    .update({ data: { status: 'leave_pending', updatedAt: db.serverDate() } })
+    .update({ data: { status: 'left', updatedAt: db.serverDate() } })
 
-  return { status: 'leave_pending' }
+  await db
+    .collection('tasks')
+    .doc(taskId)
+    .update({ data: { approvedCount: _.inc(-1) } })
+
+  await promoteNext(taskId)
+
+  await notify(openid, {
+    type: 'leave',
+    title: '请假已生效',
+    content: '名额已自动顺延给候补成员，无需等待审批。',
+    refType: 'task',
+    refId: taskId
+  })
+
+  if (taskRes.data.publisherOpenid) {
+    await notify(taskRes.data.publisherOpenid, {
+      type: 'leave',
+      title: '有人请假',
+      content: '已自动把名额顺延给下一位候补。',
+      refType: 'task',
+      refId: taskId
+    })
+  }
+
+  return { status: 'approved' }
 }
 
 async function reviewLeave(payload = {}, openid) {
