@@ -11,7 +11,9 @@
   </block>
 
   <button class="btn btn--primary btn--wide refresh-btn" bindtap="onRefresh">
-    <view class="refresh-btn__spinner" wx:if="{{checking}}"></view>
+    <view class="refresh-btn__slot">
+      <view class="refresh-btn__spinner" wx:if="{{checking}}"></view>
+    </view>
     <text>刷新状态</text>
   </button>
   <button class="btn btn--ghost btn--wide" bindtap="onContact">联系主席</button>

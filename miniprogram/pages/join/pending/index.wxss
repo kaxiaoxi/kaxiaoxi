@@ -30,21 +30,18 @@
   margin-bottom: 24rpx;
 }
 
-.refresh-btn {
-  position: relative;
-}
-
-.refresh-btn[disabled] {
-  opacity: 1;
+.refresh-btn__slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 14rpx;
 }
 
 .refresh-btn__spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 28rpx;
-  height: 28rpx;
-  margin: -14rpx 0 0 -120rpx;
+  width: 26rpx;
+  height: 26rpx;
   border: 3rpx solid rgba(255, 255, 255, 0.45);
   border-top-color: #fff;
   border-radius: 50%;
