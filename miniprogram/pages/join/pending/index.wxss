@@ -30,8 +30,14 @@
   margin-bottom: 24rpx;
 }
 
+.refresh-btn {
+  width: 560rpx;
+  min-width: 560rpx;
+}
+
 .refresh-btn__content {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   height: 100%;
@@ -48,8 +54,10 @@
 }
 
 .refresh-btn__text {
+  flex: 0 0 auto;
   line-height: 1;
   white-space: nowrap;
+  word-break: keep-all;
 }
 
 .refresh-btn__spinner {
