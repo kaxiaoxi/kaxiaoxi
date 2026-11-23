@@ -10,14 +10,6 @@
     <view class="desc">主席审核通过后会通知你，一般 1～2 天。</view>
   </block>
 
-  <button class="btn btn--primary btn--wide refresh-btn" bindtap="onRefresh">
-    <view class="refresh-btn__content">
-      <view class="refresh-btn__slot">
-        <view class="refresh-btn__spinner" wx:if="{{checking}}"></view>
-      </view>
-      <view class="refresh-btn__text">刷新状态</view>
-    </view>
-  </button>
+  <button class="btn btn--primary btn--wide" loading="{{checking}}" bindtap="onRefresh">刷新状态</button>
   <button class="btn btn--ghost btn--wide" bindtap="onContact">联系主席</button>
 </view>
-
