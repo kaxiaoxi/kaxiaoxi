@@ -30,13 +30,26 @@
   margin-bottom: 24rpx;
 }
 
+.refresh-btn__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .refresh-btn__slot {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32rpx;
   height: 32rpx;
+  flex: 0 0 32rpx;
   margin-right: 14rpx;
+}
+
+.refresh-btn__text {
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .refresh-btn__spinner {
