@@ -1,6 +1,7 @@
 const { call } = require('../../../services/api')
 const { DEPT, DEPT_LABEL } = require('../../../utils/constants')
 const { validateRegister } = require('../../../utils/validate')
+const guest = require('../../../utils/guest')
 
 const DEPT_KEYS = [DEPT.PHOTO, DEPT.PR, DEPT.OPS]
 const DEPT_LABELS = DEPT_KEYS.map((key) => DEPT_LABEL[key])
@@ -36,6 +37,11 @@ Page({
       deptIndex: index,
       'form.dept': DEPT_KEYS[index]
     })
+  },
+
+  onGuestLogin() {
+    guest.enter()
+    wx.reLaunch({ url: '/pages/home/index' })
   },
 
   async onSubmit() {

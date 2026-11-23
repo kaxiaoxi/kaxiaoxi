@@ -1,5 +1,6 @@
 const { call } = require('../../services/api')
 const { syncTabBar } = require('../../utils/tabbar')
+const guest = require('../../utils/guest')
 const { TYPE_KEY, STATUS_CLASS } = require('../../utils/calendar')
 const { ROLE } = require('../../utils/constants')
 const { ensureMember } = require('../../utils/session')
@@ -43,7 +44,8 @@ Page({
     loading: false,
     loadError: false,
     tabPageEnter: false,
-    isStaff: false
+    isStaff: false,
+    guestLocked: false
   },
 
   onLoad() {
@@ -59,6 +61,13 @@ Page({
 
   async onShow() {
     syncTabBar(this, 2, 'calendar')
+
+    if (guest.isGuest()) {
+      this.setData({ guestLocked: true, isStaff: false, loading: false })
+      return
+    }
+    this.setData({ guestLocked: false })
+
     // 冷启动直接进年历页时 globalData 可能是空的，先补一次登录态
     const member = await ensureMember()
     this.setData({ isStaff: !!member && member.role !== ROLE.MEMBER })

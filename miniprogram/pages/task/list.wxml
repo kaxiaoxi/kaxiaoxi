@@ -4,13 +4,18 @@
       <view class="head__eyebrow">拍摄与协作</view>
       <view class="head__title">任务</view>
     </view>
-    <view class="head__create glass" bindtap="onCreate">
+    <view class="head__create glass" wx:if="{{!guestLocked}}" bindtap="onCreate">
       <text class="head__plus">＋</text>
       <text>发布</text>
     </view>
   </view>
 
-  <view class="filters glass-strong">
+  <view class="guest-lock card" wx:if="{{guestLocked}}">
+    <view class="guest-lock__title">访客模式</view>
+    <view class="guest-lock__text">任务需要成员身份查看和报名，请注册或登录成员账号。</view>
+  </view>
+
+  <view class="filters glass-strong" wx:if="{{!guestLocked}}">
     <view class="seg">
       <view
         wx:for="{{tabs}}"
@@ -44,7 +49,7 @@
     <view class="skeleton card"></view>
   </view>
 
-  <view class="empty card" wx:elif="{{!loading && !list.length}}">
+  <view class="empty card" wx:elif="{{!guestLocked && !loading && !list.length}}">
     <view class="empty__icon">○</view>
     <view class="empty__title">这里还没有任务</view>
     <view class="empty__text">换个筛选条件，或者发布一个新任务。</view>

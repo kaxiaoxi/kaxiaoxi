@@ -4,6 +4,11 @@
     <view class="hero__sub">提交后由主席审核，通过即可使用</view>
   </view>
 
+  <view class="guest">
+    <button class="btn btn--ghost guest__btn" bindtap="onGuestLogin">访客登录</button>
+    <view class="guest__tip">不注册也能浏览；访客数据只存本机，报名/发布需注册成员</view>
+  </view>
+
   <view class="form">
     <view class="field">
       <view class="field__label">姓名</view>

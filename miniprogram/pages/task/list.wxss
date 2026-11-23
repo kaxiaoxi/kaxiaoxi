@@ -273,3 +273,19 @@
     background-position: -100% 0;
   }
 }
+
+.guest-lock {
+  margin-top: 24rpx;
+}
+
+.guest-lock__title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.guest-lock__text {
+  margin-top: 10rpx;
+  color: var(--s-2);
+  font-size: 24rpx;
+  line-height: 1.6;
+}

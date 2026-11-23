@@ -1,4 +1,5 @@
 const env = require('./env')
+const guest = require('./utils/guest')
 
 App({
   globalData: {
@@ -15,5 +16,15 @@ App({
       env: env.envId,
       traceUser: true
     })
+
+    try {
+      const profile = wx.getStorageSync(guest.STORAGE_KEY)
+      if (profile && typeof profile === 'object') {
+        this.globalData.isGuest = true
+        this.globalData.member = profile
+      }
+    } catch (err) {
+      console.warn('[app] 恢复访客会话失败', err)
+    }
   }
 })

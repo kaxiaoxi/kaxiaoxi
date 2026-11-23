@@ -1,6 +1,7 @@
 const { call } = require('../../services/api')
 const { PHASE_LABEL, PHASE_CLASS, formatRange, quotaText } = require('../../utils/task')
 const { syncTabBar } = require('../../utils/tabbar')
+const guest = require('../../utils/guest')
 
 const TABS = [
   { key: 'all', label: '全部' },
@@ -30,12 +31,18 @@ Page({
     status: 'all',
     list: [],
     loading: false,
+    guestLocked: false,
     loadError: false,
     tabPageEnter: false
   },
 
   onShow() {
     syncTabBar(this, 1, 'task')
+    if (guest.isGuest()) {
+      this.setData({ guestLocked: true, loading: false, list: [] })
+      return
+    }
+    this.setData({ guestLocked: false })
     this.load()
   },
 
@@ -48,6 +55,7 @@ Page({
   },
 
   async load() {
+    if (this.data.guestLocked) return
     if (this.data.loading) return
     this.setData({ loading: true, loadError: false })
     try {
@@ -78,6 +86,10 @@ Page({
   },
 
   onCreate() {
+    if (this.data.guestLocked) {
+      wx.showToast({ title: '访客模式不可发布任务', icon: 'none' })
+      return
+    }
     wx.navigateTo({ url: '/pages/task/create/index' })
   },
 

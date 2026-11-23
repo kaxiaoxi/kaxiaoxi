@@ -4,6 +4,7 @@ const { formatRange, formatDay, formatTime } = require('../../utils/task')
 const { dueText } = require('../../utils/todo')
 const { syncTabBar } = require('../../utils/tabbar')
 const { ensureMember } = require('../../utils/session')
+const guest = require('../../utils/guest')
 
 Page({
   data: {
@@ -17,6 +18,7 @@ Page({
     unreadMessages: [],
     activeMessage: null,
     showMessage: false,
+    isGuest: false,
     isLoading: false,
     loadError: false,
     tabPageEnter: false
@@ -29,8 +31,26 @@ Page({
       this.restore()
       return
     }
+
+    if (getApp().globalData.isGuest) {
+      this.setData({
+        member,
+        isGuest: true,
+        deptLabel: '访客模式',
+        roleLabel: '',
+        isStaff: false,
+        tasks: [],
+        todos: [],
+        unreadMessages: [],
+        isLoading: false,
+        loadError: false
+      })
+      return
+    }
+
     this.setData({
       member,
+      isGuest: false,
       deptLabel: DEPT_LABEL[member.dept] || '',
       roleLabel: ROLE_LABEL[member.role] || '',
       isStaff: member.role !== ROLE.MEMBER
@@ -96,28 +116,45 @@ Page({
     this.load()
   },
 
+  blockGuest() {
+    if (!this.data.isGuest) return false
+    wx.showToast({ title: '访客模式不可用，注册成员后使用', icon: 'none' })
+    return true
+  },
+
+  onExitGuest() {
+    guest.exit()
+    wx.reLaunch({ url: '/pages/launch/index' })
+  },
+
   onOpenTask(e) {
+    if (this.blockGuest()) return
     const id = e.currentTarget.dataset.id
     wx.navigateTo({ url: `/pages/task/detail/index?id=${id}` })
   },
 
   onOpenTaskList() {
+    if (this.blockGuest()) return
     wx.switchTab({ url: '/pages/task/list' })
   },
 
   onOpenTodoList() {
+    if (this.blockGuest()) return
     wx.navigateTo({ url: '/pages/todo/list/index' })
   },
 
   onOpenTodo(e) {
+    if (this.blockGuest()) return
     wx.navigateTo({ url: `/pages/todo/detail/index?id=${e.currentTarget.dataset.id}` })
   },
 
   onOpenDeptTodo() {
+    if (this.blockGuest()) return
     wx.navigateTo({ url: '/pages/todo/list/index?tab=dept' })
   },
 
   onOpenMessageList() {
+    if (this.blockGuest()) return
     wx.navigateTo({ url: '/pages/message/list/index' })
   },
 

@@ -97,6 +97,10 @@ Page({
    * active -> 首页；new -> 注册；pending/rejected/left -> 等待页
    */
   async bootstrap() {
+    if (getApp().globalData.isGuest) {
+      wx.reLaunch({ url: '/pages/home/index' })
+      return
+    }
     try {
       const res = await call('auth.login')
       getApp().globalData.member = res.member || null
