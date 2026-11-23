@@ -13,6 +13,14 @@
     </view>
   </view>
 
+  <view class="guest-banner" wx:if="{{isGuest}}">
+    <view class="guest-banner__main">
+      <view class="guest-banner__title">访客模式</view>
+      <view class="guest-banner__text">数据只保存在本机；报名、发布、审核需注册成员</view>
+    </view>
+    <view class="guest-banner__exit" bindtap="onExitGuest">退出</view>
+  </view>
+
   <view class="overview glass-strong">
     <view class="overview__item" bindtap="onOpenTaskList">
       <view class="overview__value">{{tasks.length}}</view>

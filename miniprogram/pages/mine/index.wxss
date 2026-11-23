@@ -283,3 +283,69 @@
   font-size: 21rpx;
   text-align: center;
 }
+
+.guest-card {
+  margin-top: 24rpx;
+}
+
+.guest-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.guest-card__title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.guest-card__badge {
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  background: rgba(217, 164, 65, 0.18);
+  color: #7d560d;
+  font-size: 21rpx;
+  font-weight: 600;
+}
+
+.guest-card__text {
+  margin-top: 12rpx;
+  color: var(--s-2);
+  font-size: 23rpx;
+  line-height: 1.6;
+}
+
+.guest-card__field {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid var(--sep);
+}
+
+.guest-card__key {
+  width: 100rpx;
+  flex-shrink: 0;
+  color: var(--s-2);
+  font-size: 26rpx;
+}
+
+.guest-card__input {
+  flex: 1;
+  font-size: 27rpx;
+  text-align: right;
+}
+
+.guest-card__actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.guest-card__btn {
+  flex: 1;
+  width: auto;
+  height: 78rpx;
+  margin: 0;
+  font-size: 27rpx;
+}

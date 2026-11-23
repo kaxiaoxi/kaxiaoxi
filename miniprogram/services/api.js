@@ -3,6 +3,14 @@
  * 约定：云函数永远返回 { code, data, message }，code === 0 表示成功。
  */
 function call(action, payload = {}) {
+  const app = getApp()
+  if (app && app.globalData && app.globalData.isGuest) {
+    const err = new Error('访客模式不支持此功能，注册成员后可用')
+    err.code = 40301
+    err.guestBlocked = true
+    return Promise.reject(err)
+  }
+
   return new Promise((resolve, reject) => {
     wx.cloud
       .callFunction({

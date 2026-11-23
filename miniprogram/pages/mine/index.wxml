@@ -12,6 +12,7 @@
         {{member.avatarText || '?'}}
       </view>
       <button
+        wx:if="{{!isGuest}}"
         class="profile__avatar-btn"
         open-type="chooseAvatar"
         bindchooseavatar="onChooseAvatar"
@@ -20,10 +21,43 @@
     </view>
     <view class="profile__meta">
       <view class="profile__name">{{member.name || '未登录'}}</view>
-      <view class="profile__sub">{{deptLabel}} · {{roleLabel}}</view>
+      <view class="profile__sub">{{deptLabel}}<text wx:if="{{roleLabel}}"> · {{roleLabel}}</text></view>
       <view class="profile__year">{{member.academicYear || ''}}</view>
     </view>
     <view class="profile__status" wx:if="{{statusLabel}}">{{statusLabel}}</view>
+  </view>
+
+  <view class="card guest-card" wx:if="{{isGuest}}">
+    <view class="guest-card__head">
+      <view class="guest-card__title">访客模式</view>
+      <view class="guest-card__badge">数据仅存本机</view>
+    </view>
+    <view class="guest-card__text">不连接云端，也不会读取协会成员数据。注册成员后可报名、发布和审核。</view>
+    <view class="guest-card__field">
+      <text class="guest-card__key">昵称</text>
+      <input
+        class="guest-card__input"
+        value="{{member.name}}"
+        maxlength="20"
+        data-field="name"
+        bindblur="onGuestInput"
+      />
+    </view>
+    <view class="guest-card__field">
+      <text class="guest-card__key">学院</text>
+      <input
+        class="guest-card__input"
+        value="{{member.college}}"
+        maxlength="20"
+        placeholder="选填"
+        data-field="college"
+        bindblur="onGuestInput"
+      />
+    </view>
+    <view class="guest-card__actions">
+      <button class="btn btn--ghost guest-card__btn" bindtap="onOpenAbout">关于</button>
+      <button class="btn btn--primary guest-card__btn" bindtap="onExitGuest">退出访客</button>
+    </view>
   </view>
 
   <view class="error card" wx:if="{{loadError}}">
@@ -32,8 +66,8 @@
     <button class="btn btn--ghost error__btn" bindtap="onRetry">重新刷新</button>
   </view>
 
-  <view class="section-label">个人信息</view>
-  <view class="list card">
+  <view class="section-label" wx:if="{{!isGuest}}">个人信息</view>
+  <view class="list card" wx:if="{{!isGuest}}">
     <view class="row">
       <text class="row__key">学号</text>
       <text class="row__value">{{member.studentNo || '-'}}</text>
@@ -56,8 +90,8 @@
     </view>
   </view>
 
-  <view class="section-label">我的工作台</view>
-  <view class="menu card">
+  <view class="section-label" wx:if="{{!isGuest}}">我的工作台</view>
+  <view class="menu card" wx:if="{{!isGuest}}">
     <view class="entry" hover-class="entry--pressed" bindtap="onOpenTodos">
       <view class="entry__icon entry__icon--todo"></view>
       <text class="entry__text">我的待办</text>
@@ -75,8 +109,8 @@
     </view>
   </view>
 
-  <view class="section-label">账号与设置</view>
-  <view class="menu card">
+  <view class="section-label" wx:if="{{!isGuest}}">账号与设置</view>
+  <view class="menu card" wx:if="{{!isGuest}}">
     <view class="entry" hover-class="entry--pressed" bindtap="onEditProfile">
       <view class="entry__icon entry__icon--profile"></view>
       <text class="entry__text">编辑资料</text>

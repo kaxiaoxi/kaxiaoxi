@@ -11,7 +11,12 @@
     </view>
   </view>
 
-  <view class="calendar-panel card">
+  <view class="guest-lock card" wx:if="{{guestLocked}}">
+    <view class="guest-lock__title">访客模式</view>
+    <view class="guest-lock__text">年历需要成员身份查看，注册后可使用。</view>
+  </view>
+
+  <view class="calendar-panel card" wx:if="{{!guestLocked}}">
     <view class="month-row">
       <text class="month-arrow" bindtap="onPrev">‹</text>
       <picker
@@ -62,12 +67,12 @@
   </view>
   <view class="loading glass" wx:elif="{{loading}}">正在同步年历…</view>
 
-  <view class="day-head">
+  <view class="day-head" wx:if="{{!guestLocked}}">
     <text>{{selectedLabel}}</text>
     <text class="day-head__count" wx:if="{{dayEvents.length}}">{{dayEvents.length}} 项安排</text>
   </view>
 
-  <view class="empty card" wx:if="{{selected && !dayEvents.length}}">
+  <view class="empty card" wx:if="{{!guestLocked && selected && !dayEvents.length}}">
     <view class="empty__title">当天没有安排</view>
     <view class="empty__text">可以在右上角新建日程，或选择其他日期。</view>
   </view>
@@ -93,5 +98,5 @@
     </view>
   </view>
 
-  <view class="fab glass-strong" bindtap="onToday">回到今天</view>
+  <view class="fab glass-strong" wx:if="{{!guestLocked}}" bindtap="onToday">回到今天</view>
 </view>

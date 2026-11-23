@@ -2,6 +2,7 @@ const { call } = require('../../services/api')
 const { resolve, urlOf } = require('../../utils/avatar')
 const { DEPT_LABEL, ROLE_LABEL, MEMBER_STATUS_LABEL } = require('../../utils/constants')
 const { syncTabBar } = require('../../utils/tabbar')
+const guest = require('../../utils/guest')
 
 Page({
   data: {
@@ -11,6 +12,7 @@ Page({
     statusLabel: '',
     isChairman: false,
     isMinister: false,
+    isGuest: false,
     isLoading: false,
     loadError: false,
     tabPageEnter: false
@@ -18,6 +20,23 @@ Page({
 
   async onShow() {
     syncTabBar(this, 3, 'mine')
+
+    if (getApp().globalData.isGuest) {
+      const guestMember = getApp().globalData.member
+      this.setData({
+        member: guestMember,
+        isGuest: true,
+        deptLabel: '访客模式',
+        roleLabel: '',
+        statusLabel: '访客',
+        isChairman: false,
+        isMinister: false,
+        isLoading: false,
+        loadError: false
+      })
+      return
+    }
+
     let member = getApp().globalData.member
     let loadError = false
     this.setData({ isLoading: true, loadError: false })
@@ -51,6 +70,18 @@ Page({
 
   onRetry() {
     this.onShow()
+  },
+
+  onGuestInput(e) {
+    const field = e.currentTarget.dataset.field
+    const value = String(e.detail.value || '').slice(0, 20)
+    const member = guest.update({ [field]: value })
+    this.setData({ member })
+  },
+
+  onExitGuest() {
+    guest.exit()
+    wx.reLaunch({ url: '/pages/launch/index' })
   },
 
   onOpenErke() {
