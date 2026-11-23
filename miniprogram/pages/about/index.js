@@ -2,7 +2,7 @@ const { call } = require('../../services/api')
 
 Page({
   data: {
-    version: '1.1.0',
+    version: '1.6.0',
     content: '',
     submitting: false
   },
