@@ -1,7 +1,7 @@
 <view class="page">
   <view class="head">
     <view class="head__title">待办</view>
-    <view class="head__add" bindtap="onAdd">＋ 新建</view>
+    <view class="head__add" wx:if="{{isStaff}}" bindtap="onAdd">＋ 新建</view>
   </view>
 
   <view class="seg">

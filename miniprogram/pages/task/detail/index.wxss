@@ -443,3 +443,24 @@
   font-size: 24rpx;
   color: var(--s-2);
 }
+
+.leave-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+  margin-top: 8rpx;
+}
+
+.leave-option {
+  padding: 16rpx 30rpx;
+  border-radius: 24rpx;
+  background: #f2f2f7;
+  color: var(--ink);
+  font-size: 25rpx;
+}
+
+.leave-option--on {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+}

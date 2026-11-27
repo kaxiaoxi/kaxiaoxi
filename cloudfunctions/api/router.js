@@ -9,7 +9,6 @@ const todo = require('./actions/todo')
 const message = require('./actions/message')
 const erke = require('./actions/erke')
 const admin = require('./actions/admin')
-const feedback = require('./actions/feedback')
 const subscribe = require('./actions/subscribe')
 const home = require('./actions/home')
 
@@ -51,12 +50,9 @@ const routes = {
   'admin.archiveYear': admin.archiveYear,
   'admin.appointChairman': admin.appointChairman,
   'admin.appointMinister': admin.appointMinister,
-  'profile.submit': profile.submit,
   'profile.mine': profile.mine,
   'profile.listPending': profile.listPending,
   'profile.review': profile.review,
-  'profile.updateAvatar': profile.updateAvatar,
-  'feedback.submit': feedback.submit,
   'subscribe.templates': subscribe.templates,
   'reminder.create': subscribe.createReminder,
   'reminder.createTodo': subscribe.createTodoReminder,

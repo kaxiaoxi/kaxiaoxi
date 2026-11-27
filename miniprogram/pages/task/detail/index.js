@@ -23,7 +23,8 @@ Page({
     roleOptions: [],
     showLeaveSheet: false,
     leaveLoading: false,
-    leaveReason: ''
+    leaveReason: '',
+    leaveOptions: ['事假', '病假', '临时有事', '其他']
   },
 
   onLoad(options) {
@@ -225,8 +226,8 @@ Page({
     this.setData({ showLeaveSheet: false })
   },
 
-  onLeaveInput(e) {
-    this.setData({ leaveReason: e.detail.value })
+  onPickLeaveReason(e) {
+    this.setData({ leaveReason: e.currentTarget.dataset.value })
   },
 
   onShareAppMessage() {

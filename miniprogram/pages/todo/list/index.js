@@ -84,6 +84,10 @@ Page({
   },
 
   onAdd() {
+    if (!this.data.isStaff) {
+      wx.showToast({ title: '仅部长或主席可创建待办', icon: 'none' })
+      return
+    }
     wx.navigateTo({ url: '/pages/todo/edit/index' })
   },
 

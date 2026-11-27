@@ -6,7 +6,6 @@
     "pages/admin/members/index",
     "pages/admin/erke/index",
     "pages/admin/settings/index",
-    "pages/profile/edit/index",
     "pages/home/index",
     "pages/task/list",
     "pages/task/detail/index",

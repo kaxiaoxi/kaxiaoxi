@@ -22,20 +22,6 @@
     </view>
   </view>
 
-  <view class="section">意见反馈</view>
-  <view class="card">
-    <textarea
-      class="textarea"
-      maxlength="500"
-      placeholder="说说你遇到的问题或建议，会直接发给主席"
-      value="{{content}}"
-      bindinput="onContent"
-    />
-    <button class="btn btn--primary submit" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">
-      提交反馈
-    </button>
-  </view>
-
   <view class="section">开发鸣谢</view>
   <view class="card thanks">
     <view class="thanks__item">
