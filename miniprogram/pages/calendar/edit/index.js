@@ -15,6 +15,9 @@ Page({
   data: {
     id: '',
     types: TYPES,
+    nameOptions: ['摆摊', '全体大会', '摄影大赛'],
+    showNameSheet: false,
+    nameDraft: -1,
     typeIndex: 0,
     statuses: STATUS,
     statusIndex: 1,
@@ -104,6 +107,27 @@ Page({
     } catch (err) {
       wx.showToast({ title: err.message || '加载失败', icon: 'none' })
     }
+  },
+
+  onOpenNameSheet() {
+    this.setData({ showNameSheet: true, nameDraft: -1 })
+  },
+
+  onPickName(e) {
+    this.setData({ nameDraft: Number(e.currentTarget.dataset.index) })
+  },
+
+  onCloseNameSheet() {
+    this.setData({ showNameSheet: false })
+  },
+
+  onConfirmNameSheet() {
+    const index = this.data.nameDraft
+    if (index < 0) {
+      wx.showToast({ title: '请选择日程名称', icon: 'none' })
+      return
+    }
+    this.setData({ 'form.title': this.data.nameOptions[index], showNameSheet: false })
   },
 
   onInput(e) {

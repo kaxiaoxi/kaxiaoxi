@@ -104,3 +104,48 @@
 .picker--placeholder {
   color: var(--s-3);
 }
+
+.name-trigger__arrow {
+  margin-left: 12rpx;
+  color: var(--s-3);
+  font-size: 32rpx;
+}
+
+.field__value {
+  font-size: 28rpx;
+  color: var(--ink);
+}
+
+.field__value--placeholder {
+  color: var(--s-3);
+}
+
+.name-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.name-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26rpx 8rpx;
+  border-bottom: 1rpx solid var(--sep);
+  font-size: 29rpx;
+  color: var(--ink);
+}
+
+.name-option:last-child {
+  border-bottom: none;
+}
+
+.name-option--on {
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.name-option__check {
+  color: var(--blue);
+  font-size: 28rpx;
+  font-weight: 700;
+}
