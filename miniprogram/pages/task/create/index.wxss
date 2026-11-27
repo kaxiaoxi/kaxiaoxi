@@ -213,3 +213,12 @@
   width: auto;
   margin: 0;
 }
+
+.field__value {
+  font-size: 28rpx;
+  color: var(--ink);
+}
+
+.field__value--placeholder {
+  color: var(--s-3);
+}

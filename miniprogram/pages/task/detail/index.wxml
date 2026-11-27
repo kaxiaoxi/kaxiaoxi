@@ -23,7 +23,7 @@
         <view wx:for="{{detail.sessionsText}}" wx:key="*this">{{item}}</view>
       </view>
     </view>
-    <view class="row">
+    <view class="row" wx:if="{{detail.locationName}}">
       <text class="row__key">地点</text>
       <text class="row__value">{{detail.locationName}}</text>
     </view>
@@ -39,14 +39,14 @@
       <text class="row__key">二课</text>
       <text class="row__value">{{detail.erkeHours}} 学时/场</text>
     </view>
-    <view class="row">
+    <view class="row" wx:if="{{detail.collectMethod}}">
       <text class="row__key">收图方式</text>
       <text class="row__value">{{detail.collectMethod}}</text>
     </view>
   </view>
 
-  <view class="section-title">活动详情</view>
-  <view class="card description">
+  <view class="section-title" wx:if="{{detail.description}}">活动详情</view>
+  <view class="card description" wx:if="{{detail.description}}">
     <text class="description__text">{{detail.description}}</text>
   </view>
 
@@ -163,7 +163,7 @@
         <view wx:for="{{detail.sessionsText}}" wx:key="*this">{{item}}</view>
       </view>
     </view>
-    <view class="sheet-row">
+    <view class="sheet-row" wx:if="{{detail.locationName}}">
       <text class="sheet-row__key">地点</text>
       <text class="sheet-row__value">{{detail.locationName}}</text>
     </view>
@@ -188,7 +188,7 @@
 >
   <view class="sheet-summary sheet-summary--compact">
     <view class="sheet-summary__title">{{detail.title}}</view>
-    <view class="sheet-summary__meta">{{detail.sessionsText[0]}} · {{detail.locationName}}</view>
+    <view class="sheet-summary__meta">{{detail.sessionsText[0]}}</view>
   </view>
   <view class="sheet-field">
     <view class="sheet-field__label">请假原因</view>

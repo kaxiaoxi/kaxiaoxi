@@ -4,6 +4,16 @@ const { DEPT, DEPT_LABEL } = require('../../../utils/constants')
 const DEPT_KEYS = [DEPT.PHOTO, DEPT.PR, DEPT.OPS]
 const DEPT_OPTIONS = DEPT_KEYS.map((key) => ({ key, label: DEPT_LABEL[key] }))
 
+const TYPE_OPTIONS = [
+  '比赛拍摄',
+  '会议拍摄',
+  '外拍采风',
+  '招新摆摊',
+  '毕业照拍摄',
+  '讲座活动',
+  '其他活动'
+]
+
 function pad(n) {
   return n < 10 ? `0${n}` : `${n}`
 }
@@ -37,6 +47,8 @@ Page({
       targetDepts: []
     },
     deptOptions: DEPT_OPTIONS,
+    typeOptions: TYPE_OPTIONS,
+    typeIndex: -1,
     sessions: [],
     useRoles: false,
     roles: [],
@@ -54,6 +66,11 @@ Page({
       deadlineDate: dateAfter(1),
       startDate: dateAfter(0)
     })
+  },
+
+  onTypeChange(e) {
+    const index = Number(e.detail.value)
+    this.setData({ typeIndex: index, 'form.title': TYPE_OPTIONS[index] || '' })
   },
 
   onInput(e) {
@@ -133,10 +150,7 @@ Page({
 
   validate() {
     const { form, deadlineDate, deadlineTime } = this.data
-    if (!form.title.trim()) return '请填写活动名称'
-    if (!form.description.trim()) return '请填写活动详情'
-    if (!form.locationName.trim()) return '请填写活动地点'
-    if (!form.collectMethod.trim()) return '请填写收图方式'
+    if (this.data.typeIndex < 0) return '请选择活动类型'
 
     const sessions = this.buildSessions()
     for (const item of sessions) {
