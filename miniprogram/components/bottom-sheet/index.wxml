@@ -1,5 +1,6 @@
 <view
   class="sheet-root {{visible ? 'sheet-root--open' : ''}}"
+  hidden="{{!visible}}"
   aria-hidden="{{!visible}}"
 >
   <view
