@@ -223,6 +223,7 @@ async function detail(payload = {}, openid) {
  */
 async function save(payload = {}, openid) {
   const me = await requireActive(openid)
+  if (me.role === 'member') throw new BizError(40301, '仅部长或主席可创建或编辑待办')
   const title = typeof payload.title === 'string' ? payload.title.trim().slice(0, 50) : ''
   const description =
     typeof payload.description === 'string' ? payload.description.trim().slice(0, 500) : ''

@@ -72,13 +72,6 @@ Page({
     this.onShow()
   },
 
-  onGuestInput(e) {
-    const field = e.currentTarget.dataset.field
-    const value = String(e.detail.value || '').slice(0, 20)
-    const member = guest.update({ [field]: value })
-    this.setData({ member })
-  },
-
   onExitGuest() {
     guest.exit()
     wx.reLaunch({ url: '/pages/launch/index' })
@@ -106,60 +99,6 @@ Page({
 
   onOpenTodos() {
     wx.navigateTo({ url: '/pages/todo/list/index' })
-  },
-
-  onEditProfile() {
-    wx.navigateTo({ url: '/pages/profile/edit/index' })
-  },
-
-  onOpenAbout() {
-    wx.navigateTo({ url: '/pages/about/index' })
-  },
-
-  async compressAvatar(path) {
-    if (!wx.compressImage) return path
-    try {
-      const res = await wx.compressImage({
-        src: path,
-        quality: 60,
-        compressedWidth: 300,
-        compressedHeight: 300
-      })
-      return res.tempFilePath || path
-    } catch (err) {
-      console.warn('[mine] 头像压缩失败，使用原图', err)
-      return path
-    }
-  },
-
-  async onChooseAvatar(e) {
-    const tempUrl = e.detail && e.detail.avatarUrl
-    const member = this.data.member
-    if (!tempUrl || !member || !member._id) return
-
-    wx.showLoading({ title: '上传中', mask: true })
-    try {
-      const filePath = await this.compressAvatar(tempUrl)
-      const ext = (filePath.match(/\.(\w+)$/) || [])[1] || 'jpg'
-      const upload = await wx.cloud.uploadFile({
-        cloudPath: `avatars/${member._id}-${Date.now()}.${ext}`,
-        filePath
-      })
-      const res = await call('profile.updateAvatar', { fileID: upload.fileID })
-      await resolve([res.avatarFileID])
-      const updated = {
-        ...member,
-        avatarFileID: res.avatarFileID,
-        avatarUrl: urlOf(res.avatarFileID)
-      }
-      this.setData({ member: updated })
-      getApp().globalData.member = updated
-      wx.hideLoading()
-      wx.showToast({ title: '头像已更新', icon: 'success' })
-    } catch (err) {
-      wx.hideLoading()
-      wx.showToast({ title: err.message || '上传失败', icon: 'none' })
-    }
   },
 
   onOpenMembers() {

@@ -11,13 +11,6 @@
       <view wx:else class="profile__avatar" style="background: {{member.avatarColor || '#2E5F7E'}}">
         {{member.avatarText || '?'}}
       </view>
-      <button
-        wx:if="{{!isGuest}}"
-        class="profile__avatar-btn"
-        open-type="chooseAvatar"
-        bindchooseavatar="onChooseAvatar"
-        hover-class="none"
-      ></button>
     </view>
     <view class="profile__meta">
       <view class="profile__name">{{member.name || '未登录'}}</view>
@@ -35,24 +28,11 @@
     <view class="guest-card__text">不连接云端，也不会读取协会成员数据。注册成员后可报名、发布和审核。</view>
     <view class="guest-card__field">
       <text class="guest-card__key">昵称</text>
-      <input
-        class="guest-card__input"
-        value="{{member.name}}"
-        maxlength="20"
-        data-field="name"
-        bindblur="onGuestInput"
-      />
+      <text class="guest-card__value">{{member.name}}</text>
     </view>
     <view class="guest-card__field">
       <text class="guest-card__key">学院</text>
-      <input
-        class="guest-card__input"
-        value="{{member.college}}"
-        maxlength="20"
-        placeholder="选填"
-        data-field="college"
-        bindblur="onGuestInput"
-      />
+      <text class="guest-card__value">{{member.college || '未填写'}}</text>
     </view>
     <view class="guest-card__actions">
       <button class="btn btn--ghost guest-card__btn" bindtap="onOpenAbout">关于</button>
@@ -111,11 +91,6 @@
 
   <view class="section-label" wx:if="{{!isGuest}}">账号与设置</view>
   <view class="menu card" wx:if="{{!isGuest}}">
-    <view class="entry" hover-class="entry--pressed" bindtap="onEditProfile">
-      <view class="entry__icon entry__icon--profile"></view>
-      <text class="entry__text">编辑资料</text>
-      <text class="entry__arrow">›</text>
-    </view>
     <view class="entry" wx:if="{{isMinister}}" hover-class="entry--pressed" bindtap="onOpenSummary">
       <view class="entry__icon entry__icon--erke"></view>
       <text class="entry__text">二课汇总</text>

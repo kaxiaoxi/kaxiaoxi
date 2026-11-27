@@ -192,16 +192,14 @@
   </view>
   <view class="sheet-field">
     <view class="sheet-field__label">请假原因</view>
-    <textarea
-      class="sheet-textarea"
-      value="{{leaveReason}}"
-      maxlength="200"
-      placeholder="请说明原因，便于负责人判断"
-      placeholder-class="sheet-textarea__placeholder"
-      cursor-spacing="24"
-      focus="{{showLeaveSheet}}"
-      bindinput="onLeaveInput"
-    />
-    <view class="sheet-field__counter">{{leaveReason.length}} / 200</view>
+    <view class="leave-options">
+      <view
+        class="leave-option {{leaveReason === item ? 'leave-option--on' : ''}}"
+        wx:for="{{leaveOptions}}"
+        wx:key="*this"
+        data-value="{{item}}"
+        bindtap="onPickLeaveReason"
+      >{{item}}</view>
+    </view>
   </view>
 </bottom-sheet>
