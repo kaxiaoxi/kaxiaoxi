@@ -1,14 +1,13 @@
 <scroll-view class="page" scroll-y>
   <view class="section">活动类型</view>
   <view class="card">
-    <picker mode="selector" range="{{typeOptions}}" value="{{typeIndex}}" bindchange="onTypeChange">
-      <view class="field field--row">
-        <text class="field__label">活动类型</text>
-        <view class="field__value {{typeIndex < 0 ? 'field__value--placeholder' : ''}}">
-          {{typeIndex >= 0 ? typeOptions[typeIndex] : '请选择活动类型'}}
-        </view>
+    <view class="field field--row type-trigger" bindtap="onOpenTypeSheet">
+      <text class="field__label">活动类型</text>
+      <view class="field__value {{typeIndex < 0 ? 'field__value--placeholder' : ''}}">
+        {{typeIndex >= 0 ? typeOptions[typeIndex] : '请选择活动类型'}}
       </view>
-    </picker>
+      <text class="type-trigger__arrow">›</text>
+    </view>
     <view class="hint">地点、收图方式已取消，统一从预设类型中选择</view>
   </view>
 
@@ -166,3 +165,25 @@
     >发布并分享</button>
   </view>
 </scroll-view>
+
+<bottom-sheet
+  visible="{{showTypeSheet}}"
+  title="选择活动类型"
+  description="选择后作为任务名称"
+  confirm-text="确定"
+  bind:close="onCloseTypeSheet"
+  bind:confirm="onConfirmTypeSheet"
+>
+  <view class="type-options">
+    <view
+      class="type-option {{typeDraft === index ? 'type-option--on' : ''}}"
+      wx:for="{{typeOptions}}"
+      wx:key="*this"
+      data-index="{{index}}"
+      bindtap="onPickType"
+    >
+      <text>{{item}}</text>
+      <text class="type-option__check" wx:if="{{typeDraft === index}}">✓</text>
+    </view>
+  </view>
+</bottom-sheet>

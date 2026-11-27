@@ -49,6 +49,8 @@ Page({
     deptOptions: DEPT_OPTIONS,
     typeOptions: TYPE_OPTIONS,
     typeIndex: -1,
+    showTypeSheet: false,
+    typeDraft: -1,
     sessions: [],
     useRoles: false,
     roles: [],
@@ -68,9 +70,29 @@ Page({
     })
   },
 
-  onTypeChange(e) {
-    const index = Number(e.detail.value)
-    this.setData({ typeIndex: index, 'form.title': TYPE_OPTIONS[index] || '' })
+  onOpenTypeSheet() {
+    this.setData({ showTypeSheet: true, typeDraft: this.data.typeIndex })
+  },
+
+  onPickType(e) {
+    this.setData({ typeDraft: Number(e.currentTarget.dataset.index) })
+  },
+
+  onCloseTypeSheet() {
+    this.setData({ showTypeSheet: false })
+  },
+
+  onConfirmTypeSheet() {
+    const index = this.data.typeDraft
+    if (index < 0) {
+      wx.showToast({ title: '请选择活动类型', icon: 'none' })
+      return
+    }
+    this.setData({
+      typeIndex: index,
+      'form.title': TYPE_OPTIONS[index] || '',
+      showTypeSheet: false
+    })
   },
 
   onInput(e) {
