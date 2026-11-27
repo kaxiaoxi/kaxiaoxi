@@ -1,4 +1,4 @@
-<view class="picker-root {{visible ? 'picker-root--open' : ''}}" aria-hidden="{{!visible}}">
+<view class="picker-root {{visible ? 'picker-root--open' : ''}}" hidden="{{!visible}}" aria-hidden="{{!visible}}">
   <view class="picker-mask" catchtap="onClose" catchtouchmove="noop"></view>
 
   <view class="picker-panel" aria-role="dialog" aria-modal="true" aria-label="{{title}}">
