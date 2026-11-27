@@ -1,15 +1,11 @@
 <view class="page">
   <view class="card">
-    <view class="field">
+    <view class="field field--row name-trigger" bindtap="onOpenNameSheet">
       <view class="field__label">名称</view>
-      <input
-        class="field__input"
-        maxlength="30"
-        data-field="title"
-        value="{{form.title}}"
-        bindinput="onInput"
-        placeholder="如：大学城秋日人像外拍"
-      />
+      <view class="field__value {{form.title ? '' : 'field__value--placeholder'}}">
+        {{form.title || '请选择日程名称'}}
+      </view>
+      <text class="name-trigger__arrow">›</text>
     </view>
 
     <view class="field field--row">
@@ -52,17 +48,6 @@
       </view>
     </view>
 
-    <view class="field">
-      <view class="field__label">地点</view>
-      <input
-        class="field__input"
-        maxlength="40"
-        data-field="location"
-        value="{{form.location}}"
-        bindinput="onInput"
-        placeholder="大学城中心湖"
-      />
-    </view>
   </view>
 
   <view class="card">
@@ -109,22 +94,33 @@
       </view>
     </view>
 
-    <view class="field">
-      <view class="field__label">备注</view>
-      <textarea
-        class="textarea"
-        maxlength="500"
-        data-field="note"
-        value="{{form.note}}"
-        bindinput="onInput"
-        placeholder="集合方式、报名链接等"
-      />
-    </view>
   </view>
 
   <view class="footer">
     <button class="btn btn--primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">保存</button>
   </view>
+
+  <bottom-sheet
+    visible="{{showNameSheet}}"
+    title="选择日程名称"
+    description="选择后作为日程标题"
+    confirm-text="确定"
+    bind:close="onCloseNameSheet"
+    bind:confirm="onConfirmNameSheet"
+  >
+    <view class="name-options">
+      <view
+        class="name-option {{nameDraft === index ? 'name-option--on' : ''}}"
+        wx:for="{{nameOptions}}"
+        wx:key="*this"
+        data-index="{{index}}"
+        bindtap="onPickName"
+      >
+        <text>{{item}}</text>
+        <text class="name-option__check" wx:if="{{nameDraft === index}}">✓</text>
+      </view>
+    </view>
+  </bottom-sheet>
 
   <member-picker
     id="memberPicker"
