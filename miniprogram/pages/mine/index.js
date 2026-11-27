@@ -101,6 +101,10 @@ Page({
     wx.navigateTo({ url: '/pages/todo/list/index' })
   },
 
+  onOpenAbout() {
+    wx.navigateTo({ url: '/pages/about/index' })
+  },
+
   onOpenMembers() {
     wx.navigateTo({ url: '/pages/admin/members/index' })
   }
