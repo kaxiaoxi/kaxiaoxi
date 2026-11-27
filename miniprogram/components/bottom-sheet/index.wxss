@@ -6,6 +6,8 @@
   bottom: 0;
   z-index: 1100;
   pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0s linear 260ms;
 }
 
 .sheet-mask {
@@ -47,6 +49,8 @@
 
 .sheet-root--open {
   pointer-events: auto;
+  visibility: visible;
+  transition-delay: 0s;
 }
 
 .sheet-root--open .sheet-mask {
