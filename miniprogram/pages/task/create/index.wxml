@@ -1,22 +1,15 @@
 <scroll-view class="page" scroll-y>
-  <view class="section">基本信息</view>
+  <view class="section">活动类型</view>
   <view class="card">
-    <view class="field">
-      <view class="field__label">活动名称</view>
-      <input class="field__input" maxlength="30" placeholder="如 中心湖人像外拍" data-field="title" value="{{form.title}}" bindinput="onInput" />
-    </view>
-    <view class="field">
-      <view class="field__label">活动详情</view>
-      <textarea class="field__textarea" maxlength="2000" placeholder="集合方式、拍摄内容、注意事项" data-field="description" value="{{form.description}}" bindinput="onInput" />
-    </view>
-    <view class="field">
-      <view class="field__label">地点</view>
-      <input class="field__input" maxlength="40" placeholder="如 大学城中心湖" data-field="locationName" value="{{form.locationName}}" bindinput="onInput" />
-    </view>
-    <view class="field">
-      <view class="field__label">收图方式</view>
-      <input class="field__input" maxlength="200" placeholder="如 上传群相册，命名姓名-序号" data-field="collectMethod" value="{{form.collectMethod}}" bindinput="onInput" />
-    </view>
+    <picker mode="selector" range="{{typeOptions}}" value="{{typeIndex}}" bindchange="onTypeChange">
+      <view class="field field--row">
+        <text class="field__label">活动类型</text>
+        <view class="field__value {{typeIndex < 0 ? 'field__value--placeholder' : ''}}">
+          {{typeIndex >= 0 ? typeOptions[typeIndex] : '请选择活动类型'}}
+        </view>
+      </view>
+    </picker>
+    <view class="hint">地点、收图方式已取消，统一从预设类型中选择</view>
   </view>
 
   <view class="section">场次（可多天多时段）</view>

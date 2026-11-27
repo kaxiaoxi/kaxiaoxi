@@ -68,7 +68,7 @@
     </view>
     <view class="task__title">{{item.title}}</view>
     <view class="task__meta">{{item.rangeText}}</view>
-    <view class="task__location">{{item.locationName}}</view>
+    <view class="task__location" wx:if="{{item.locationName}}">{{item.locationName}}</view>
     <view class="task__bottom">
       <text class="tag tag--gold">二课 {{item.erkeHours}} 学时</text>
       <text class="task__deadline" wx:if="{{item.signupPhase === 'open'}}">报名中 ›</text>

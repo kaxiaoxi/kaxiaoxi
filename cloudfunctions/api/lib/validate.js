@@ -48,10 +48,7 @@ function validateTask(input = {}) {
   const quota = Number(input.quota)
   const erkeHours = Number(input.erkeHours)
 
-  if (!title) return { ok: false, message: '请填写活动名称' }
-  if (!description) return { ok: false, message: '请填写活动详情' }
-  if (!locationName) return { ok: false, message: '请填写活动地点' }
-  if (!collectMethod) return { ok: false, message: '请填写收图方式' }
+  if (!title) return { ok: false, message: '请选择活动类型' }
   if (!Number.isInteger(quota) || quota < 0 || quota > 200) {
     return { ok: false, message: '人数需为 0-200 的整数（0 表示不限）' }
   }

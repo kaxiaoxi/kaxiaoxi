@@ -11,9 +11,9 @@
       <text class="share-row__key">时间</text>
       <text class="share-row__value">{{task.timeText}}</text>
     </view>
-    <view class="share-row">
+    <view class="share-row" wx:if="{{task.locationName}}">
       <text class="share-row__key">地点</text>
-      <text class="share-row__value">{{task.locationName || '待定'}}</text>
+      <text class="share-row__value">{{task.locationName}}</text>
     </view>
     <view class="share-row">
       <text class="share-row__key">名额</text>
