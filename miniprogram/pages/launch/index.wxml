@@ -1,6 +1,6 @@
 <view class="launch">
   <view class="launch__logo">卡小西</view>
-  <view class="launch__tip">广工影协指南 · 内部版</view>
+  <view class="launch__tip">影协工坊</view>
 
   <view class="launch__error" wx:if="{{error}}">
     <view class="launch__error-text">网络异常，无法加载</view>
@@ -24,3 +24,4 @@
     </view>
   </view>
 </view>
+
